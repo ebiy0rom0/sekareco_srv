@@ -1,29 +1,25 @@
 package main
 
 import (
-	"sekareco_srv/handler/music"
-	"sekareco_srv/handler/person"
-	"sekareco_srv/handler/record"
-
-	"github.com/gorilla/mux"
+	"log"
+	"net/http"
+	"sekareco_srv/db"
+	"sekareco_srv/handler"
+	"time"
 )
 
 func main() {
-	// TODO: cors setup
+	// db (sqlite3) setup
+	db.Init()
 
-	// handler rooting
-	r := mux.NewRouter()
+	// api server setup
+	srv := &http.Server{
+		Handler:      handler.Init(),
+		Addr:         "0.0.0.0:8080",
+		WriteTimeout: 5 * time.Second,
+		ReadTimeout:  5 * time.Second,
+	}
 
-	// person api
-	r.HandleFunc("/person/{personId}/", person.Get).Methods("GET")
-	r.HandleFunc("/person/", person.Post).Methods("POST")
-	r.HandleFunc("/person/{personId}/", person.Patch).Methods("PATCH")
-
-	// music api
-	r.HandleFunc("/music/", music.Get).Methods("GET")
-
-	// record api
-	r.HandleFunc("/record/{personId}/", record.Get).Methods("GET")
-	r.HandleFunc("/record/{personId}/", record.Post).Methods("POST")
-	r.HandleFunc("/record/{personId}/{musicId}/", record.Patch).Methods("PATCH")
+	// wait http request
+	log.Fatal(srv.ListenAndServe())
 }
