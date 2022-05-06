@@ -1,4 +1,4 @@
-package db
+package tools
 
 import (
 	"database/sql"
@@ -6,10 +6,6 @@ import (
 )
 
 const DATABASE_SCHEMA_NAME = "./sekareco.db"
-
-func InitSqlite3() error {
-	return nil
-}
 
 func OpenSqlite3() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", DATABASE_SCHEMA_NAME)

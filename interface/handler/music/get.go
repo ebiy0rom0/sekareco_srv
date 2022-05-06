@@ -1,4 +1,4 @@
-package person
+package handler
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Post(w http.ResponseWriter, r *http.Request) {
+func GetMusic(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	output, _ := json.Marshal(vars)
 

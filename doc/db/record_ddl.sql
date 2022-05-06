@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS record (
     insert_date DATETIME NOT NULL,
     update_date DATETIME NOT NULL
 );
-CREATE INDEX idx_record_1 ON record (
-    person_id
+CREATE UNIQUE INDEX unq_record_1 ON record (
+    person_id,
+    music_id
 );

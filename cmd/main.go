@@ -3,14 +3,25 @@ package main
 import (
 	"log"
 	"net/http"
-	"sekareco_srv/db"
-	"sekareco_srv/handler"
+	db "sekareco_srv/interface/database"
+	"sekareco_srv/interface/handler"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// load env
+	err := godotenv.Load("./../config/.env")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// db (sqlite3) setup
-	db.Init()
+	err = db.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// api server setup
 	srv := &http.Server{
