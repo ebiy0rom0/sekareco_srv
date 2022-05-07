@@ -2,13 +2,13 @@ package database
 
 import "sekareco_srv/domain"
 
-type RecordRepo struct {
-	SqlHandler
+type RecordRepository struct {
+	Handler SqlHandler
 }
 
-func (repo *RecordRepo) Regist(r *domain.Record) (recordId int, err error) {
+func (repository *RecordRepository) Regist(r domain.Record) (recordId int, err error) {
 	// TODO: wip
-	result, err := repo.Execute("INSERT INTO record VALUES ", r)
+	result, err := repository.Handler.Execute("INSERT INTO record VALUES ", r)
 	if err != nil {
 		return
 	}
@@ -22,8 +22,8 @@ func (repo *RecordRepo) Regist(r *domain.Record) (recordId int, err error) {
 	return
 }
 
-func (repo *RecordRepo) SelectArray(personId int) (recordList domain.RecordList, err error) {
-	rows, err := repo.Query("SELECT record_id, person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master FROM record WHERE person_id = ?", personId)
+func (repository *RecordRepository) SelectArray(personId int) (recordList domain.RecordList, err error) {
+	rows, err := repository.Handler.Query("SELECT record_id, person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master FROM record WHERE person_id = ?", personId)
 	if err != nil {
 		return
 	}

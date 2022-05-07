@@ -3,8 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-	db "sekareco_srv/interface/database"
-	"sekareco_srv/interface/handler"
+	infra "sekareco_srv/infra/router"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -17,15 +16,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// db (sqlite3) setup
-	err = db.Init()
+	// router setup
+	err = infra.Init()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// api server setup
+	// server setup
 	srv := &http.Server{
-		Handler:      handler.Init(),
+		Handler:      infra.Router,
 		Addr:         "0.0.0.0:8080",
 		WriteTimeout: 5 * time.Second,
 		ReadTimeout:  5 * time.Second,

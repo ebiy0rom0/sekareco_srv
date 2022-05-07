@@ -7,30 +7,36 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Init() *mux.Router {
+var Router *mux.Router
+
+func Init() (err error) {
 	// create handler rooting
 	r := mux.NewRouter()
 
 	h, err := infra.NewSqlHandler()
 	if err != nil {
-		return nil
+		return err
 	}
 
 	personHandler := handler.NewPersonHandler(h)
+	recordHandler := handler.NewRecordHandler(h)
+
 	// auth api
 	// r.HandleFunc("/auth/", auth.Get).Methods("GET")
+
 	// person api
 	r.HandleFunc("/person/{personId}/", personHandler.Get).Methods("GET")
 	r.HandleFunc("/person/", personHandler.Post).Methods("POST")
-	r.HandleFunc("/person/{personId}/", personHandler.Put).Methods("PATCH")
+	r.HandleFunc("/person/{personId}/", personHandler.Put).Methods("PUT")
 
 	// music api
 	// r.HandleFunc("/music/", music.Get).Methods("GET")
 
 	// record api
-	// r.HandleFunc("/record/{personId}/", record.Get).Methods("GET")
-	// r.HandleFunc("/record/{personId}/", record.Post).Methods("POST")
-	// r.HandleFunc("/record/{personId}/{musicId}/", record.Patch).Methods("PATCH")
+	r.HandleFunc("/record/{personId}/", recordHandler.Get).Methods("GET")
+	r.HandleFunc("/record/{personId}/", recordHandler.Post).Methods("POST")
+	r.HandleFunc("/record/{personId}/{musicId}/", recordHandler.Put).Methods("PUT")
 
-	return r
+	Router = r
+	return
 }
