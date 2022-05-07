@@ -1,4 +1,4 @@
-package tools
+package infra
 
 import (
 	"database/sql"
@@ -9,14 +9,6 @@ import (
 
 type SqlHandler struct {
 	Conn *sql.DB
-}
-
-type Result struct {
-	Result sql.Result
-}
-
-type Rows struct {
-	Rows *sql.Rows
 }
 
 func NewSqlHandler() (*SqlHandler, error) {
@@ -82,30 +74,15 @@ func (h *SqlHandler) Execute(query string, args ...interface{}) (sql.Result, err
 	return res, nil
 }
 
+func (h *SqlHandler) QueryRow(query string, args ...interface{}) *sql.Row {
+	row := h.Conn.QueryRow(query, args...)
+	return row
+}
+
 func (h *SqlHandler) Query(query string, args ...interface{}) (*sql.Rows, error) {
 	rows, err := h.Conn.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
 	return rows, nil
-}
-
-func (r Result) LastInsertId() (int64, error) {
-	return r.Result.LastInsertId()
-}
-
-func (r Result) RowsAffected() (int64, error) {
-	return r.Result.RowsAffected()
-}
-
-func (r Rows) Scan(dest ...interface{}) error {
-	return r.Rows.Scan(dest...)
-}
-
-func (r Rows) Next() bool {
-	return r.Rows.Next()
-}
-
-func (r Rows) Close() error {
-	return r.Rows.Close()
 }
