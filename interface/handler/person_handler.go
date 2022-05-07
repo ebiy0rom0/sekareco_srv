@@ -13,34 +13,46 @@ type PersonHandler struct {
 	logic logic.PersonLogic
 }
 
-func NewPersonHandler(h database.SqlHandler) *PersonHandler {
+func NewPersonHandler(handler database.SqlHandler) *PersonHandler {
 	return &PersonHandler{
 		logic: logic.PersonLogic{
-			Repo: &database.PersonRepo{
-				Handler: h,
+			Repository: &database.PersonRepository{
+				Handler: handler,
 			},
 		},
 	}
 }
 
-func (c *PersonHandler) Get(w http.ResponseWriter, r *http.Request) {
+func (handler *PersonHandler) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+
+	// @debug
+	vars["uri"] = "person"
+	vars["methods"] = "get"
 	output, _ := json.Marshal(vars)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(output)
 }
 
-func (c *PersonHandler) Post(w http.ResponseWriter, r *http.Request) {
+func (handler *PersonHandler) Post(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+
+	// @debug
+	vars["uri"] = "person"
+	vars["methods"] = "post"
 	output, _ := json.Marshal(vars)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(output)
 }
 
-func (c *PersonHandler) Put(w http.ResponseWriter, r *http.Request) {
+func (handler *PersonHandler) Put(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+
+	// @debug
+	vars["uri"] = "person"
+	vars["methods"] = "put"
 	output, _ := json.Marshal(vars)
 
 	w.Header().Set("Content-Type", "application/json")
