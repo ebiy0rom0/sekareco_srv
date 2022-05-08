@@ -10,6 +10,10 @@ import (
 )
 
 func main() {
+	// TODO: meke infra logger?
+	// logger setup
+	log.SetFlags(log.Lshortfile)
+
 	// load env
 	err := godotenv.Load("./../config/.env")
 	if err != nil {
