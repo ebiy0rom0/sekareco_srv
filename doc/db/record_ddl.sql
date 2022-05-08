@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS record (
     record_hard INTEGER,
     record_expert INTEGER,
     record_master INTEGER,
-    insert_date DATETIME NOT NULL,
-    update_date DATETIME NOT NULL
+    insert_date TEXT NOT NULL DEFAULT (DATETIME(`now`, `localtime`)),
+    update_date TEXT NOT NULL DEFAULT (DATETIME(`now`, `localtime`))
 );
 CREATE UNIQUE INDEX unq_record_1 ON record (
     person_id,
