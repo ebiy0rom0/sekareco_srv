@@ -18,6 +18,7 @@ func Init() (err error) {
 		return err
 	}
 
+	musicHandler := handler.NewMusicHandler(h)
 	personHandler := handler.NewPersonHandler(h)
 	recordHandler := handler.NewRecordHandler(h)
 
@@ -30,7 +31,7 @@ func Init() (err error) {
 	r.HandleFunc("/person/{personId}/", personHandler.Put).Methods("PUT")
 
 	// music api
-	// r.HandleFunc("/music/", music.Get).Methods("GET")
+	r.HandleFunc("/music/", musicHandler.Get).Methods("GET")
 
 	// record api
 	r.HandleFunc("/record/{personId}/", recordHandler.Get).Methods("GET")
