@@ -47,7 +47,7 @@ func NewSqlHandler() (*SqlHandler, error) {
 func createTable(db *sql.DB) error {
 	s := sqlfile.New()
 
-	err := s.Directory("./doc/db")
+	err := s.Directory("./../doc/db")
 	if err != nil {
 		return err
 	}
