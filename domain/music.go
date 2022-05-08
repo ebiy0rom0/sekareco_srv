@@ -1,23 +1,23 @@
 package domain
 
 type Music struct {
-	MusicId     int
-	ArtistId    int
-	MusicName   string
-	JacketUrl   string
-	LevelEasy   int
-	LevelNormal int
-	LevelHard   int
-	LevelExpert int
-	LevelMaster int
+	MusicId     int    `json:"music_id"`
+	ArtistId    int    `json:"artist_id"`
+	MusicName   string `json:"music_name"`
+	JacketUrl   string `json:"jacket_url"`
+	LevelEasy   int    `json:"level_easy"`
+	LevelNormal int    `json:"level_normal"`
+	LevelHard   int    `json:"level_hard"`
+	LevelExpert int    `json:"level_expert"`
+	LevelMaster int    `json:"level_master"`
 }
 
 type MusicList []Music
 
 type Artist struct {
-	ArtistId   int
-	ArtistName string
-	LogoUrl    string
+	ArtistId   int    `json:"artist_id"`
+	ArtistName string `json:"artist_name"`
+	LogoUrl    string `json:"logo_url"`
 }
 
 type ArtistList []Artist

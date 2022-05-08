@@ -1,14 +1,14 @@
 package domain
 
 type Record struct {
-	RecordId     int
-	PersonId     int
-	MusicId      int
-	RecordEasy   int
-	RecordNormal int
-	RecordHard   int
-	RecordExpert int
-	RecordMaster int
+	RecordId     int `json:"record_id"`
+	PersonId     int `json:"person_id"`
+	MusicId      int `json:"music_id"`
+	RecordEasy   int `json:"record_easy"`
+	RecordNormal int `json:"record_normal"`
+	RecordHard   int `json:"record_hard"`
+	RecordExpert int `json:"record_expert"`
+	RecordMaster int `json:"record_master"`
 }
 
 type RecordList []Record
