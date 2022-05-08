@@ -6,7 +6,7 @@ type PersonRepository struct {
 	Handler SqlHandler
 }
 
-func (repository *PersonRepository) Regist(p domain.Person) (personId int, err error) {
+func (repository *PersonRepository) RegistPerson(p domain.Person) (personId int, err error) {
 	// TODO: wip
 	result, err := repository.Handler.Execute("INSERT INTO person VALUES ", p)
 	if err != nil {
@@ -22,20 +22,42 @@ func (repository *PersonRepository) Regist(p domain.Person) (personId int, err e
 	return
 }
 
-func (repository *PersonRepository) SelectOne(personId int) (user domain.Person, err error) {
-	rows := repository.Handler.QueryRow("SELECT person_id, person_name, firend_code FROM person WHERE person_id = ?", personId)
+func (repository *PersonRepository) RegistLogin(l domain.Login) (err error) {
+	_, err = repository.Handler.Execute("INSERT INTO person_login VALUES ", l)
+	return
+}
+
+func (repository *PersonRepository) GetPersonById(personId int) (user domain.Person, err error) {
+	row := repository.Handler.QueryRow("SELECT person_id, person_name, friend_code FROM person WHERE person_id = ?", personId)
 
 	var (
 		personName string
-		friendCode string
+		friendCode int
 	)
-	err = rows.Scan(&personId, &personName, &friendCode)
+	err = row.Scan(&personId, &personName, &friendCode)
 	if err != nil {
 		return
 	}
 
-	user.PersonID = personId
+	user.PersonId = personId
 	user.PersonName = personName
 	user.FriendCode = friendCode
+	return
+}
+
+func (repository *PersonRepository) GetLoginPerson(loginId string) (login domain.Login, err error) {
+	row := repository.Handler.QueryRow("SELECT password_hash, person_id FROM person_login WHERE login_id = ?", loginId)
+
+	var (
+		personId     int
+		passwordHash string
+	)
+	err = row.Scan(&passwordHash, &personId)
+	if err != nil {
+		return
+	}
+
+	login.PasswordHash = passwordHash
+	login.PersonId = personId
 	return
 }

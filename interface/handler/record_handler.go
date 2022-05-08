@@ -13,11 +13,11 @@ type RecordHandler struct {
 	Logic logic.RecordLogic
 }
 
-func NewRecordHandler(handler database.SqlHandler) *RecordHandler {
+func NewRecordHandler(sqlHandler database.SqlHandler) *RecordHandler {
 	return &RecordHandler{
 		Logic: logic.RecordLogic{
 			Repository: &database.RecordRepository{
-				Handler: handler,
+				Handler: sqlHandler,
 			},
 		},
 	}

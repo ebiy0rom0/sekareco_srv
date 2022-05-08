@@ -3,6 +3,8 @@ package logic
 import "sekareco_srv/domain"
 
 type PersonRepository interface {
-	Regist(domain.Person) (int, error)
-	SelectOne(int) (domain.Person, error)
+	RegistPerson(domain.Person) (int, error)
+	RegistLogin(domain.Login) error
+	GetPersonById(int) (domain.Person, error)
+	GetLoginPerson(string) (domain.Login, error)
 }
