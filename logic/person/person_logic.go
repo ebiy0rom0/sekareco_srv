@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"database/sql"
 	"hash/fnv"
 	"sekareco_srv/domain"
 
@@ -26,14 +27,15 @@ func (logic *PersonLogic) GetPersonById(personId int) (person domain.Person, err
 	return
 }
 
-func (logic *PersonLogic) CheckDuplicateLoginId(loginId string) (ok bool, err error) {
+func (logic *PersonLogic) CheckDuplicateLoginId(loginId string) (bool, error) {
+	var ok bool
 	person, err := logic.Repository.GetLoginPerson(loginId)
-	if err != nil {
-		return
+	if err != nil && err != sql.ErrNoRows {
+		return ok, err
 	}
 
 	ok = person.PersonId == 0
-	return
+	return ok, nil
 }
 
 func (logic *PersonLogic) GenerateFriendCode(loginId string) (code int) {

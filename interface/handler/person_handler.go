@@ -47,7 +47,6 @@ func (handler *PersonHandler) Post(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	loginId := vars["login_id"]
 
-	// TODO: no rows return error
 	ok, err := handler.logic.CheckDuplicateLoginId(loginId)
 	if err != nil {
 		log.Printf("%s", err)
