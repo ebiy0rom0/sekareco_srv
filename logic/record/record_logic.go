@@ -11,6 +11,11 @@ func (logic *RecordLogic) RegistRecord(r domain.Record) (recordId int, err error
 	return
 }
 
+func (logic *RecordLogic) ModifyRecord(personId int, musicId int, r domain.Record) (err error) {
+	err = logic.Repository.Modify(r)
+	return
+}
+
 func (logic *RecordLogic) GetRecordList(personId int) (recordList domain.RecordList, err error) {
 	recordList, err = logic.Repository.SelectArray(personId)
 	return

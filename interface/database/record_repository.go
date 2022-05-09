@@ -22,6 +22,12 @@ func (repository *RecordRepository) Regist(r domain.Record) (recordId int, err e
 	return
 }
 
+func (repository *RecordRepository) Modify(r domain.Record) (err error) {
+	// TODO: wip
+	_, err = repository.Handler.Execute("UPDATE record SET ", r)
+	return
+}
+
 func (repository *RecordRepository) SelectArray(personId int) (recordList domain.RecordList, err error) {
 	rows, err := repository.Handler.Query("SELECT record_id, person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master FROM record WHERE person_id = ?", personId)
 	if err != nil {
