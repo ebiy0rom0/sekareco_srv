@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS master_music (
     level_hard INTEGER NOT NULL,
     level_expert INTEGER NOT NULL,
     level_master INTEGER NOT NULL,
-    insert_date TEXT NOT NULL DEFAULT (DATETIME(`now`, `localtime`)),
-    update_date TEXT NOT NULL DEFAULT (DATETIME(`now`, `localtime`))
+    insert_date TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
+    update_date TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );
 
 DROP TABLE IF EXISTS master_artist;
@@ -18,6 +18,6 @@ CREATE TABLE IF NOT EXISTS master_artist (
     artist_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     artist_name TEXT NOT NULL,
     logo_url TEXT NOT NULL,
-    insert_date TEXT NOT NULL DEFAULT (DATETIME(`now`, `localtime`)),
-    update_date TEXT NOT NULL  DEFAULT (DATETIME(`now`, `localtime`))
+    insert_date TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
+    update_date TEXT NOT NULL  DEFAULT (DATETIME('now', 'localtime'))
 );
