@@ -6,9 +6,22 @@ type RecordRepository struct {
 	Handler SqlHandler
 }
 
-func (repository *RecordRepository) Regist(r domain.Record) (recordId int, err error) {
-	// TODO: wip
-	result, err := repository.Handler.Execute("INSERT INTO record VALUES ", r)
+func (repository *RecordRepository) StartTransaction() error {
+	return repository.Handler.StartTransaction()
+}
+
+func (repository *RecordRepository) Commit() error {
+	return repository.Handler.Commit()
+}
+
+func (repository *RecordRepository) Rollback() error {
+	return repository.Handler.Rollback()
+}
+
+func (repository *RecordRepository) RegistRecord(r domain.Record) (recordId int, err error) {
+	query := "INSERT INTO record (person_id, music_id, record_easy, record_nomarl, record_hard, record_expert, record_master)"
+	query += " VALUES (?, ?, ?, ?, ?, ?, ?);"
+	result, err := repository.Handler.Execute(query, r.PersonId, r.MusicId, r.RecordEasy, r.RecordNormal, r.RecordHard, r.RecordExpert, r.RecordMaster)
 	if err != nil {
 		return
 	}
@@ -22,22 +35,23 @@ func (repository *RecordRepository) Regist(r domain.Record) (recordId int, err e
 	return
 }
 
-func (repository *RecordRepository) Modify(r domain.Record) (err error) {
-	// TODO: wip
-	_, err = repository.Handler.Execute("UPDATE record SET ", r)
+func (repository *RecordRepository) ModifyRecord(r domain.Record) (err error) {
+	query := "UPDATE record SET record_easy = ?, record_normal = ?, record_hard = ?, record_expert = ?, record_master = ? WHERE person_id = ? AND music_id = ?;"
+	_, err = repository.Handler.Execute(query, r.RecordEasy, r.RecordNormal, r.RecordNormal, r.RecordExpert, r.RecordMaster, r.PersonId, r.MusicId)
 	return
 }
 
-func (repository *RecordRepository) SelectArray(personId int) (recordList domain.RecordList, err error) {
-	rows, err := repository.Handler.Query("SELECT record_id, person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master FROM record WHERE person_id = ?", personId)
+func (repository *RecordRepository) GetPersonRecordList(personId int) (recordList domain.RecordList, err error) {
+	query := "SELECT person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master FROM record WHERE person_id = ?;"
+	rows, err := repository.Handler.Query(query, personId)
 	if err != nil {
 		return
 	}
-	rows.Close()
+	defer rows.Close()
 
 	for rows.Next() {
 		var record domain.Record
-		err = rows.Scan(&record.RecordId, &record.PersonId, &record.MusicId, &record.RecordEasy, &record.RecordNormal, &record.RecordHard, &record.RecordExpert, &record.RecordMaster)
+		err = rows.Scan(&record.PersonId, &record.MusicId, &record.RecordEasy, &record.RecordNormal, &record.RecordHard, &record.RecordExpert, &record.RecordMaster)
 		if err != nil {
 			return
 		}

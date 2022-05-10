@@ -32,7 +32,7 @@ func (handler *RecordHandler) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	personId, _ := strconv.Atoi(vars["personId"])
 
-	recordList, err := handler.Logic.GetRecordList(personId)
+	recordList, err := handler.Logic.GetPersonRecordList(personId)
 	if err != nil {
 		log.Printf("record list get failed: %s", err)
 	}
@@ -54,6 +54,8 @@ func (handler *RecordHandler) Post(w http.ResponseWriter, r *http.Request) {
 	recordExpert, _ := strconv.Atoi(vars["record_expert"])
 	recordMaster, _ := strconv.Atoi(vars["record_master"])
 
+	handler.Logic.Repository.StartTransaction()
+
 	record := domain.Record{
 		PersonId:     personId,
 		MusicId:      musicId,
@@ -66,8 +68,12 @@ func (handler *RecordHandler) Post(w http.ResponseWriter, r *http.Request) {
 	recordId, err := handler.Logic.RegistRecord(record)
 	if err != nil {
 		log.Printf("record regist failed: %s", err)
+		handler.Logic.Repository.Rollback()
+		return
 	}
 	record.RecordId = recordId
+
+	handler.Logic.Repository.Commit()
 
 	output, _ := json.Marshal(record)
 	w.WriteHeader(http.StatusCreated)
@@ -86,6 +92,8 @@ func (handler *RecordHandler) Put(w http.ResponseWriter, r *http.Request) {
 	recordExpert, _ := strconv.Atoi(vars["record_expert"])
 	recordMaster, _ := strconv.Atoi(vars["record_master"])
 
+	handler.Logic.Repository.StartTransaction()
+
 	record := domain.Record{
 		RecordEasy:   recordEasy,
 		RecordNormal: recordNormal,
@@ -96,7 +104,11 @@ func (handler *RecordHandler) Put(w http.ResponseWriter, r *http.Request) {
 	err := handler.Logic.ModifyRecord(personId, musicId, record)
 	if err != nil {
 		log.Printf("modify record failed: %s", err)
+		handler.Logic.Repository.Rollback()
+		return
 	}
+
+	handler.Logic.Repository.Commit()
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(nil)
