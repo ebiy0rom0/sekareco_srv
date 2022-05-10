@@ -6,9 +6,23 @@ type PersonRepository struct {
 	Handler SqlHandler
 }
 
+func (repository *PersonRepository) StartTransaction() error {
+	return repository.Handler.StartTransaction()
+}
+
+func (repository *PersonRepository) Commit() error {
+	return repository.Handler.Commit()
+}
+
+func (repository *PersonRepository) Rollback() error {
+	return repository.Handler.Rollback()
+}
+
 func (repository *PersonRepository) RegistPerson(p domain.Person) (personId int, err error) {
-	// TODO: wip
-	result, err := repository.Handler.Execute("INSERT INTO person VALUES ", p)
+	query := "INSERT INTO person (person_id, person_name, friend_code)"
+	query += " VALUES (?, ?, ?);"
+
+	result, err := repository.Handler.Execute(query, p)
 	if err != nil {
 		return
 	}
@@ -23,12 +37,16 @@ func (repository *PersonRepository) RegistPerson(p domain.Person) (personId int,
 }
 
 func (repository *PersonRepository) RegistLogin(l domain.Login) (err error) {
-	_, err = repository.Handler.Execute("INSERT INTO person_login VALUES ", l)
+	query := "INSERT INTO person_login (login_id, person_id, password_hash)"
+	query += " VALUES (?, ?, ?);"
+
+	_, err = repository.Handler.Execute(query, l)
 	return
 }
 
 func (repository *PersonRepository) GetPersonById(personId int) (user domain.Person, err error) {
-	row := repository.Handler.QueryRow("SELECT person_id, person_name, friend_code FROM person WHERE person_id = ?", personId)
+	query := "SELECT person_id, person_name, friend_code FROM person WHERE person_id = ?"
+	row := repository.Handler.QueryRow(query, personId)
 
 	var (
 		personName string
@@ -46,7 +64,8 @@ func (repository *PersonRepository) GetPersonById(personId int) (user domain.Per
 }
 
 func (repository *PersonRepository) GetLoginPerson(loginId string) (login domain.Login, err error) {
-	row := repository.Handler.QueryRow("SELECT password_hash, person_id FROM person_login WHERE login_id = ?", loginId)
+	query := "SELECT password_hash, person_id FROM person_login WHERE login_id = ?"
+	row := repository.Handler.QueryRow(query, loginId)
 
 	var (
 		personId     int

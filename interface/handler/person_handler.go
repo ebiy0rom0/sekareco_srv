@@ -54,8 +54,9 @@ func (handler *PersonHandler) Post(w http.ResponseWriter, r *http.Request) {
 		log.Printf("duplicate login id: %s", loginId)
 	}
 
-	code := handler.logic.GenerateFriendCode(loginId)
+	handler.logic.Repository.StartTransaction()
 
+	code := handler.logic.GenerateFriendCode(loginId)
 	person := domain.Person{
 		PersonName: vars["person_name"],
 		FriendCode: code,
@@ -63,6 +64,8 @@ func (handler *PersonHandler) Post(w http.ResponseWriter, r *http.Request) {
 	personId, err := handler.logic.RegistPerson(person)
 	if err != nil {
 		log.Printf("person regist failed: %s", err)
+		handler.logic.Repository.Rollback()
+		return
 	}
 	person.PersonId = personId
 
@@ -80,7 +83,11 @@ func (handler *PersonHandler) Post(w http.ResponseWriter, r *http.Request) {
 	err = handler.logic.RegistLogin(login)
 	if err != nil {
 		log.Printf("login regist failed: %s", err)
+		handler.logic.Repository.Rollback()
+		return
 	}
+
+	handler.logic.Repository.Commit()
 
 	output, _ := json.Marshal(person)
 	w.Write(output)
