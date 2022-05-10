@@ -19,10 +19,10 @@ func (repository *PersonRepository) Rollback() error {
 }
 
 func (repository *PersonRepository) RegistPerson(p domain.Person) (personId int, err error) {
-	query := "INSERT INTO person (person_id, person_name, friend_code)"
-	query += " VALUES (?, ?, ?);"
+	query := "INSERT INTO person (person_name, friend_code)"
+	query += " VALUES (?, ?);"
 
-	result, err := repository.Handler.Execute(query, p)
+	result, err := repository.Handler.Execute(query, p.PersonName, p.FriendCode)
 	if err != nil {
 		return
 	}
@@ -40,12 +40,12 @@ func (repository *PersonRepository) RegistLogin(l domain.Login) (err error) {
 	query := "INSERT INTO person_login (login_id, person_id, password_hash)"
 	query += " VALUES (?, ?, ?);"
 
-	_, err = repository.Handler.Execute(query, l)
+	_, err = repository.Handler.Execute(query, l.LoginId, l.PersonId, l.PasswordHash)
 	return
 }
 
 func (repository *PersonRepository) GetPersonById(personId int) (user domain.Person, err error) {
-	query := "SELECT person_id, person_name, friend_code FROM person WHERE person_id = ?"
+	query := "SELECT person_id, person_name, friend_code FROM person WHERE person_id = ?;"
 	row := repository.Handler.QueryRow(query, personId)
 
 	var (
@@ -64,7 +64,7 @@ func (repository *PersonRepository) GetPersonById(personId int) (user domain.Per
 }
 
 func (repository *PersonRepository) GetLoginPerson(loginId string) (login domain.Login, err error) {
-	query := "SELECT password_hash, person_id FROM person_login WHERE login_id = ?"
+	query := "SELECT password_hash, person_id FROM person_login WHERE login_id = ?;"
 	row := repository.Handler.QueryRow(query, loginId)
 
 	var (
