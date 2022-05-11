@@ -3,8 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
-	infra "sekareco_srv/infra/router"
 	"time"
+
+	"sekareco_srv/infra/router"
 
 	"github.com/joho/godotenv"
 )
@@ -21,14 +22,14 @@ func main() {
 	}
 
 	// router setup
-	err = infra.Init()
+	err = router.InitRouter()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// server setup
 	srv := &http.Server{
-		Handler:      infra.Router,
+		Handler:      router.Router,
 		Addr:         "0.0.0.0:8080",
 		WriteTimeout: 5 * time.Second,
 		ReadTimeout:  5 * time.Second,

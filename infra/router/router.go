@@ -1,4 +1,4 @@
-package infra
+package router
 
 import (
 	"sekareco_srv/infra/sql"
@@ -10,7 +10,7 @@ import (
 
 var Router *mux.Router
 
-func Init() (err error) {
+func InitRouter() (err error) {
 	// create handler rooting
 	r := mux.NewRouter()
 
