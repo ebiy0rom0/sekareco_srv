@@ -4,21 +4,21 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"sekareco_srv/domain"
+	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/database"
-	logic "sekareco_srv/logic/record"
+	"sekareco_srv/logic/record"
 	"strconv"
 
 	"github.com/gorilla/mux"
 )
 
 type RecordHandler struct {
-	Logic logic.RecordLogic
+	Logic record.RecordLogic
 }
 
 func NewRecordHandler(sqlHandler database.SqlHandler) *RecordHandler {
 	return &RecordHandler{
-		Logic: logic.RecordLogic{
+		Logic: record.RecordLogic{
 			Repository: &database.RecordRepository{
 				Handler: sqlHandler,
 			},
@@ -56,7 +56,7 @@ func (handler *RecordHandler) Post(w http.ResponseWriter, r *http.Request) {
 
 	handler.Logic.Repository.StartTransaction()
 
-	record := domain.Record{
+	record := model.Record{
 		PersonId:     personId,
 		MusicId:      musicId,
 		RecordEasy:   recordEasy,
@@ -94,7 +94,7 @@ func (handler *RecordHandler) Put(w http.ResponseWriter, r *http.Request) {
 
 	handler.Logic.Repository.StartTransaction()
 
-	record := domain.Record{
+	record := model.Record{
 		RecordEasy:   recordEasy,
 		RecordNormal: recordNormal,
 		RecordHard:   recordHard,

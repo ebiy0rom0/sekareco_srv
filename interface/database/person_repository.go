@@ -1,6 +1,6 @@
 package database
 
-import "sekareco_srv/domain"
+import "sekareco_srv/domain/model"
 
 type PersonRepository struct {
 	Handler SqlHandler
@@ -18,7 +18,7 @@ func (repository *PersonRepository) Rollback() error {
 	return repository.Handler.Rollback()
 }
 
-func (repository *PersonRepository) RegistPerson(p domain.Person) (personId int, err error) {
+func (repository *PersonRepository) RegistPerson(p model.Person) (personId int, err error) {
 	query := "INSERT INTO person (person_name, friend_code)"
 	query += " VALUES (?, ?);"
 
@@ -36,7 +36,7 @@ func (repository *PersonRepository) RegistPerson(p domain.Person) (personId int,
 	return
 }
 
-func (repository *PersonRepository) RegistLogin(l domain.Login) (err error) {
+func (repository *PersonRepository) RegistLogin(l model.Login) (err error) {
 	query := "INSERT INTO person_login (login_id, person_id, password_hash)"
 	query += " VALUES (?, ?, ?);"
 
@@ -44,7 +44,7 @@ func (repository *PersonRepository) RegistLogin(l domain.Login) (err error) {
 	return
 }
 
-func (repository *PersonRepository) GetPersonById(personId int) (user domain.Person, err error) {
+func (repository *PersonRepository) GetPersonById(personId int) (user model.Person, err error) {
 	query := "SELECT person_id, person_name, friend_code FROM person WHERE person_id = ?;"
 	row := repository.Handler.QueryRow(query, personId)
 
@@ -63,7 +63,7 @@ func (repository *PersonRepository) GetPersonById(personId int) (user domain.Per
 	return
 }
 
-func (repository *PersonRepository) GetLoginPerson(loginId string) (login domain.Login, err error) {
+func (repository *PersonRepository) GetLoginPerson(loginId string) (login model.Login, err error) {
 	query := "SELECT password_hash, person_id FROM person_login WHERE login_id = ?;"
 	row := repository.Handler.QueryRow(query, loginId)
 

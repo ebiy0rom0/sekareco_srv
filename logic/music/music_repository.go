@@ -1,7 +1,7 @@
-package logic
+package music
 
-import "sekareco_srv/domain"
+import "sekareco_srv/domain/model"
 
 type MusicRepository interface {
-	SelectAll() (domain.MusicList, error)
+	SelectAll() (model.MusicList, error)
 }
