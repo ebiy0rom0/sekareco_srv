@@ -1,9 +1,9 @@
-package logic
+package person
 
 import (
 	"database/sql"
 	"hash/fnv"
-	"sekareco_srv/domain"
+	"sekareco_srv/domain/model"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -12,17 +12,17 @@ type PersonLogic struct {
 	Repository PersonRepository
 }
 
-func (logic *PersonLogic) RegistPerson(p domain.Person) (personId int, err error) {
+func (logic *PersonLogic) RegistPerson(p model.Person) (personId int, err error) {
 	personId, err = logic.Repository.RegistPerson(p)
 	return
 }
 
-func (logic *PersonLogic) RegistLogin(l domain.Login) (err error) {
+func (logic *PersonLogic) RegistLogin(l model.Login) (err error) {
 	err = logic.Repository.RegistLogin(l)
 	return
 }
 
-func (logic *PersonLogic) GetPersonById(personId int) (person domain.Person, err error) {
+func (logic *PersonLogic) GetPersonById(personId int) (person model.Person, err error) {
 	person, err = logic.Repository.GetPersonById(personId)
 	return
 }

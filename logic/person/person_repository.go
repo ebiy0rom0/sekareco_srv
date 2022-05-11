@@ -1,13 +1,13 @@
-package logic
+package person
 
-import "sekareco_srv/domain"
+import "sekareco_srv/domain/model"
 
 type PersonRepository interface {
 	StartTransaction() error
 	Commit() error
 	Rollback() error
-	RegistPerson(domain.Person) (int, error)
-	RegistLogin(domain.Login) error
-	GetPersonById(int) (domain.Person, error)
-	GetLoginPerson(string) (domain.Login, error)
+	RegistPerson(model.Person) (int, error)
+	RegistLogin(model.Login) error
+	GetPersonById(int) (model.Person, error)
+	GetLoginPerson(string) (model.Login, error)
 }

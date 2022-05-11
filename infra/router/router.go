@@ -1,7 +1,8 @@
 package infra
 
 import (
-	infra "sekareco_srv/infra/sql"
+	"sekareco_srv/infra/sql"
+	"sekareco_srv/infra/web"
 	"sekareco_srv/interface/handler"
 
 	"github.com/gorilla/mux"
@@ -13,7 +14,7 @@ func Init() (err error) {
 	// create handler rooting
 	r := mux.NewRouter()
 
-	h, err := infra.NewSqlHandler()
+	h, err := sql.NewSqlHandler()
 	if err != nil {
 		return err
 	}
@@ -26,9 +27,9 @@ func Init() (err error) {
 	// r.HandleFunc("/auth/", auth.Get).Methods("GET")
 
 	// person api
-	r.HandleFunc("/person/{personId}/", personHandler.Get).Methods("GET")
-	r.HandleFunc("/person/", personHandler.Post).Methods("POST")
-	r.HandleFunc("/person/{personId}/", personHandler.Put).Methods("PUT")
+	r.HandleFunc("/person/{personId}/", web.HttpHandler(personHandler.Get).Exec).Methods("GET")
+	r.HandleFunc("/person/", web.HttpHandler(personHandler.Post).Exec).Methods("POST")
+	r.HandleFunc("/person/{personId}/", web.HttpHandler(personHandler.Put).Exec).Methods("PUT")
 
 	// music api
 	r.HandleFunc("/music/", musicHandler.Get).Methods("GET")

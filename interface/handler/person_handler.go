@@ -1,24 +1,23 @@
 package handler
 
 import (
-	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
-	"sekareco_srv/domain"
+	"sekareco_srv/domain/dto"
+	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/database"
-	logic "sekareco_srv/logic/person"
+	"sekareco_srv/logic/person"
 	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 type PersonHandler struct {
-	logic logic.PersonLogic
+	logic person.PersonLogic
 }
 
 func NewPersonHandler(sqlHandler database.SqlHandler) *PersonHandler {
 	return &PersonHandler{
-		logic: logic.PersonLogic{
+		logic: person.PersonLogic{
 			Repository: &database.PersonRepository{
 				Handler: sqlHandler,
 			},
@@ -26,10 +25,8 @@ func NewPersonHandler(sqlHandler database.SqlHandler) *PersonHandler {
 	}
 }
 
-func (handler *PersonHandler) Get(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	vars := mux.Vars(r)
+func (handler *PersonHandler) Get(c HttpContext) {
+	vars := c.Vars()
 	personId, _ := strconv.Atoi(vars["personId"])
 
 	person, err := handler.logic.GetPersonById(personId)
@@ -37,28 +34,30 @@ func (handler *PersonHandler) Get(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%s", err)
 	}
 
-	output, _ := json.Marshal(person)
-	w.Write(output)
+	c.Response(http.StatusOK, person)
 }
 
-func (handler *PersonHandler) Post(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+func (handler *PersonHandler) Post(c HttpContext) {
+	var p map[string]string
+	c.Decode(p)
+	fmt.Println(p)
+	vo, err := dto.NewRequestRegistPerson(p["login_id"], p["password"], p["person_name"])
+	if err != nil {
+		log.Printf("bad request: %s", err)
+	}
 
-	vars := mux.Vars(r)
-	loginId := vars["login_id"]
-
-	ok, err := handler.logic.CheckDuplicateLoginId(loginId)
+	ok, err := handler.logic.CheckDuplicateLoginId(vo.GetLoginId())
 	if err != nil {
 		log.Printf("%s", err)
 	} else if !ok {
-		log.Printf("duplicate login id: %s", loginId)
+		log.Printf("duplicate login id: %s", vo.GetLoginId())
 	}
 
 	handler.logic.Repository.StartTransaction()
 
-	code := handler.logic.GenerateFriendCode(loginId)
-	person := domain.Person{
-		PersonName: vars["person_name"],
+	code := handler.logic.GenerateFriendCode(vo.GetLoginId())
+	person := model.Person{
+		PersonName: vo.GetPersonName(),
 		FriendCode: code,
 	}
 	personId, err := handler.logic.RegistPerson(person)
@@ -69,17 +68,16 @@ func (handler *PersonHandler) Post(w http.ResponseWriter, r *http.Request) {
 	}
 	person.PersonId = personId
 
-	password := vars["password"]
-	hash, err := handler.logic.GeneratePasswordHash(password)
+	hash, err := handler.logic.GeneratePasswordHash(vo.GetPassword())
 	if err != nil {
 		log.Printf("password hash generate failed: %s", err)
 	}
-
-	login := domain.Login{
-		LoginId:      loginId,
+	login := model.Login{
+		LoginId:      vo.GetLoginId(),
 		PersonId:     personId,
 		PasswordHash: hash,
 	}
+
 	err = handler.logic.RegistLogin(login)
 	if err != nil {
 		log.Printf("login regist failed: %s", err)
@@ -89,21 +87,18 @@ func (handler *PersonHandler) Post(w http.ResponseWriter, r *http.Request) {
 
 	handler.logic.Repository.Commit()
 
-	output, _ := json.Marshal(person)
-	w.Write(output)
+	c.Response(http.StatusCreated, person)
 }
 
 // TODO: Implement
-func (handler *PersonHandler) Put(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+func (handler *PersonHandler) Put(c HttpContext) {
 
-	vars := mux.Vars(r)
+	vars := c.Vars()
 
 	// @debug
 	vars["uri"] = "person"
 	vars["methods"] = "put"
-	output, _ := json.Marshal(vars)
+	// output, _ := json.Marshal(vars)
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(output)
+	c.Response(http.StatusOK, vars)
 }
