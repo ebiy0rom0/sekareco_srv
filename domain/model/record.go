@@ -1,4 +1,4 @@
-package domain
+package model
 
 type Record struct {
 	RecordId     int `json:"record_id"`

@@ -1,4 +1,4 @@
-package domain
+package model
 
 type Music struct {
 	MusicId     int    `json:"music_id"`
