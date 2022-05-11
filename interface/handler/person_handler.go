@@ -39,7 +39,7 @@ func (handler *PersonHandler) Get(c HttpContext) {
 
 func (handler *PersonHandler) Post(c HttpContext) {
 	var p map[string]string
-	c.Decode(p)
+	c.Decode(&p)
 	fmt.Println(p)
 	vo, err := dto.NewRequestRegistPerson(p["login_id"], p["password"], p["person_name"])
 	if err != nil {
