@@ -3,18 +3,33 @@ package main
 import (
 	"log"
 	"net/http"
-	"sekareco_srv/db"
-	"sekareco_srv/handler"
 	"time"
+
+	"sekareco_srv/infra/router"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	// db (sqlite3) setup
-	db.Init()
+	// TODO: meke infra logger?
+	// logger setup
+	log.SetFlags(log.Lshortfile)
 
-	// api server setup
+	// load env
+	err := godotenv.Load("./../config/.env")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// router setup
+	err = router.InitRouter()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// server setup
 	srv := &http.Server{
-		Handler:      handler.Init(),
+		Handler:      router.Router,
 		Addr:         "0.0.0.0:8080",
 		WriteTimeout: 5 * time.Second,
 		ReadTimeout:  5 * time.Second,
