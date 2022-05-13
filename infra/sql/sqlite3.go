@@ -27,3 +27,8 @@ func CreateDB() error {
 
 	return nil
 }
+
+// for debug
+func DropDB() error {
+	return os.Remove(DATABASE_SCHEMA_NAME)
+}
