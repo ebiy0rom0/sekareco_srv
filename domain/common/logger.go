@@ -1,5 +1,7 @@
 package common
 
 type Logger interface {
-	Logging(int, string)
+	Error(error)
+	Warn(error)
+	Info(error)
 }

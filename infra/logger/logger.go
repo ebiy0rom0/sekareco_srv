@@ -3,75 +3,68 @@ package logger
 import (
 	"fmt"
 	"os"
+	"sekareco_srv/domain/common"
 )
 
+// log level
 const (
 	LOG_LEVEL_ERROR = iota
 	LOG_LEVEL_WARN
 	LOG_LEVEL_INFO
 )
 
-var errorLogFile *os.File
-var warnLogFile *os.File
-var infoLogFile *os.File
+// logger instance
+var Logger common.Logger
+
+type LogManager struct {
+	e *os.File
+	w *os.File
+	i *os.File
+}
 
 func InitLogger() {
+	m := new(LogManager)
 	fp, err := os.OpenFile(errorLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	errorLogFile = fp
+	m.e = fp
 
 	fp, err = os.OpenFile(warnLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	warnLogFile = fp
+	m.w = fp
 
 	fp, err = os.OpenFile(infoLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	infoLogFile = fp
-}
+	m.i = fp
 
-func CleanupLogger() error {
-	errorLogFile.Close()
-	warnLogFile.Close()
-	infoLogFile.Close()
-
-	return dropLogFile()
+	Logger = m
 }
 
 // for debug
-func dropLogFile() error {
-	return os.RemoveAll(os.Getenv("LOG_PATH"))
+func DropLogFile() {
+	os.Remove(errorLogFilePath())
+	os.Remove(warnLogFilePath())
+	os.Remove(infoLogFilePath())
 }
 
-func Logging(level int, msg string) {
-	switch level {
-	case LOG_LEVEL_ERROR:
-		loggingError(msg)
-	case LOG_LEVEL_WARN:
-		loggingWarn(msg)
-	case LOG_LEVEL_INFO:
-		loggingInfo(msg)
-	}
+func (l *LogManager) Error(err error) {
+	l.e.WriteString(err.Error())
 }
 
-func loggingError(msg string) {
-	fmt.Fprintln(errorLogFile, msg)
+func (l *LogManager) Warn(err error) {
+	l.w.WriteString(err.Error())
 }
 
-func loggingWarn(msg string) {
-	fmt.Fprintln(warnLogFile, msg)
-}
-
-func loggingInfo(msg string) {
-	fmt.Fprintln(infoLogFile, msg)
+func (l *LogManager) Info(err error) {
+	l.i.WriteString(err.Error())
 }
 
 func errorLogFilePath() string {

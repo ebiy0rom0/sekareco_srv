@@ -20,11 +20,7 @@ func main() {
 
 	// logger setup
 	logger.InitLogger()
-	defer func() {
-		if err := logger.CleanupLogger(); err != nil {
-			fmt.Println(err)
-		}
-	}()
+	defer logger.DropLogFile()
 
 	// router setup
 	if err := router.InitRouter(); err != nil {
