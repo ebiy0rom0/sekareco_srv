@@ -32,12 +32,12 @@ func InitRouter() (err error) {
 	r.HandleFunc("/person/{personId}/", web.HttpHandler(personHandler.Put).Exec).Methods("PUT")
 
 	// music api
-	r.HandleFunc("/music/", musicHandler.Get).Methods("GET")
+	r.HandleFunc("/music/", web.HttpHandler(musicHandler.Get).Exec).Methods("GET")
 
 	// record api
-	r.HandleFunc("/record/{personId}/", recordHandler.Get).Methods("GET")
-	r.HandleFunc("/record/{personId}/", recordHandler.Post).Methods("POST")
-	r.HandleFunc("/record/{personId}/{musicId}/", recordHandler.Put).Methods("PUT")
+	r.HandleFunc("/record/{personId}/", web.HttpHandler(recordHandler.Get).Exec).Methods("GET")
+	r.HandleFunc("/record/{personId}/", web.HttpHandler(recordHandler.Post).Exec).Methods("POST")
+	r.HandleFunc("/record/{personId}/{musicId}/", web.HttpHandler(recordHandler.Put).Exec).Methods("PUT")
 
 	Router = r
 	return

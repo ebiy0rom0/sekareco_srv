@@ -2,14 +2,11 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/database"
 	"sekareco_srv/logic/record"
 	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 type RecordHandler struct {
@@ -26,33 +23,36 @@ func NewRecordHandler(sqlHandler database.SqlHandler) *RecordHandler {
 	}
 }
 
-func (handler *RecordHandler) Get(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	vars := mux.Vars(r)
+func (handler *RecordHandler) Get(ctx HttpContext) {
+	vars := ctx.Vars()
 	personId, _ := strconv.Atoi(vars["personId"])
 
 	recordList, err := handler.Logic.GetPersonRecordList(personId)
 	if err != nil {
-		log.Printf("record list get failed: %s", err)
+		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("指定パーソンのレコード情報が取得できません。"))
+		return
 	}
 
 	output, _ := json.Marshal(recordList)
-	w.WriteHeader(http.StatusOK)
-	w.Write(output)
+	ctx.Response(http.StatusOK, output)
 }
 
-func (handler *RecordHandler) Post(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+func (handler *RecordHandler) Post(ctx HttpContext) {
+	vars := ctx.Vars()
+	var req map[string]string
+	if err := ctx.Decode(&req); err != nil {
+		ctx.Response(http.StatusBadRequest, ctx.MakeError("リクエストパラメータの取得に失敗しました。"))
+		return
+	}
 
-	vars := mux.Vars(r)
+	// TODO: convert value object
 	personId, _ := strconv.Atoi(vars["personId"])
-	musicId, _ := strconv.Atoi(vars["music_id"])
-	recordEasy, _ := strconv.Atoi(vars["record_easy"])
-	recordNormal, _ := strconv.Atoi(vars["record_normal"])
-	recordHard, _ := strconv.Atoi(vars["record_hard"])
-	recordExpert, _ := strconv.Atoi(vars["record_expert"])
-	recordMaster, _ := strconv.Atoi(vars["record_master"])
+	musicId, _ := strconv.Atoi(req["music_id"])
+	recordEasy, _ := strconv.Atoi(req["record_easy"])
+	recordNormal, _ := strconv.Atoi(req["record_normal"])
+	recordHard, _ := strconv.Atoi(req["record_hard"])
+	recordExpert, _ := strconv.Atoi(req["record_expert"])
+	recordMaster, _ := strconv.Atoi(req["record_master"])
 
 	handler.Logic.Repository.StartTransaction()
 
@@ -67,7 +67,7 @@ func (handler *RecordHandler) Post(w http.ResponseWriter, r *http.Request) {
 	}
 	recordId, err := handler.Logic.RegistRecord(record)
 	if err != nil {
-		log.Printf("record regist failed: %s", err)
+		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("レコード情報の登録に失敗しました。"))
 		handler.Logic.Repository.Rollback()
 		return
 	}
@@ -76,21 +76,25 @@ func (handler *RecordHandler) Post(w http.ResponseWriter, r *http.Request) {
 	handler.Logic.Repository.Commit()
 
 	output, _ := json.Marshal(record)
-	w.WriteHeader(http.StatusCreated)
-	w.Write(output)
+	ctx.Response(http.StatusCreated, output)
 }
 
-func (handler *RecordHandler) Put(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+func (handler *RecordHandler) Put(ctx HttpContext) {
+	vars := ctx.Vars()
+	var req map[string]string
+	if err := ctx.Decode(&req); err != nil {
+		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("レコード情報の登録に失敗しました。"))
+		return
+	}
 
-	vars := mux.Vars(r)
+	// TODO: convert value object
 	personId, _ := strconv.Atoi(vars["personId"])
 	musicId, _ := strconv.Atoi(vars["musicId"])
-	recordEasy, _ := strconv.Atoi(vars["record_easy"])
-	recordNormal, _ := strconv.Atoi(vars["record_normal"])
-	recordHard, _ := strconv.Atoi(vars["record_hard"])
-	recordExpert, _ := strconv.Atoi(vars["record_expert"])
-	recordMaster, _ := strconv.Atoi(vars["record_master"])
+	recordEasy, _ := strconv.Atoi(req["record_easy"])
+	recordNormal, _ := strconv.Atoi(req["record_normal"])
+	recordHard, _ := strconv.Atoi(req["record_hard"])
+	recordExpert, _ := strconv.Atoi(req["record_expert"])
+	recordMaster, _ := strconv.Atoi(req["record_master"])
 
 	handler.Logic.Repository.StartTransaction()
 
@@ -101,15 +105,13 @@ func (handler *RecordHandler) Put(w http.ResponseWriter, r *http.Request) {
 		RecordExpert: recordExpert,
 		RecordMaster: recordMaster,
 	}
-	err := handler.Logic.ModifyRecord(personId, musicId, record)
-	if err != nil {
-		log.Printf("modify record failed: %s", err)
+	if err := handler.Logic.ModifyRecord(personId, musicId, record); err != nil {
+		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("レコード情報の更新に失敗しました。"))
 		handler.Logic.Repository.Rollback()
 		return
 	}
 
 	handler.Logic.Repository.Commit()
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(nil)
+	ctx.Response(http.StatusOK, nil)
 }
