@@ -7,7 +7,7 @@ import (
 	"time"
 
 	loader "sekareco_srv/infra/config"
-	logger "sekareco_srv/infra/log"
+	"sekareco_srv/infra/logger"
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
 )
