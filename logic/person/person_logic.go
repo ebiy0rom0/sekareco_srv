@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"hash/fnv"
 	"sekareco_srv/domain/model"
+	"sekareco_srv/infra/logger"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -13,42 +14,56 @@ type PersonLogic struct {
 }
 
 func (logic *PersonLogic) RegistPerson(p model.Person) (personId int, err error) {
-	personId, err = logic.Repository.RegistPerson(p)
+	if personId, err = logic.Repository.RegistPerson(p); err != nil {
+		logger.Logger.Error(err)
+	}
 	return
 }
 
 func (logic *PersonLogic) RegistLogin(l model.Login) (err error) {
-	err = logic.Repository.RegistLogin(l)
+	if err = logic.Repository.RegistLogin(l); err != nil {
+		logger.Logger.Error(err)
+	}
 	return
 }
 
 func (logic *PersonLogic) GetPersonById(personId int) (person model.Person, err error) {
-	person, err = logic.Repository.GetPersonById(personId)
+	if person, err = logic.Repository.GetPersonById(personId); err != nil {
+		logger.Logger.Error(err)
+	}
 	return
 }
 
-func (logic *PersonLogic) CheckDuplicateLoginId(loginId string) (bool, error) {
-	var ok bool
+func (logic *PersonLogic) CheckDuplicateLoginId(loginId string) (ok bool, err error) {
 	person, err := logic.Repository.GetLoginPerson(loginId)
-	if err != nil && err != sql.ErrNoRows {
-		return ok, err
+	if err != sql.ErrNoRows {
+		logger.Logger.Warn(err)
+		return
+	} else if err != nil {
+		logger.Logger.Error(err)
+		return
 	}
 
 	ok = person.PersonId == 0
-	return ok, nil
-}
-
-func (logic *PersonLogic) GenerateFriendCode(loginId string) (code int) {
-	// Failed generate is not problem now.
-	// This parameter usage in future content.
-	code, _ = fnv.New32().Write([]byte(loginId))
 	return
 }
 
-func (logic *PersonLogic) GeneratePasswordHash(password string) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
-	if err != nil {
-		return "", err
+func (logic *PersonLogic) GenerateFriendCode(loginId string) (code int, err error) {
+	// Failed generate is not problem now.
+	// This parameter usage in future content.
+	if code, err = fnv.New32().Write([]byte(loginId)); err != nil {
+		logger.Logger.Warn(err)
 	}
-	return string(hash), nil
+	return
+}
+
+func (logic *PersonLogic) GeneratePasswordHash(password string) (hash string, err error) {
+	bhash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	if err != nil {
+		logger.Logger.Error(err)
+		return
+	}
+
+	hash = string(bhash)
+	return
 }
