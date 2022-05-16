@@ -10,6 +10,8 @@ import (
 	"sekareco_srv/infra/logger"
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
+
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -27,10 +29,24 @@ func main() {
 		fmt.Println(err)
 	}
 
+	// cors setup
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{
+			"http://localhost:8080",
+		},
+		AllowedHeaders: []string{
+			"Content-Type",
+		},
+		AllowedMethods: []string{
+			"HEAD", "GET", "POST", "PUT", "OPTIONS",
+		},
+		AllowCredentials: true,
+	})
+
 	// server setup
 	srv := &http.Server{
-		Handler:      router.Router,
-		Addr:         "0.0.0.0:8080",
+		Handler:      c.Handler(router.Router),
+		Addr:         "0.0.0.0:8000",
 		WriteTimeout: 5 * time.Second,
 		ReadTimeout:  5 * time.Second,
 	}
