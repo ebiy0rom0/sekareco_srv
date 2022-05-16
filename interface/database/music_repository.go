@@ -1,6 +1,9 @@
 package database
 
-import "sekareco_srv/domain/model"
+import (
+	"database/sql"
+	"sekareco_srv/domain/model"
+)
 
 type MusicRepository struct {
 	Handler SqlHandler
@@ -11,7 +14,7 @@ func (repository *MusicRepository) SelectAll() (musicList model.MusicList, err e
 	if err != nil {
 		return
 	}
-	rows.Close()
+	defer rows.Close()
 
 	for rows.Next() {
 		var music model.Music
@@ -21,6 +24,10 @@ func (repository *MusicRepository) SelectAll() (musicList model.MusicList, err e
 		}
 
 		musicList = append(musicList, music)
+	}
+
+	if len(musicList) == 0 {
+		err = sql.ErrNoRows
 	}
 	return
 }

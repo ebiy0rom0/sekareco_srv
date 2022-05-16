@@ -1,6 +1,9 @@
 package database
 
-import "sekareco_srv/domain/model"
+import (
+	"database/sql"
+	"sekareco_srv/domain/model"
+)
 
 type RecordRepository struct {
 	Handler SqlHandler
@@ -57,6 +60,10 @@ func (repository *RecordRepository) GetPersonRecordList(personId int) (recordLis
 		}
 
 		recordList = append(recordList, record)
+	}
+
+	if len(recordList) == 0 {
+		err = sql.ErrNoRows
 	}
 
 	return
