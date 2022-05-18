@@ -56,15 +56,15 @@ func DropLogFile() {
 }
 
 func (l *LogManager) Error(err error) {
-	l.e.WriteString(err.Error())
+	l.e.WriteString(err.Error() + "\n")
 }
 
 func (l *LogManager) Warn(err error) {
-	l.w.WriteString(err.Error())
+	l.w.WriteString(err.Error() + "\n")
 }
 
 func (l *LogManager) Info(err error) {
-	l.i.WriteString(err.Error())
+	l.i.WriteString(err.Error() + "\n")
 }
 
 func errorLogFilePath() string {
