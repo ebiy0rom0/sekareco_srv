@@ -1,7 +1,6 @@
 package database
 
 import (
-	"database/sql"
 	"sekareco_srv/domain/model"
 )
 
@@ -60,10 +59,6 @@ func (repository *RecordRepository) GetPersonRecordList(personId int) (recordLis
 		}
 
 		recordList = append(recordList, record)
-	}
-
-	if len(recordList) == 0 {
-		err = sql.ErrNoRows
 	}
 
 	return
