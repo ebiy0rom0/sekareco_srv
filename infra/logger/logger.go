@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"sekareco_srv/domain/common"
+	"sekareco_srv/infra/timer"
 )
 
 // log level
@@ -56,15 +57,19 @@ func DropLogFile() {
 }
 
 func (l *LogManager) Error(err error) {
-	l.e.WriteString(err.Error() + "\n")
+	l.e.WriteString(logFormat(err))
 }
 
 func (l *LogManager) Warn(err error) {
-	l.w.WriteString(err.Error() + "\n")
+	l.w.WriteString(logFormat(err))
 }
 
 func (l *LogManager) Info(err error) {
-	l.i.WriteString(err.Error() + "\n")
+	l.i.WriteString(logFormat(err))
+}
+
+func logFormat(err error) string {
+	return fmt.Sprintf("[%s]%s\n", timer.Timer.NowDatetime(), err.Error())
 }
 
 func errorLogFilePath() string {

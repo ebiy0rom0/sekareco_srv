@@ -10,6 +10,7 @@ import (
 	"sekareco_srv/infra/logger"
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
+	"sekareco_srv/infra/timer"
 
 	"github.com/rs/cors"
 )
@@ -19,6 +20,9 @@ func main() {
 	if err := loader.LoadEnv(".env.development"); err != nil {
 		fmt.Println(err)
 	}
+
+	// timer setup
+	timer.InitTimer()
 
 	// logger setup
 	logger.InitLogger()
