@@ -3,6 +3,8 @@ package database
 import (
 	"database/sql"
 	"sekareco_srv/domain/model"
+
+	"github.com/pkg/errors"
 )
 
 type MusicRepository struct {
@@ -12,6 +14,7 @@ type MusicRepository struct {
 func (repository *MusicRepository) SelectAll() (musicList model.MusicList, err error) {
 	rows, err := repository.Handler.Query("SELECT music_id, artist_id, music_name, jacket_url, level_easy, level_normal, level_hard, level_expert, level_master FROM master_music")
 	if err != nil {
+		err = errors.Wrap(err, "failed")
 		return
 	}
 	defer rows.Close()
@@ -20,6 +23,7 @@ func (repository *MusicRepository) SelectAll() (musicList model.MusicList, err e
 		var music model.Music
 		err = rows.Scan(&music.MusicId, &music.MusicName, &music.MusicName, &music.JacketUrl, &music.LevelEasy, &music.LevelNormal, &music.LevelHard, &music.LevelExpert, &music.LevelMaster)
 		if err != nil {
+			err = errors.Wrap(err, "failed")
 			return
 		}
 
@@ -27,7 +31,7 @@ func (repository *MusicRepository) SelectAll() (musicList model.MusicList, err e
 	}
 
 	if len(musicList) == 0 {
-		err = sql.ErrNoRows
+		err = errors.Wrap(sql.ErrNoRows, "failed")
 	}
 	return
 }

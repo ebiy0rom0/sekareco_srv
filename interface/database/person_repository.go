@@ -1,6 +1,10 @@
 package database
 
-import "sekareco_srv/domain/model"
+import (
+	"sekareco_srv/domain/model"
+
+	"github.com/pkg/errors"
+)
 
 type PersonRepository struct {
 	Handler SqlHandler
@@ -24,6 +28,7 @@ func (repository *PersonRepository) RegistPerson(p model.Person) (personId int, 
 
 	result, err := repository.Handler.Execute(query, p.PersonName, p.FriendCode)
 	if err != nil {
+		err = errors.Wrap(err, "failed")
 		return
 	}
 
