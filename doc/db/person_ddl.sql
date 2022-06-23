@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS person (
     person_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     person_name TEXT NOT NULL,
     friend_code INTEGER NOT NULL,
-    inserted_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
+    created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
     updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );
 CREATE INDEX idx_person_1 ON person (
@@ -15,6 +15,6 @@ CREATE TABLE IF NOT EXISTS person_login (
     login_id TEXT NOT NULL PRIMARY KEY,
     person_id INTEGER NOT NULL,
     password_hash TEXT NOT NULL,
-    inserted_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
+    created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
     updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );

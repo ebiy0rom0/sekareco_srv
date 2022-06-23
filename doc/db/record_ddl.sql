@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS record (
     record_hard INTEGER,
     record_expert INTEGER,
     record_master INTEGER,
-    inserted_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
+    created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
     updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );
 CREATE UNIQUE INDEX unq_record_1 ON record (
