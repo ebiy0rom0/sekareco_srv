@@ -1,24 +1,27 @@
 package timer
 
 import (
-	"sekareco_srv/domain/common"
+	"sekareco_srv/domain/infra"
 	"time"
 )
 
-var Timer common.Timer
+var Timer infra.Timer
 
 type TimeManager struct {
+	timer *time.Location
 }
 
 func InitTimer() {
-	Timer = new(TimeManager)
+	jst, _ := time.LoadLocation("Asia/Tokyo")
+	Timer = &TimeManager{
+		timer: jst,
+	}
 }
 
-func (_ *TimeManager) NowDatetime() string {
-	return time.Now().Format("2006-01-02 15:04:05")
+func (t *TimeManager) NowDatetime() string {
+	return time.Now().In(t.timer).Format("2006-01-02 15:04:05")
 }
 
-func (_ *TimeManager) NowTimestamp() time.Time {
-	t := time.Now()
-	return time.Unix(t.Unix(), 0)
+func (t *TimeManager) NowTimestamp() int64 {
+	return time.Now().In(t.timer).Unix()
 }

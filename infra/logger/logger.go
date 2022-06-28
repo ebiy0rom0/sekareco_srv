@@ -3,7 +3,7 @@ package logger
 import (
 	"fmt"
 	"os"
-	"sekareco_srv/domain/common"
+	"sekareco_srv/domain/infra"
 	"sekareco_srv/infra/timer"
 )
 
@@ -15,7 +15,7 @@ const (
 )
 
 // logger instance
-var Logger common.Logger
+var Logger infra.Logger
 
 type LogManager struct {
 	e *os.File

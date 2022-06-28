@@ -1,4 +1,4 @@
-package common
+package infra
 
 type Logger interface {
 	Error(error)
