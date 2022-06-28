@@ -35,6 +35,9 @@ func main() {
 	// middleware setup
 	router.Router.Use(middleware.LoggingAccessLog)
 
+	middleware.InitAuth()
+	router.Router.Use(middleware.Auth.CheckAuth)
+
 	// cors setup
 	c := middleware.InitCors()
 
