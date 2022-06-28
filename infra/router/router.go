@@ -19,12 +19,14 @@ func InitRouter() (err error) {
 		return err
 	}
 
+	authHandler := handler.NewAuthHandler(h)
 	musicHandler := handler.NewMusicHandler(h)
 	personHandler := handler.NewPersonHandler(h)
 	recordHandler := handler.NewRecordHandler(h)
 
 	// auth api
-	// r.HandleFunc("/auth/", auth.Get).Methods("GET")
+	r.HandleFunc("/auth/signIn/", web.HttpHandler(authHandler.Post).Exec).Methods("POST")
+	r.HandleFunc("/auth/signOut/", web.HttpHandler(authHandler.Delete).Exec).Methods("DELETE")
 
 	// person api
 	r.HandleFunc("/person/{personId}/", web.HttpHandler(personHandler.Get).Exec).Methods("GET")
