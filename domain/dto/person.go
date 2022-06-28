@@ -2,23 +2,23 @@ package dto
 
 // POST /person/ request
 type RequestRegistPerson struct {
-	loginId    string
+	loginID    string
 	password   string
 	personName string
 }
 
-func NewRequestRegistPerson(loginId string, password string, personName string) (*RequestRegistPerson, error) {
+func NewRequestRegistPerson(loginID string, password string, personName string) (*RequestRegistPerson, error) {
 	// TODO: parameter validation
 
 	return &RequestRegistPerson{
-		loginId:    loginId,
+		loginID:    loginID,
 		password:   password,
 		personName: personName,
 	}, nil
 }
 
-func (vo *RequestRegistPerson) GetLoginId() string {
-	return vo.loginId
+func (vo *RequestRegistPerson) GetLoginID() string {
+	return vo.loginID
 }
 
 func (vo *RequestRegistPerson) GetPassword() string {

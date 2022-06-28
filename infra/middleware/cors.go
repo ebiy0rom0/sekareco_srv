@@ -15,7 +15,12 @@ func InitCors() *cors.Cors {
 			"Content-Type",
 		},
 		AllowedMethods: []string{
-			http.MethodHead, http.MethodGet, http.MethodPost, http.MethodPut, http.MethodOptions,
+			http.MethodHead,
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodPut,
+			http.MethodDelete,
+			http.MethodOptions,
 		},
 		AllowCredentials: true,
 	})

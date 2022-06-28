@@ -14,8 +14,8 @@ type PersonLogic struct {
 	Repository PersonRepository
 }
 
-func (logic *PersonLogic) RegistPerson(p model.Person) (personId int, err error) {
-	if personId, err = logic.Repository.RegistPerson(p); err != nil {
+func (logic *PersonLogic) RegistPerson(p model.Person) (personID int, err error) {
+	if personID, err = logic.Repository.RegistPerson(p); err != nil {
 		logger.Logger.Error(errors.Wrapf(err, "failed to regist person: %#v", p))
 	}
 	return
@@ -28,30 +28,30 @@ func (logic *PersonLogic) RegistLogin(l model.Login) (err error) {
 	return
 }
 
-func (logic *PersonLogic) GetPersonById(personId int) (person model.Person, err error) {
-	if person, err = logic.Repository.GetPersonById(personId); err != nil {
-		logger.Logger.Error(errors.Wrapf(err, "failed to select person: person_id=%d", personId))
+func (logic *PersonLogic) GetPersonByID(personID int) (person model.Person, err error) {
+	if person, err = logic.Repository.GetPersonByID(personID); err != nil {
+		logger.Logger.Error(errors.Wrapf(err, "failed to select person: person_id=%d", personID))
 	}
 	return
 }
 
-func (logic *PersonLogic) CheckDuplicateLoginId(loginId string) (bool, error) {
-	_, err := logic.Repository.GetLoginPerson(loginId)
+func (logic *PersonLogic) CheckDuplicateLoginID(loginID string) (bool, error) {
+	_, err := logic.Repository.GetLoginPerson(loginID)
 	if err == sql.ErrNoRows {
 		return true, nil
 	} else if err != nil {
-		logger.Logger.Error(errors.Wrapf(err, "failed to select login: login_id=%s", loginId))
+		logger.Logger.Error(errors.Wrapf(err, "failed to select login: login_id=%s", loginID))
 		return false, err
 	}
 
 	return false, nil
 }
 
-func (logic *PersonLogic) GenerateFriendCode(loginId string) (code int, err error) {
+func (logic *PersonLogic) GenerateFriendCode(loginID string) (code int, err error) {
 	// Failed generate is not problem now.
 	// This parameter usage in future content.
-	if code, err = fnv.New32().Write([]byte(loginId)); err != nil {
-		logger.Logger.Warn(errors.Wrapf(err, "failed to generate friend code: login_id=%s", loginId))
+	if code, err = fnv.New32().Write([]byte(loginID)); err != nil {
+		logger.Logger.Warn(errors.Wrapf(err, "failed to generate friend code: login_id=%s", loginID))
 	}
 	return
 }

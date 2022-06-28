@@ -25,9 +25,9 @@ func NewRecordHandler(sqlHandler database.SqlHandler) *RecordHandler {
 
 func (handler *RecordHandler) Get(ctx HttpContext) {
 	vars := ctx.Vars()
-	personId, _ := strconv.Atoi(vars["personId"])
+	personID, _ := strconv.Atoi(vars["personID"])
 
-	recordList, err := handler.Logic.GetPersonRecordList(personId)
+	recordList, err := handler.Logic.GetPersonRecordList(personID)
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("指定パーソンのレコード情報が取得できません。"))
 		return
@@ -46,8 +46,8 @@ func (handler *RecordHandler) Post(ctx HttpContext) {
 	}
 
 	// TODO: convert value object
-	personId, _ := strconv.Atoi(vars["personId"])
-	musicId, _ := strconv.Atoi(req["music_id"])
+	personID, _ := strconv.Atoi(vars["personID"])
+	musicID, _ := strconv.Atoi(req["music_id"])
 	recordEasy, _ := strconv.Atoi(req["record_easy"])
 	recordNormal, _ := strconv.Atoi(req["record_normal"])
 	recordHard, _ := strconv.Atoi(req["record_hard"])
@@ -57,21 +57,21 @@ func (handler *RecordHandler) Post(ctx HttpContext) {
 	handler.Logic.Repository.StartTransaction()
 
 	record := model.Record{
-		PersonId:     personId,
-		MusicId:      musicId,
+		PersonID:     personID,
+		MusicID:      musicID,
 		RecordEasy:   recordEasy,
 		RecordNormal: recordNormal,
 		RecordHard:   recordHard,
 		RecordExpert: recordExpert,
 		RecordMaster: recordMaster,
 	}
-	recordId, err := handler.Logic.RegistRecord(record)
+	recordID, err := handler.Logic.RegistRecord(record)
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("レコード情報の登録に失敗しました。"))
 		handler.Logic.Repository.Rollback()
 		return
 	}
-	record.RecordId = recordId
+	record.RecordID = recordID
 
 	handler.Logic.Repository.Commit()
 
@@ -88,8 +88,8 @@ func (handler *RecordHandler) Put(ctx HttpContext) {
 	}
 
 	// TODO: convert value object
-	personId, _ := strconv.Atoi(vars["personId"])
-	musicId, _ := strconv.Atoi(vars["musicId"])
+	personID, _ := strconv.Atoi(vars["personID"])
+	musicID, _ := strconv.Atoi(vars["musicID"])
 	recordEasy, _ := strconv.Atoi(req["record_easy"])
 	recordNormal, _ := strconv.Atoi(req["record_normal"])
 	recordHard, _ := strconv.Atoi(req["record_hard"])
@@ -105,7 +105,7 @@ func (handler *RecordHandler) Put(ctx HttpContext) {
 		RecordExpert: recordExpert,
 		RecordMaster: recordMaster,
 	}
-	if err := handler.Logic.ModifyRecord(personId, musicId, record); err != nil {
+	if err := handler.Logic.ModifyRecord(personID, musicID, record); err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("レコード情報の更新に失敗しました。"))
 		handler.Logic.Repository.Rollback()
 		return

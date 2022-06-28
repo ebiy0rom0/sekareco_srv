@@ -1,9 +1,9 @@
 package model
 
 type Record struct {
-	RecordId     int `json:"record_id"`
-	PersonId     int `json:"person_id"`
-	MusicId      int `json:"music_id"`
+	RecordID     int `json:"record_id"`
+	PersonID     int `json:"person_id"`
+	MusicID      int `json:"music_id"`
 	RecordEasy   int `json:"record_easy"`
 	RecordNormal int `json:"record_normal"`
 	RecordHard   int `json:"record_hard"`

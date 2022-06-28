@@ -29,17 +29,17 @@ func InitRouter() (err error) {
 	r.HandleFunc("/auth/signOut/", web.HttpHandler(authHandler.Delete).Exec).Methods("DELETE")
 
 	// person api
-	r.HandleFunc("/person/{personId}/", web.HttpHandler(personHandler.Get).Exec).Methods("GET")
+	r.HandleFunc("/person/{personID}/", web.HttpHandler(personHandler.Get).Exec).Methods("GET")
 	r.HandleFunc("/person/", web.HttpHandler(personHandler.Post).Exec).Methods("POST")
-	r.HandleFunc("/person/{personId}/", web.HttpHandler(personHandler.Put).Exec).Methods("PUT")
+	r.HandleFunc("/person/{personID}/", web.HttpHandler(personHandler.Put).Exec).Methods("PUT")
 
 	// music api
 	r.HandleFunc("/music/", web.HttpHandler(musicHandler.Get).Exec).Methods("GET")
 
 	// record api
-	r.HandleFunc("/record/{personId}/", web.HttpHandler(recordHandler.Get).Exec).Methods("GET")
-	r.HandleFunc("/record/{personId}/", web.HttpHandler(recordHandler.Post).Exec).Methods("POST")
-	r.HandleFunc("/record/{personId}/{musicId}/", web.HttpHandler(recordHandler.Put).Exec).Methods("PUT")
+	r.HandleFunc("/record/{personID}/", web.HttpHandler(recordHandler.Get).Exec).Methods("GET")
+	r.HandleFunc("/record/{personID}/", web.HttpHandler(recordHandler.Post).Exec).Methods("POST")
+	r.HandleFunc("/record/{personID}/{musicID}/", web.HttpHandler(recordHandler.Put).Exec).Methods("PUT")
 
 	Router = r
 	return

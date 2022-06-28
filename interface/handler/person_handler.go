@@ -25,9 +25,9 @@ func NewPersonHandler(sqlHandler database.SqlHandler) *PersonHandler {
 
 func (handler *PersonHandler) Get(ctx HttpContext) {
 	vars := ctx.Vars()
-	personId, _ := strconv.Atoi(vars["personId"])
+	personID, _ := strconv.Atoi(vars["personID"])
 
-	person, err := handler.logic.GetPersonById(personId)
+	person, err := handler.logic.GetPersonByID(personID)
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("パーソン情報が取得できません。"))
 		return
@@ -49,7 +49,7 @@ func (handler *PersonHandler) Post(ctx HttpContext) {
 		return
 	}
 
-	ok, err := handler.logic.CheckDuplicateLoginId(vo.GetLoginId())
+	ok, err := handler.logic.CheckDuplicateLoginID(vo.GetLoginID())
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("重複チェックの検証に失敗しました。"))
 		return
@@ -60,18 +60,18 @@ func (handler *PersonHandler) Post(ctx HttpContext) {
 
 	handler.logic.Repository.StartTransaction()
 
-	code, _ := handler.logic.GenerateFriendCode(vo.GetLoginId())
+	code, _ := handler.logic.GenerateFriendCode(vo.GetLoginID())
 	person := model.Person{
 		PersonName: vo.GetPersonName(),
 		FriendCode: code,
 	}
-	personId, err := handler.logic.RegistPerson(person)
+	personID, err := handler.logic.RegistPerson(person)
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("パーソン情報の登録に失敗しました。"))
 		handler.logic.Repository.Rollback()
 		return
 	}
-	person.PersonId = personId
+	person.PersonID = personID
 
 	hash, err := handler.logic.GeneratePasswordHash(vo.GetPassword())
 	if err != nil {
@@ -79,8 +79,8 @@ func (handler *PersonHandler) Post(ctx HttpContext) {
 		return
 	}
 	login := model.Login{
-		LoginId:      vo.GetLoginId(),
-		PersonId:     personId,
+		LoginID:      vo.GetLoginID(),
+		PersonID:     personID,
 		PasswordHash: hash,
 	}
 
