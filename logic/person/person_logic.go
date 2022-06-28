@@ -35,18 +35,16 @@ func (logic *PersonLogic) GetPersonById(personId int) (person model.Person, err 
 	return
 }
 
-func (logic *PersonLogic) CheckDuplicateLoginId(loginId string) (ok bool, err error) {
-	person, err := logic.Repository.GetLoginPerson(loginId)
+func (logic *PersonLogic) CheckDuplicateLoginId(loginId string) (bool, error) {
+	_, err := logic.Repository.GetLoginPerson(loginId)
 	if err == sql.ErrNoRows {
-		ok = true
-		return
+		return true, nil
 	} else if err != nil {
 		logger.Logger.Error(errors.Wrapf(err, "failed to select login: login_id=%s", loginId))
-		return
+		return false, err
 	}
 
-	ok = person.PersonId == 0
-	return
+	return false, nil
 }
 
 func (logic *PersonLogic) GenerateFriendCode(loginId string) (code int, err error) {
