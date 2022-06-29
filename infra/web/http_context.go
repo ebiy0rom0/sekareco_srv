@@ -33,15 +33,17 @@ func (c *HttpContext) Decode(i interface{}) error {
 	return nil
 }
 
-func (c *HttpContext) Response(code int, v interface{}) error {
-	output, err := json.Marshal(v)
-	if err != nil {
-		return fmt.Errorf("marshal failed: %s", err)
-	}
-
+func (c *HttpContext) Response(code int, v ...interface{}) error {
 	c.Writer.Header().Set("Content-Type", "application/json")
 	c.Writer.WriteHeader(code)
-	c.Writer.Write(output)
+
+	if v != nil {
+		output, err := json.Marshal(v)
+		if err != nil {
+			return fmt.Errorf("marshal failed: %s", err)
+		}
+		c.Writer.Write(output)
+	}
 
 	return nil
 }
