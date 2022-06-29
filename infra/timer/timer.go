@@ -18,10 +18,22 @@ func InitTimer() {
 	}
 }
 
+func (t *TimeManager) NowTime() time.Time {
+	return time.Now().In(t.timer)
+}
+
 func (t *TimeManager) NowDatetime() string {
-	return time.Now().In(t.timer).Format("2006-01-02 15:04:05")
+	return t.NowTime().Format("2006-01-02 15:04:05")
 }
 
 func (t *TimeManager) NowTimestamp() int64 {
-	return time.Now().In(t.timer).Unix()
+	return t.NowTime().Unix()
+}
+
+func (t *TimeManager) Add(d time.Duration) time.Time {
+	return t.NowTime().Add(d)
+}
+
+func (t *TimeManager) Before(u time.Time) bool {
+	return t.NowTime().Before(u)
 }
