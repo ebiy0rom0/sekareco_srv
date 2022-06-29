@@ -5,6 +5,7 @@ import (
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/interface/database"
 	"sekareco_srv/logic/auth"
+	"strconv"
 )
 
 type AuthHandler struct {
@@ -35,10 +36,20 @@ func (h *AuthHandler) Post(ctx HttpContext) {
 		return
 	}
 
-	token := ""
+	token := middleware.Auth.GenerateNewToken()
 	middleware.Auth.AddTokens(personID, token)
 }
 
 // synonymous with 'sign out'
 func (handler *AuthHandler) Delete(ctx HttpContext) {
+	var req map[string]string
+	if err := ctx.Decode(&req); err != nil {
+		ctx.Response(http.StatusBadRequest, ctx.MakeError("リクエストパラメータの取得に失敗しました。"))
+		return
+	}
+
+	personID, _ := strconv.ParseInt(req["person_id"], 10, 8)
+	middleware.Auth.RemoveTokens(int(personID))
+
+	ctx.Response(http.StatusOK)
 }
