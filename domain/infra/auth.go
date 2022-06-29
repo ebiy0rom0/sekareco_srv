@@ -4,8 +4,7 @@ import "net/http"
 
 type Auth interface {
 	GenerateNewToken() string
-	AddTokens(int, string)
-	RemoveTokens(int)
-	IsEnableToken(int, string) bool
+	AddToken(int, string)
+	RevokeToken(int)
 	CheckAuth(http.Handler) http.Handler
 }

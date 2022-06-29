@@ -37,11 +37,11 @@ func (h *AuthHandler) Post(ctx HttpContext) {
 	}
 
 	token := middleware.Auth.GenerateNewToken()
-	middleware.Auth.AddTokens(personID, token)
+	middleware.Auth.AddToken(personID, token)
 }
 
 // synonymous with 'sign out'
-func (handler *AuthHandler) Delete(ctx HttpContext) {
+func (h *AuthHandler) Delete(ctx HttpContext) {
 	var req map[string]string
 	if err := ctx.Decode(&req); err != nil {
 		ctx.Response(http.StatusBadRequest, ctx.MakeError("リクエストパラメータの取得に失敗しました。"))
@@ -49,7 +49,7 @@ func (handler *AuthHandler) Delete(ctx HttpContext) {
 	}
 
 	personID, _ := strconv.ParseInt(req["person_id"], 10, 8)
-	middleware.Auth.RemoveTokens(int(personID))
+	middleware.Auth.RevokeToken(int(personID))
 
 	ctx.Response(http.StatusOK)
 }
