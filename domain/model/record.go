@@ -1,5 +1,12 @@
 package model
 
+const (
+	RECORD_NO_PLAY = iota
+	RECORD_CLEAR
+	RECORD_FULL_COMBO
+	RECORD_ALL_PERFECT
+)
+
 type Record struct {
 	RecordID     int `json:"record_id"`
 	PersonID     int `json:"person_id"`
