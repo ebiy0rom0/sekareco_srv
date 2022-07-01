@@ -13,17 +13,17 @@ type SqlHandler struct {
 	Tx   *sql.Tx
 }
 
-func NewSqlHandler() (*SqlHandler, error) {
+func NewSqlHandler(dbPath string) (*SqlHandler, error) {
 	var db *sql.DB
 
-	_, err := os.Stat(DATABASE_SCHEMA_NAME)
+	_, err := os.Stat(dbPath)
 	if err != nil {
-		err = CreateDB()
+		err = CreateDB(dbPath)
 		if err != nil {
 			return nil, err
 		}
 
-		db, err = OpenSqlite3()
+		db, err = OpenSqlite3(dbPath)
 		if err != nil {
 			return nil, err
 		}
@@ -34,7 +34,7 @@ func NewSqlHandler() (*SqlHandler, error) {
 		}
 
 	} else {
-		db, err = OpenSqlite3()
+		db, err = OpenSqlite3(dbPath)
 		if err != nil {
 			return nil, err
 		}

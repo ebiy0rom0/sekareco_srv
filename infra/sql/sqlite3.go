@@ -7,10 +7,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const DATABASE_SCHEMA_NAME = "./sekareco.db"
-
-func OpenSqlite3() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", DATABASE_SCHEMA_NAME)
+func OpenSqlite3(dbPath string) (*sql.DB, error) {
+	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return nil, err
 	}
@@ -18,8 +16,8 @@ func OpenSqlite3() (*sql.DB, error) {
 	return db, nil
 }
 
-func CreateDB() error {
-	file, err := os.Create(DATABASE_SCHEMA_NAME)
+func CreateDB(dbPath string) error {
+	file, err := os.Create(dbPath)
 	if err != nil {
 		return err
 	}
@@ -29,6 +27,6 @@ func CreateDB() error {
 }
 
 // for debug
-func DropDB() error {
-	return os.Remove(DATABASE_SCHEMA_NAME)
+func DropDB(dbPath string) error {
+	return os.Remove(dbPath)
 }

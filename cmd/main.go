@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"sekareco_srv/infra/config"
@@ -27,8 +28,15 @@ func main() {
 	logger.InitLogger()
 	defer logger.DropLogFile()
 
+	// common sql handler setup
+	dbPath := os.Getenv("DATABASE_SETUP_PATH")
+	h, err := sql.NewSqlHandler(dbPath)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	// router setup
-	if err := router.InitRouter(); err != nil {
+	if err := router.InitRouter(h); err != nil {
 		fmt.Println(err)
 	}
 
@@ -51,7 +59,7 @@ func main() {
 
 	// for debug: drop sqlite3 database file
 	defer func() {
-		if err := sql.DropDB(); err != nil {
+		if err := sql.DropDB(dbPath); err != nil {
 			fmt.Println(err)
 		}
 	}()
