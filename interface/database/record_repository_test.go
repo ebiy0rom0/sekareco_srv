@@ -33,7 +33,6 @@ func Test_RegistRecord(t *testing.T) {
 		RecordMaster: model.RECORD_ALL_PERFECT,
 	}
 
-	mock.ExpectBegin()
 	mock.ExpectPrepare("INSERT INTO record").
 		ExpectExec().
 		WithArgs(
@@ -46,11 +45,37 @@ func Test_RegistRecord(t *testing.T) {
 			r.RecordMaster,
 		).
 		WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
 
 	repo.StartTransaction()
 	if _, err := repo.RegistRecord(r); err != nil {
 		t.Errorf("error: %s", err)
 	}
 	repo.Commit()
+}
+
+func TestRecordRepository_RegistRecord(t *testing.T) {
+	type args struct {
+		r model.Record
+	}
+	tests := []struct {
+		name         string
+		repository   *database.RecordRepository
+		args         args
+		wantRecordID int
+		wantErr      bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotRecordID, err := tt.repository.RegistRecord(tt.args.r)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("RecordRepository.RegistRecord() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotRecordID != tt.wantRecordID {
+				t.Errorf("RecordRepository.RegistRecord() = %v, want %v", gotRecordID, tt.wantRecordID)
+			}
+		})
+	}
 }
