@@ -36,22 +36,20 @@ func main() {
 	}
 
 	// router setup
-	if err := router.InitRouter(h); err != nil {
-		fmt.Println(err)
-	}
+	r := router.InitRouter(h)
 
 	// middleware setup
-	router.Router.Use(middleware.LoggingAccessLog)
+	r.Use(middleware.LoggingAccessLog)
 
 	middleware.InitAuth()
-	router.Router.Use(middleware.Auth.CheckAuth)
+	r.Use(middleware.Auth.CheckAuth)
 
 	// cors setup
 	c := middleware.InitCors()
 
 	// server setup
 	srv := &http.Server{
-		Handler:      c.Handler(router.Router),
+		Handler:      c.Handler(r),
 		Addr:         "0.0.0.0:8000",
 		WriteTimeout: 5 * time.Second,
 		ReadTimeout:  5 * time.Second,

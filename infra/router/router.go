@@ -8,9 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var Router *mux.Router
-
-func InitRouter(h *sql.SqlHandler) (err error) {
+func InitRouter(h *sql.SqlHandler) *mux.Router {
 	// create handler rooting
 	r := mux.NewRouter()
 
@@ -36,6 +34,5 @@ func InitRouter(h *sql.SqlHandler) (err error) {
 	r.HandleFunc("/record/{personID}/", web.HttpHandler(recordHandler.Post).Exec).Methods("POST")
 	r.HandleFunc("/record/{personID}/{musicID}/", web.HttpHandler(recordHandler.Put).Exec).Methods("PUT")
 
-	Router = r
-	return
+	return r
 }
