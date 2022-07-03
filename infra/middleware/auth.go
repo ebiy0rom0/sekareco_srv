@@ -12,6 +12,7 @@ import (
 )
 
 var EXPIRED_IN = 1 * time.Hour
+var MAX_TOKENS = 100
 
 // RFC 6750 Bearer Token Conform
 const (
@@ -42,7 +43,7 @@ type AuthManager struct {
 
 func InitAuth() {
 	Auth = &AuthManager{
-		tokens: make(map[int]*Access),
+		tokens: make(map[int]*Access, MAX_TOKENS),
 	}
 }
 
