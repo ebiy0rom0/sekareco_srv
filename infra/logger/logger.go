@@ -8,10 +8,12 @@ import (
 )
 
 // log level
+type LogLevel int8
+
 const (
-	LOG_LEVEL_ERROR = iota
-	LOG_LEVEL_WARN
-	LOG_LEVEL_INFO
+	ERROR LogLevel = iota + 1
+	WARN
+	INFO
 )
 
 // logger instance
