@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"sekareco_srv/infra/middleware"
 	"sekareco_srv/interface/database"
 	"sekareco_srv/logic/auth"
 	"strconv"
@@ -36,8 +35,8 @@ func (h *AuthHandler) Post(ctx HttpContext) {
 		return
 	}
 
-	token := middleware.Auth.GenerateNewToken()
-	middleware.Auth.AddToken(personID, token)
+	token := h.logic.GenerateNewToken()
+	h.logic.AddToken(personID, token)
 }
 
 // synonymous with 'sign out'
@@ -49,7 +48,7 @@ func (h *AuthHandler) Delete(ctx HttpContext) {
 	}
 
 	personID, _ := strconv.ParseInt(req["person_id"], 10, 8)
-	middleware.Auth.RevokeToken(int(personID))
+	h.logic.RevokeToken(int(personID))
 
 	ctx.Response(http.StatusOK)
 }
