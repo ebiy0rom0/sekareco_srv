@@ -10,14 +10,9 @@ import (
 
 var Router *mux.Router
 
-func InitRouter() (err error) {
+func InitRouter(h *sql.SqlHandler) (err error) {
 	// create handler rooting
 	r := mux.NewRouter()
-
-	h, err := sql.NewSqlHandler()
-	if err != nil {
-		return err
-	}
 
 	authHandler := handler.NewAuthHandler(h)
 	musicHandler := handler.NewMusicHandler(h)
@@ -25,8 +20,8 @@ func InitRouter() (err error) {
 	recordHandler := handler.NewRecordHandler(h)
 
 	// auth api
-	r.HandleFunc("/auth/signIn/", web.HttpHandler(authHandler.Post).Exec).Methods("POST")
-	r.HandleFunc("/auth/signOut/", web.HttpHandler(authHandler.Delete).Exec).Methods("DELETE")
+	r.HandleFunc("/auth/signin/", web.HttpHandler(authHandler.Post).Exec).Methods("POST")
+	r.HandleFunc("/auth/signout/", web.HttpHandler(authHandler.Delete).Exec).Methods("DELETE")
 
 	// person api
 	r.HandleFunc("/person/{personID}/", web.HttpHandler(personHandler.Get).Exec).Methods("GET")
