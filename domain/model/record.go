@@ -18,4 +18,17 @@ type Record struct {
 	RecordMaster int `json:"record_master"`
 }
 
-type RecordList []Record
+type RecordRepository interface {
+	StartTransaction() error
+	Commit() error
+	Rollback() error
+	Store(Record) (int, error)
+	Update(int, int, Record) error
+	GetByPersonID(int) ([]Record, error)
+}
+
+type RecordLogic interface {
+	Store(Record) (int, error)
+	Update(int, int, Record) error
+	GetByPersonID(int) ([]Record, error)
+}

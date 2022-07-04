@@ -5,25 +5,17 @@ import (
 )
 
 type RecordRepository struct {
-	Handler SqlHandler
+	SqlHandler
 }
 
-func (r *RecordRepository) StartTransaction() error {
-	return r.Handler.StartTransaction()
+func NewRecordRepository(h SqlHandler) model.RecordRepository {
+	return &RecordRepository{h}
 }
 
-func (r *RecordRepository) Commit() error {
-	return r.Handler.Commit()
-}
-
-func (r *RecordRepository) Rollback() error {
-	return r.Handler.Rollback()
-}
-
-func (r *RecordRepository) RegistRecord(rec model.Record) (recordID int, err error) {
+func (r *RecordRepository) Store(rec model.Record) (recordID int, err error) {
 	query := "INSERT INTO record (person_id, music_id, record_easy, record_nomarl, record_hard, record_expert, record_master)"
 	query += " VALUES (?, ?, ?, ?, ?, ?, ?);"
-	result, err := r.Handler.Execute(query,
+	result, err := r.Execute(query,
 		rec.PersonID,
 		rec.MusicID,
 		rec.RecordEasy,
@@ -45,23 +37,23 @@ func (r *RecordRepository) RegistRecord(rec model.Record) (recordID int, err err
 	return
 }
 
-func (r *RecordRepository) ModifyRecord(rec model.Record) (err error) {
+func (r *RecordRepository) Update(personID int, musicID int, rec model.Record) (err error) {
 	query := "UPDATE record SET record_easy = ?, record_normal = ?, record_hard = ?, record_expert = ?, record_master = ? WHERE person_id = ? AND music_id = ?;"
-	_, err = r.Handler.Execute(query,
+	_, err = r.Execute(query,
 		rec.RecordEasy,
 		rec.RecordNormal,
 		rec.RecordNormal,
 		rec.RecordExpert,
 		rec.RecordMaster,
-		rec.PersonID,
-		rec.MusicID,
+		personID,
+		musicID,
 	)
 	return
 }
 
-func (rec *RecordRepository) GetPersonRecordList(personID int) (recordList model.RecordList, err error) {
+func (r *RecordRepository) GetByPersonID(personID int) (records []model.Record, err error) {
 	query := "SELECT person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master FROM record WHERE person_id = ?;"
-	rows, err := rec.Handler.Query(query, personID)
+	rows, err := r.Query(query, personID)
 	if err != nil {
 		return
 	}
@@ -74,7 +66,7 @@ func (rec *RecordRepository) GetPersonRecordList(personID int) (recordList model
 			return
 		}
 
-		recordList = append(recordList, record)
+		records = append(records, record)
 	}
 
 	return

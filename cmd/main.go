@@ -13,7 +13,6 @@ import (
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
 	"sekareco_srv/infra/timer"
-	"sekareco_srv/interface/controller"
 )
 
 func main() {
@@ -39,11 +38,8 @@ func main() {
 	// router setup
 	r := router.InitRouter(h)
 
-	// middleware setup
+	// common middleware setup
 	r.Use(middleware.LoggingAccessLog)
-
-	ac := controller.NewAuthController(h)
-	r.Use(ac.CheckAuth)
 
 	// cors setup
 	c := middleware.InitCors()
@@ -62,9 +58,6 @@ func main() {
 			fmt.Println(err)
 		}
 	}()
-
-	// automatic token deletion
-	go ac.DeleteExpiredToken()
 
 	// wait http request
 	log.Fatal(srv.ListenAndServe())
