@@ -11,8 +11,8 @@ type MusicRepository struct {
 	Handler SqlHandler
 }
 
-func (repository *MusicRepository) SelectAll() (musicList model.MusicList, err error) {
-	rows, err := repository.Handler.Query("SELECT music_id, artist_id, music_name, jacket_url, level_easy, level_normal, level_hard, level_expert, level_master FROM master_music")
+func (r *MusicRepository) SelectAll() (musicList model.MusicList, err error) {
+	rows, err := r.Handler.Query("SELECT music_id, artist_id, music_name, jacket_url, level_easy, level_normal, level_hard, level_expert, level_master FROM master_music")
 	if err != nil {
 		err = errors.Wrap(err, "failed")
 		return

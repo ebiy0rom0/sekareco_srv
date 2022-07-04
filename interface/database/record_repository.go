@@ -8,22 +8,30 @@ type RecordRepository struct {
 	Handler SqlHandler
 }
 
-func (repository *RecordRepository) StartTransaction() error {
-	return repository.Handler.StartTransaction()
+func (r *RecordRepository) StartTransaction() error {
+	return r.Handler.StartTransaction()
 }
 
-func (repository *RecordRepository) Commit() error {
-	return repository.Handler.Commit()
+func (r *RecordRepository) Commit() error {
+	return r.Handler.Commit()
 }
 
-func (repository *RecordRepository) Rollback() error {
-	return repository.Handler.Rollback()
+func (r *RecordRepository) Rollback() error {
+	return r.Handler.Rollback()
 }
 
-func (repository *RecordRepository) RegistRecord(r model.Record) (recordID int, err error) {
+func (r *RecordRepository) RegistRecord(rec model.Record) (recordID int, err error) {
 	query := "INSERT INTO record (person_id, music_id, record_easy, record_nomarl, record_hard, record_expert, record_master)"
 	query += " VALUES (?, ?, ?, ?, ?, ?, ?);"
-	result, err := repository.Handler.Execute(query, r.PersonID, r.MusicID, r.RecordEasy, r.RecordNormal, r.RecordHard, r.RecordExpert, r.RecordMaster)
+	result, err := r.Handler.Execute(query,
+		rec.PersonID,
+		rec.MusicID,
+		rec.RecordEasy,
+		rec.RecordNormal,
+		rec.RecordHard,
+		rec.RecordExpert,
+		rec.RecordMaster,
+	)
 	if err != nil {
 		return
 	}
@@ -37,15 +45,23 @@ func (repository *RecordRepository) RegistRecord(r model.Record) (recordID int, 
 	return
 }
 
-func (repository *RecordRepository) ModifyRecord(r model.Record) (err error) {
+func (r *RecordRepository) ModifyRecord(rec model.Record) (err error) {
 	query := "UPDATE record SET record_easy = ?, record_normal = ?, record_hard = ?, record_expert = ?, record_master = ? WHERE person_id = ? AND music_id = ?;"
-	_, err = repository.Handler.Execute(query, r.RecordEasy, r.RecordNormal, r.RecordNormal, r.RecordExpert, r.RecordMaster, r.PersonID, r.MusicID)
+	_, err = r.Handler.Execute(query,
+		rec.RecordEasy,
+		rec.RecordNormal,
+		rec.RecordNormal,
+		rec.RecordExpert,
+		rec.RecordMaster,
+		rec.PersonID,
+		rec.MusicID,
+	)
 	return
 }
 
-func (repository *RecordRepository) GetPersonRecordList(personID int) (recordList model.RecordList, err error) {
+func (rec *RecordRepository) GetPersonRecordList(personID int) (recordList model.RecordList, err error) {
 	query := "SELECT person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master FROM record WHERE person_id = ?;"
-	rows, err := repository.Handler.Query(query, personID)
+	rows, err := rec.Handler.Query(query, personID)
 	if err != nil {
 		return
 	}

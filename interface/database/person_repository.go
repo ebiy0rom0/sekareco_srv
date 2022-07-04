@@ -10,23 +10,23 @@ type PersonRepository struct {
 	Handler SqlHandler
 }
 
-func (repository *PersonRepository) StartTransaction() error {
-	return repository.Handler.StartTransaction()
+func (r *PersonRepository) StartTransaction() error {
+	return r.Handler.StartTransaction()
 }
 
-func (repository *PersonRepository) Commit() error {
-	return repository.Handler.Commit()
+func (r *PersonRepository) Commit() error {
+	return r.Handler.Commit()
 }
 
-func (repository *PersonRepository) Rollback() error {
-	return repository.Handler.Rollback()
+func (r *PersonRepository) Rollback() error {
+	return r.Handler.Rollback()
 }
 
-func (repository *PersonRepository) RegistPerson(p model.Person) (personID int, err error) {
+func (r *PersonRepository) RegistPerson(p model.Person) (personID int, err error) {
 	query := "INSERT INTO person (person_name, friend_code)"
 	query += " VALUES (?, ?);"
 
-	result, err := repository.Handler.Execute(query, p.PersonName, p.FriendCode)
+	result, err := r.Handler.Execute(query, p.PersonName, p.FriendCode)
 	if err != nil {
 		err = errors.Wrap(err, "failed")
 		return
@@ -41,17 +41,17 @@ func (repository *PersonRepository) RegistPerson(p model.Person) (personID int, 
 	return
 }
 
-func (repository *PersonRepository) RegistLogin(l model.Login) (err error) {
+func (r *PersonRepository) RegistLogin(l model.Login) (err error) {
 	query := "INSERT INTO person_login (login_id, person_id, password_hash)"
 	query += " VALUES (?, ?, ?);"
 
-	_, err = repository.Handler.Execute(query, l.LoginID, l.PersonID, l.PasswordHash)
+	_, err = r.Handler.Execute(query, l.LoginID, l.PersonID, l.PasswordHash)
 	return
 }
 
-func (repository *PersonRepository) GetPersonByID(personID int) (user model.Person, err error) {
+func (r *PersonRepository) GetPersonByID(personID int) (user model.Person, err error) {
 	query := "SELECT person_id, person_name, friend_code FROM person WHERE person_id = ?;"
-	row := repository.Handler.QueryRow(query, personID)
+	row := r.Handler.QueryRow(query, personID)
 
 	var (
 		personName string
@@ -68,9 +68,9 @@ func (repository *PersonRepository) GetPersonByID(personID int) (user model.Pers
 	return
 }
 
-func (repository *PersonRepository) GetLoginPerson(loginID string) (login model.Login, err error) {
+func (r *PersonRepository) GetLoginPerson(loginID string) (login model.Login, err error) {
 	query := "SELECT password_hash, person_id FROM person_login WHERE login_id = ?;"
-	row := repository.Handler.QueryRow(query, loginID)
+	row := r.Handler.QueryRow(query, loginID)
 
 	var (
 		personID     int

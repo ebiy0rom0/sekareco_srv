@@ -11,8 +11,8 @@ type MusicLogic struct {
 	Repository MusicRepository
 }
 
-func (logic *MusicLogic) GetMusicList() (musicList model.MusicList, err error) {
-	if musicList, err = logic.Repository.SelectAll(); err != nil {
+func (l *MusicLogic) GetMusicList() (musicList model.MusicList, err error) {
+	if musicList, err = l.Repository.SelectAll(); err != nil {
 		logger.Logger.Error(errors.Wrap(err, "failed to select music"))
 	}
 	return

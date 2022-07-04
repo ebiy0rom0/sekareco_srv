@@ -14,7 +14,8 @@ type AuthHandler struct {
 func NewAuthHandler(sqlHandler database.SqlHandler) *AuthHandler {
 	return &AuthHandler{
 		logic: auth.AuthLogic{
-			Repository: &database.AuthRepository{
+			// use around to fulfill the interface of AuthRepository
+			Repository: &database.PersonRepository{
 				Handler: sqlHandler,
 			},
 		},

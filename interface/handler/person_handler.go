@@ -23,11 +23,11 @@ func NewPersonHandler(sqlHandler database.SqlHandler) *PersonHandler {
 	}
 }
 
-func (handler *PersonHandler) Get(ctx HttpContext) {
+func (h *PersonHandler) Get(ctx HttpContext) {
 	vars := ctx.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
 
-	person, err := handler.logic.GetPersonByID(personID)
+	person, err := h.logic.GetPersonByID(personID)
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("パーソン情報が取得できません。"))
 		return
@@ -36,7 +36,7 @@ func (handler *PersonHandler) Get(ctx HttpContext) {
 	ctx.Response(http.StatusOK, person)
 }
 
-func (handler *PersonHandler) Post(ctx HttpContext) {
+func (h *PersonHandler) Post(ctx HttpContext) {
 	var req map[string]string
 	if err := ctx.Decode(&req); err != nil {
 		ctx.Response(http.StatusBadRequest, ctx.MakeError("リクエストパラメータの取得に失敗しました。"))
@@ -49,7 +49,7 @@ func (handler *PersonHandler) Post(ctx HttpContext) {
 		return
 	}
 
-	ok, err := handler.logic.CheckDuplicateLoginID(vo.GetLoginID())
+	ok, err := h.logic.CheckDuplicateLoginID(vo.GetLoginID())
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("重複チェックの検証に失敗しました。"))
 		return
@@ -58,22 +58,22 @@ func (handler *PersonHandler) Post(ctx HttpContext) {
 		return
 	}
 
-	handler.logic.Repository.StartTransaction()
+	h.logic.Repository.StartTransaction()
 
-	code, _ := handler.logic.GenerateFriendCode(vo.GetLoginID())
+	code, _ := h.logic.GenerateFriendCode(vo.GetLoginID())
 	person := model.Person{
 		PersonName: vo.GetPersonName(),
 		FriendCode: code,
 	}
-	personID, err := handler.logic.RegistPerson(person)
+	personID, err := h.logic.RegistPerson(person)
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("パーソン情報の登録に失敗しました。"))
-		handler.logic.Repository.Rollback()
+		h.logic.Repository.Rollback()
 		return
 	}
 	person.PersonID = personID
 
-	hash, err := handler.logic.GeneratePasswordHash(vo.GetPassword())
+	hash, err := h.logic.GeneratePasswordHash(vo.GetPassword())
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("パスワードハッシュの生成に失敗しました。"))
 		return
@@ -84,19 +84,19 @@ func (handler *PersonHandler) Post(ctx HttpContext) {
 		PasswordHash: hash,
 	}
 
-	if err := handler.logic.RegistLogin(login); err != nil {
+	if err := h.logic.RegistLogin(login); err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("ログイン情報の登録に失敗しました。"))
-		handler.logic.Repository.Rollback()
+		h.logic.Repository.Rollback()
 		return
 	}
 
-	handler.logic.Repository.Commit()
+	h.logic.Repository.Commit()
 
 	ctx.Response(http.StatusCreated, person)
 }
 
 // TODO: Implement
-func (handler *PersonHandler) Put(ctx HttpContext) {
+func (h *PersonHandler) Put(ctx HttpContext) {
 
 	vars := ctx.Vars()
 

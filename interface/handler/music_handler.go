@@ -21,8 +21,8 @@ func NewMusicHandler(sqlHandler database.SqlHandler) *MusicHandler {
 	}
 }
 
-func (handler *MusicHandler) Get(ctx HttpContext) {
-	musicList, err := handler.logic.GetMusicList()
+func (h *MusicHandler) Get(ctx HttpContext) {
+	musicList, err := h.logic.GetMusicList()
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("楽曲情報一覧が取得できません。"))
 		return
