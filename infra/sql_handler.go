@@ -1,9 +1,11 @@
-package sql
+package infra
 
 import (
 	"database/sql"
 	"fmt"
 	"os"
+
+	_sql "sekareco_srv/infra/sql"
 
 	"github.com/tanimutomo/sqlfile"
 )
@@ -18,12 +20,12 @@ func NewSqlHandler(dbPath string) (*SqlHandler, error) {
 
 	_, err := os.Stat(dbPath)
 	if err != nil {
-		err = CreateDB(dbPath)
+		err = _sql.CreateDB(dbPath)
 		if err != nil {
 			return nil, err
 		}
 
-		db, err = OpenSqlite3(dbPath)
+		db, err = _sql.OpenSqlite3(dbPath)
 		if err != nil {
 			return nil, err
 		}
@@ -34,7 +36,7 @@ func NewSqlHandler(dbPath string) (*SqlHandler, error) {
 		}
 
 	} else {
-		db, err = OpenSqlite3(dbPath)
+		db, err = _sql.OpenSqlite3(dbPath)
 		if err != nil {
 			return nil, err
 		}

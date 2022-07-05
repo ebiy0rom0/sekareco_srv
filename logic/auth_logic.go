@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"net/http"
 	"sekareco_srv/domain/model"
-	"sekareco_srv/infra/timer"
+	"sekareco_srv/infra"
 	"strings"
 	"time"
 
@@ -51,13 +51,13 @@ func (l *AuthLogic) CheckAuth(loginID string, password string) (personID int, er
 }
 
 func (l *AuthLogic) GenerateNewToken() string {
-	return base64.StdEncoding.EncodeToString([]byte(timer.Timer.NowDatetime()))
+	return base64.StdEncoding.EncodeToString([]byte(infra.Timer.NowDatetime()))
 }
 
 func (l *AuthLogic) AddToken(pid int, token string) {
 	l.tokens[pid] = &personToken{
 		token:     token,
-		expiredIn: timer.Timer.Add(EXPIRED_IN),
+		expiredIn: infra.Timer.Add(EXPIRED_IN),
 	}
 }
 
@@ -74,12 +74,12 @@ func (l *AuthLogic) IsEnabledToken(pid int, token string) bool {
 	access, ok := l.tokens[pid]
 
 	// not exist token or token unmatch or token expired
-	return !ok || token != access.token || timer.Timer.Before(access.expiredIn)
+	return !ok || token != access.token || infra.Timer.Before(access.expiredIn)
 }
 
 func (l *AuthLogic) DeleteExpiredToken() {
 	for k, t := range l.tokens {
-		if timer.Timer.Before(t.expiredIn) {
+		if infra.Timer.Before(t.expiredIn) {
 			l.RevokeToken(k)
 
 		}

@@ -1,4 +1,4 @@
-package timer
+package infra
 
 import (
 	"sekareco_srv/domain/infra"

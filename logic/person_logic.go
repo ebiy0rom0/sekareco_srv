@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"hash/fnv"
 	"sekareco_srv/domain/model"
-	"sekareco_srv/infra/logger"
+	"sekareco_srv/infra"
 
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
@@ -59,7 +59,7 @@ func (l *PersonLogic) Store(p model.PostPerson) (model.Person, error) {
 
 func (l *PersonLogic) GetByID(personID int) (person model.Person, err error) {
 	if person, err = l.personRepo.GetByID(personID); err != nil {
-		logger.Logger.Error(errors.Wrapf(err, "failed to select person: person_id=%d", personID))
+		infra.Logger.Error(errors.Wrapf(err, "failed to select person: person_id=%d", personID))
 	}
 	return
 }
@@ -69,7 +69,7 @@ func (l *PersonLogic) IsDuplicateLoginID(loginID string) (bool, error) {
 	if err == sql.ErrNoRows {
 		return true, nil
 	} else if err != nil {
-		logger.Logger.Error(errors.Wrapf(err, "failed to select login: login_id=%s", loginID))
+		infra.Logger.Error(errors.Wrapf(err, "failed to select login: login_id=%s", loginID))
 		return false, err
 	}
 
@@ -80,7 +80,7 @@ func (l *PersonLogic) generateFriendCode(loginID string) (code int, err error) {
 	// Failed generate is not problem now.
 	// This parameter usage in future content.
 	if code, err = fnv.New32().Write([]byte(loginID)); err != nil {
-		logger.Logger.Warn(errors.Wrapf(err, "failed to generate friend code: login_id=%s", loginID))
+		infra.Logger.Warn(errors.Wrapf(err, "failed to generate friend code: login_id=%s", loginID))
 	}
 	return
 }
@@ -88,7 +88,7 @@ func (l *PersonLogic) generateFriendCode(loginID string) (code int, err error) {
 func (l *PersonLogic) toHashPassword(password string) (hash string, err error) {
 	bhash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
-		logger.Logger.Error(errors.Wrap(err, "failed to generate password hash"))
+		infra.Logger.Error(errors.Wrap(err, "failed to generate password hash"))
 		return
 	}
 

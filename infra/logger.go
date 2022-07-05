@@ -1,10 +1,9 @@
-package logger
+package infra
 
 import (
 	"fmt"
 	"os"
 	"sekareco_srv/domain/infra"
-	"sekareco_srv/infra/timer"
 )
 
 // log level
@@ -71,7 +70,7 @@ func (l *LogManager) Info(err error) {
 }
 
 func logFormat(err error) string {
-	return fmt.Sprintf("[%s]%s\n", timer.Timer.NowDatetime(), err.Error())
+	return fmt.Sprintf("[%s]%s\n", Timer.NowDatetime(), err.Error())
 }
 
 func errorLogFilePath() string {

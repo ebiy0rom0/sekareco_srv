@@ -2,7 +2,7 @@ package logic
 
 import (
 	"sekareco_srv/domain/model"
-	"sekareco_srv/infra/logger"
+	"sekareco_srv/infra"
 
 	"github.com/pkg/errors"
 )
@@ -19,12 +19,12 @@ func NewRecordLogic(r model.RecordRepository) model.RecordLogic {
 
 func (l *RecordLogic) Store(r model.Record) (recordID int, err error) {
 	if err = l.recordRepo.StartTransaction(); err != nil {
-		logger.Logger.Error(errors.Wrap(err, "failed to start transaction"))
+		infra.Logger.Error(errors.Wrap(err, "failed to start transaction"))
 		return
 	}
 
 	if recordID, err = l.recordRepo.Store(r); err != nil {
-		logger.Logger.Error(errors.Wrapf(err, "failed to regist record: %#v", r))
+		infra.Logger.Error(errors.Wrapf(err, "failed to regist record: %#v", r))
 		l.recordRepo.Rollback()
 		return
 	}
@@ -35,12 +35,12 @@ func (l *RecordLogic) Store(r model.Record) (recordID int, err error) {
 
 func (l *RecordLogic) Update(personID int, musicID int, r model.Record) (err error) {
 	if err = l.recordRepo.StartTransaction(); err != nil {
-		logger.Logger.Error(errors.Wrap(err, "failed to start transaction"))
+		infra.Logger.Error(errors.Wrap(err, "failed to start transaction"))
 		return
 	}
 
 	if err = l.recordRepo.Update(personID, musicID, r); err != nil {
-		logger.Logger.Error(errors.Wrapf(err, "failed to modify record: %#v", r))
+		infra.Logger.Error(errors.Wrapf(err, "failed to modify record: %#v", r))
 		l.recordRepo.Rollback()
 		return
 	}
@@ -51,7 +51,7 @@ func (l *RecordLogic) Update(personID int, musicID int, r model.Record) (err err
 
 func (l *RecordLogic) GetByPersonID(personID int) (records []model.Record, err error) {
 	if records, err = l.recordRepo.GetByPersonID(personID); err != nil {
-		logger.Logger.Error(errors.Wrapf(err, "failed to select record: person_id=%d", personID))
+		infra.Logger.Error(errors.Wrapf(err, "failed to select record: person_id=%d", personID))
 	}
 	return
 }
