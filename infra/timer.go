@@ -1,11 +1,18 @@
 package infra
 
 import (
-	"sekareco_srv/domain/infra"
 	"time"
 )
 
-var Timer infra.Timer
+type ITimer interface {
+	NowTime() time.Time
+	NowDatetime() string
+	NowTimestamp() int64
+	Add(time.Duration) time.Time
+	Before(time.Time) bool
+}
+
+var Timer ITimer
 
 type TimeManager struct {
 	timer *time.Location

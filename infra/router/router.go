@@ -1,6 +1,7 @@
-package infra
+package router
 
 import (
+	"sekareco_srv/infra"
 	"sekareco_srv/infra/web"
 	"sekareco_srv/interface/controller"
 	"sekareco_srv/interface/database"
@@ -10,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func InitRouter(h *SqlHandler) *mux.Router {
+func InitRouter(h *infra.SqlHandler) *mux.Router {
 	// create handler rooting
 	r := mux.NewRouter()
 

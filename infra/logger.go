@@ -3,7 +3,6 @@ package infra
 import (
 	"fmt"
 	"os"
-	"sekareco_srv/domain/infra"
 )
 
 // log level
@@ -15,8 +14,14 @@ const (
 	INFO
 )
 
+type ILogger interface {
+	Error(error)
+	Warn(error)
+	Info(error)
+}
+
 // logger instance
-var Logger infra.Logger
+var Logger ILogger
 
 type LogManager struct {
 	e *os.File

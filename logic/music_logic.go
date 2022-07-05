@@ -2,7 +2,7 @@ package logic
 
 import (
 	"sekareco_srv/domain/model"
-	"sekareco_srv/infra"
+	_infra "sekareco_srv/infra"
 
 	"github.com/pkg/errors"
 )
@@ -19,7 +19,7 @@ func NewMusicLogic(m model.MusicRepository) model.MusicLogic {
 
 func (l *MusicLogic) Fetch() (musics []model.Music, err error) {
 	if musics, err = l.musicRepo.Fetch(); err != nil {
-		infra.Logger.Error(errors.Wrap(err, "failed to select music"))
+		_infra.Logger.Error(errors.Wrap(err, "failed to select music"))
 	}
 	return
 }

@@ -7,30 +7,28 @@ import (
 	"os"
 	"time"
 
-	"sekareco_srv/infra/config"
-	"sekareco_srv/infra/logger"
+	"sekareco_srv/infra"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
-	"sekareco_srv/infra/timer"
 )
 
 func main() {
 	// load env
-	if err := config.LoadEnv(".env.development"); err != nil {
+	if err := infra.LoadEnv(".env.development"); err != nil {
 		fmt.Println(err)
 	}
 
 	// timer setup
-	timer.InitTimer()
+	infra.InitTimer()
 
 	// logger setup
-	logger.InitLogger()
-	defer logger.DropLogFile()
+	infra.InitLogger()
+	defer infra.DropLogFile()
 
 	// common sql handler setup
 	dbPath := os.Getenv("DATABASE_SETUP_PATH")
-	h, err := sql.NewSqlHandler(dbPath)
+	h, err := infra.NewSqlHandler(dbPath)
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -1,10 +1,8 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"sekareco_srv/domain/model"
-	"sekareco_srv/infra"
 	"time"
 )
 
@@ -23,7 +21,7 @@ func (c *AuthController) CheckAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := c.authLogic.GetHeaderToken(r)
 		if len(token) == 0 {
-			infra.Logger.Warn(fmt.Errorf("%s", "unauthorized"))
+			// infra.Logger.Warn(fmt.Errorf("%s", "unauthorized"))
 			w.Header().Set(model.RESPONSE_HEADER, model.HEADER_UNAUTHORIZED)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
@@ -32,7 +30,7 @@ func (c *AuthController) CheckAuth(next http.Handler) http.Handler {
 		// TODO: person ID getting from request parameter
 		pid := 1
 		if !c.authLogic.IsEnabledToken(pid, token) {
-			infra.Logger.Warn(fmt.Errorf("%s", "invalid token"))
+			// infra.Logger.Warn(fmt.Errorf("%s", "invalid token"))
 			w.Header().Set(model.RESPONSE_HEADER, model.HEADER_INVALID_TOKEN)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
