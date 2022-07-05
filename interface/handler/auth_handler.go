@@ -2,23 +2,17 @@ package handler
 
 import (
 	"net/http"
-	"sekareco_srv/interface/database"
-	"sekareco_srv/logic/auth"
+	"sekareco_srv/domain/model"
 	"strconv"
 )
 
 type AuthHandler struct {
-	logic auth.AuthLogic
+	authLogic model.AuthLogic
 }
 
-func NewAuthHandler(sqlHandler database.SqlHandler) *AuthHandler {
+func NewAuthHandler(a model.AuthLogic) *AuthHandler {
 	return &AuthHandler{
-		logic: auth.AuthLogic{
-			// use around to fulfill the interface of AuthRepository
-			Repository: &database.PersonRepository{
-				Handler: sqlHandler,
-			},
-		},
+		authLogic: a,
 	}
 }
 
@@ -30,14 +24,14 @@ func (h *AuthHandler) Post(ctx HttpContext) {
 		return
 	}
 
-	personID, err := h.logic.CheckAuth(req["login_id"], req["password"])
+	personID, err := h.authLogic.CheckAuth(req["login_id"], req["password"])
 	if err != nil {
 		ctx.Response(http.StatusUnauthorized, ctx.MakeError("IDまたはパスワードが間違っています。"))
 		return
 	}
 
-	token := h.logic.GenerateNewToken()
-	h.logic.AddToken(personID, token)
+	token := h.authLogic.GenerateNewToken()
+	h.authLogic.AddToken(personID, token)
 }
 
 // synonymous with 'sign out'
@@ -49,7 +43,7 @@ func (h *AuthHandler) Delete(ctx HttpContext) {
 	}
 
 	personID, _ := strconv.ParseInt(req["person_id"], 10, 8)
-	h.logic.RevokeToken(int(personID))
+	h.authLogic.RevokeToken(int(personID))
 
 	ctx.Response(http.StatusOK)
 }

@@ -4,7 +4,7 @@ type Music struct {
 	MusicID     int    `json:"music_id"`
 	ArtistID    int    `json:"artist_id"`
 	MusicName   string `json:"music_name"`
-	JacketUrl   string `json:"jacket_url"`
+	JacketURL   string `json:"jacket_url"`
 	LevelEasy   int    `json:"level_easy"`
 	LevelNormal int    `json:"level_normal"`
 	LevelHard   int    `json:"level_hard"`
@@ -12,12 +12,16 @@ type Music struct {
 	LevelMaster int    `json:"level_master"`
 }
 
-type MusicList []Music
-
 type Artist struct {
 	ArtistID   int    `json:"artist_id"`
 	ArtistName string `json:"artist_name"`
-	LogoUrl    string `json:"logo_url"`
+	LogoURL    string `json:"logo_url"`
 }
 
-type ArtistList []Artist
+type MusicRepository interface {
+	Fetch() ([]Music, error)
+}
+
+type MusicLogic interface {
+	Fetch() ([]Music, error)
+}

@@ -3,31 +3,26 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"sekareco_srv/interface/database"
-	"sekareco_srv/logic/music"
+	"sekareco_srv/domain/model"
 )
 
 type MusicHandler struct {
-	logic music.MusicLogic
+	musicLogic model.MusicLogic
 }
 
-func NewMusicHandler(sqlHandler database.SqlHandler) *MusicHandler {
+func NewMusicHandler(m model.MusicLogic) *MusicHandler {
 	return &MusicHandler{
-		logic: music.MusicLogic{
-			Repository: &database.MusicRepository{
-				Handler: sqlHandler,
-			},
-		},
+		musicLogic: m,
 	}
 }
 
 func (h *MusicHandler) Get(ctx HttpContext) {
-	musicList, err := h.logic.GetMusicList()
+	musics, err := h.musicLogic.Fetch()
 	if err != nil {
 		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("楽曲情報一覧が取得できません。"))
 		return
 	}
 
-	output, _ := json.Marshal(musicList)
+	output, _ := json.Marshal(musics)
 	ctx.Response(http.StatusOK, output)
 }

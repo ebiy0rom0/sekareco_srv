@@ -15,8 +15,16 @@ func InitRouter(h *sql.SqlHandler) *mux.Router {
 	// create handler rooting
 	r := mux.NewRouter()
 
-	authHandler := handler.NewAuthHandler(h)
-	musicHandler := handler.NewMusicHandler(h)
+	authHandler := handler.NewAuthHandler(
+		logic.NewAuthLogic(
+			database.NewLoginRepository(h),
+		),
+	)
+	musicHandler := handler.NewMusicHandler(
+		logic.NewMusicLogic(
+			database.NewMusicRepository(h),
+		),
+	)
 	personHandler := handler.NewPersonHandler(
 		logic.NewPersonLogic(
 			database.NewPersonRepository(h),
@@ -37,7 +45,11 @@ func InitRouter(h *sql.SqlHandler) *mux.Router {
 	// in-app api needs authentication
 	iar := r.PathPrefix("/app").Subrouter()
 
-	ac := controller.NewAuthController(h)
+	ac := controller.NewAuthController(
+		logic.NewAuthLogic(
+			database.NewLoginRepository(h),
+		),
+	)
 	iar.Use(ac.CheckAuth)
 
 	// person api

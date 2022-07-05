@@ -11,9 +11,9 @@ type RecordHandler struct {
 	recordLogic model.RecordLogic
 }
 
-func NewRecordHandler(l model.RecordLogic) *RecordHandler {
+func NewRecordHandler(r model.RecordLogic) *RecordHandler {
 	return &RecordHandler{
-		recordLogic: l,
+		recordLogic: r,
 	}
 }
 

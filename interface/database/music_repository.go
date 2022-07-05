@@ -8,11 +8,15 @@ import (
 )
 
 type MusicRepository struct {
-	Handler SqlHandler
+	SqlHandler
 }
 
-func (r *MusicRepository) SelectAll() (musicList model.MusicList, err error) {
-	rows, err := r.Handler.Query("SELECT music_id, artist_id, music_name, jacket_url, level_easy, level_normal, level_hard, level_expert, level_master FROM master_music")
+func NewMusicRepository(h SqlHandler) model.MusicRepository {
+	return &MusicRepository{h}
+}
+
+func (r *MusicRepository) Fetch() (musics []model.Music, err error) {
+	rows, err := r.Query("SELECT music_id, artist_id, music_name, jacket_url, level_easy, level_normal, level_hard, level_expert, level_master FROM master_music")
 	if err != nil {
 		err = errors.Wrap(err, "failed")
 		return
@@ -21,16 +25,26 @@ func (r *MusicRepository) SelectAll() (musicList model.MusicList, err error) {
 
 	for rows.Next() {
 		var music model.Music
-		err = rows.Scan(&music.MusicID, &music.MusicName, &music.MusicName, &music.JacketUrl, &music.LevelEasy, &music.LevelNormal, &music.LevelHard, &music.LevelExpert, &music.LevelMaster)
+		err = rows.Scan(
+			&music.MusicID,
+			&music.MusicName,
+			&music.MusicName,
+			&music.JacketURL,
+			&music.LevelEasy,
+			&music.LevelNormal,
+			&music.LevelHard,
+			&music.LevelExpert,
+			&music.LevelMaster,
+		)
 		if err != nil {
 			err = errors.Wrap(err, "failed")
 			return
 		}
 
-		musicList = append(musicList, music)
+		musics = append(musics, music)
 	}
 
-	if len(musicList) == 0 {
+	if len(musics) == 0 {
 		err = errors.Wrap(sql.ErrNoRows, "failed")
 	}
 	return

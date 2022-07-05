@@ -10,9 +10,9 @@ type PersonHandler struct {
 	personLogic model.PersonLogic
 }
 
-func NewPersonHandler(l model.PersonLogic) *PersonHandler {
+func NewPersonHandler(p model.PersonLogic) *PersonHandler {
 	return &PersonHandler{
-		personLogic: l,
+		personLogic: p,
 	}
 }
 
@@ -29,6 +29,7 @@ func (h *PersonHandler) Get(ctx HttpContext) {
 	ctx.Response(http.StatusOK, person)
 }
 
+// synonymous with 'sign out'
 func (h *PersonHandler) Post(ctx HttpContext) {
 	var req model.PostPerson
 	if err := ctx.Decode(&req); err != nil {
