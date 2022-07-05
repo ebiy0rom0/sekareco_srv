@@ -2,15 +2,17 @@ package database
 
 import (
 	"sekareco_srv/domain/model"
+	"sekareco_srv/interface/infra"
+	"sekareco_srv/logic/database"
 
 	"github.com/pkg/errors"
 )
 
 type PersonRepository struct {
-	SqlHandler
+	infra.SqlHandler
 }
 
-func NewPersonRepository(h SqlHandler) model.PersonRepository {
+func NewPersonRepository(h infra.SqlHandler) database.PersonRepository {
 	return &PersonRepository{h}
 }
 

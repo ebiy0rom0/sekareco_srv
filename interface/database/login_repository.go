@@ -2,13 +2,15 @@ package database
 
 import (
 	"sekareco_srv/domain/model"
+	"sekareco_srv/interface/infra"
+	"sekareco_srv/logic/database"
 )
 
 type LoginRepository struct {
-	SqlHandler
+	infra.SqlHandler
 }
 
-func NewLoginRepository(h SqlHandler) model.LoginRepository {
+func NewLoginRepository(h infra.SqlHandler) database.LoginRepository {
 	return &LoginRepository{h}
 }
 

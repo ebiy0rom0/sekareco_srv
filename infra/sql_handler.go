@@ -2,7 +2,6 @@ package infra
 
 import (
 	"database/sql"
-	"fmt"
 	"os"
 
 	_sql "sekareco_srv/infra/sql"
@@ -12,41 +11,34 @@ import (
 
 type SqlHandler struct {
 	Conn *sql.DB
-	Tx   *sql.Tx
 }
 
-func NewSqlHandler(dbPath string) (*SqlHandler, error) {
+func NewSqlHandler(dbPath string) (h *SqlHandler, err error) {
 	var db *sql.DB
 
-	_, err := os.Stat(dbPath)
-	if err != nil {
-		err = _sql.CreateDB(dbPath)
-		if err != nil {
-			return nil, err
+	if _, err = os.Stat(dbPath); err != nil {
+		if err = _sql.CreateDB(dbPath); err != nil {
+			return
 		}
 
-		db, err = _sql.OpenSqlite3(dbPath)
-		if err != nil {
-			return nil, err
+		if db, err = _sql.OpenSqlite3(dbPath); err != nil {
+			return
 		}
 
-		err = createTable(db)
-		if err != nil {
-			return nil, err
+		if err = createTable(db); err != nil {
+			return
 		}
 
 	} else {
-		db, err = _sql.OpenSqlite3(dbPath)
-		if err != nil {
-			return nil, err
+		if db, err = _sql.OpenSqlite3(dbPath); err != nil {
+			return
 		}
 	}
 
-	handler := new(SqlHandler)
-	handler.Conn = db
-	handler.Tx = nil
-
-	return handler, nil
+	h = &SqlHandler{
+		Conn: db,
+	}
+	return
 }
 
 func createTable(db *sql.DB) error {
@@ -66,10 +58,6 @@ func createTable(db *sql.DB) error {
 }
 
 func (h *SqlHandler) Execute(query string, args ...interface{}) (sql.Result, error) {
-	if h.Tx == nil {
-		return nil, fmt.Errorf("no transaction")
-	}
-
 	stmt, err := h.Conn.Prepare(query)
 	if err != nil {
 		return nil, err
@@ -94,43 +82,4 @@ func (h *SqlHandler) Query(query string, args ...interface{}) (*sql.Rows, error)
 		return nil, err
 	}
 	return rows, nil
-}
-
-func (h *SqlHandler) Prepare(query string) (*sql.Stmt, error) {
-	if h.Tx == nil {
-		return nil, fmt.Errorf("no transaction")
-	}
-	return h.Tx.Prepare(query)
-}
-
-func (h *SqlHandler) StartTransaction() (err error) {
-	tx, err := h.Conn.Begin()
-	if err != nil {
-		return
-	}
-
-	h.Tx = tx
-	return
-}
-
-func (h *SqlHandler) Commit() (err error) {
-	if h.Tx == nil {
-		err = fmt.Errorf("no transaction")
-		return
-	}
-
-	err = h.Tx.Commit()
-	h.Tx = nil
-	return
-}
-
-func (h *SqlHandler) Rollback() (err error) {
-	if h.Tx == nil {
-		err = fmt.Errorf("no transaction")
-		return
-	}
-
-	err = h.Tx.Rollback()
-	h.Tx = nil
-	return
 }

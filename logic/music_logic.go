@@ -3,17 +3,21 @@ package logic
 import (
 	"sekareco_srv/domain/model"
 	_infra "sekareco_srv/infra"
+	"sekareco_srv/logic/database"
+	"sekareco_srv/logic/inputport"
 
 	"github.com/pkg/errors"
 )
 
 type MusicLogic struct {
-	musicRepo model.MusicRepository
+	musicRepo   database.MusicRepository
+	transaction database.SqlTransaction
 }
 
-func NewMusicLogic(m model.MusicRepository) model.MusicLogic {
+func NewMusicLogic(m database.MusicRepository, tx database.SqlTransaction) inputport.MusicLogic {
 	return &MusicLogic{
-		musicRepo: m,
+		musicRepo:   m,
+		transaction: tx,
 	}
 }
 

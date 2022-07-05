@@ -3,36 +3,23 @@ package database_test
 import (
 	"reflect"
 	"sekareco_srv/domain/model"
-	"sekareco_srv/infra"
 	"sekareco_srv/interface/database"
+	_database "sekareco_srv/logic/database"
 	"testing"
-
-	"github.com/DATA-DOG/go-sqlmock"
 )
 
 func TestP_Store(t *testing.T) {
-	db, _, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("failed to create sql-mock: %s", err)
-	}
-	pr := database.NewPersonRepository(
-		&infra.SqlHandler{
-			Conn: db,
-			Tx:   nil,
-		},
-	)
 	type args struct {
 		p model.Person
 	}
 	tests := []struct {
 		name         string
-		r            model.PersonRepository
+		r            _database.PersonRepository
 		args         args
 		wantPersonID int
 		wantErr      bool
 	}{
 		// TODO: Add test cases.
-		{name: "name", r: pr, args: args{}, wantPersonID: 1, wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -54,7 +41,7 @@ func Test_GetByID(t *testing.T) {
 	}
 	tests := []struct {
 		name     string
-		r        model.PersonRepository
+		r        database.PersonRepository
 		args     args
 		wantUser model.Person
 		wantErr  bool

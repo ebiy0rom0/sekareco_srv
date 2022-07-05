@@ -3,15 +3,17 @@ package database
 import (
 	"database/sql"
 	"sekareco_srv/domain/model"
+	"sekareco_srv/interface/infra"
+	"sekareco_srv/logic/database"
 
 	"github.com/pkg/errors"
 )
 
 type MusicRepository struct {
-	SqlHandler
+	infra.SqlHandler
 }
 
-func NewMusicRepository(h SqlHandler) model.MusicRepository {
+func NewMusicRepository(h infra.SqlHandler) database.MusicRepository {
 	return &MusicRepository{h}
 }
 

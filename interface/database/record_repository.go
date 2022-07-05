@@ -2,13 +2,15 @@ package database
 
 import (
 	"sekareco_srv/domain/model"
+	"sekareco_srv/interface/infra"
+	"sekareco_srv/logic/database"
 )
 
 type RecordRepository struct {
-	SqlHandler
+	infra.SqlHandler
 }
 
-func NewRecordRepository(h SqlHandler) model.RecordRepository {
+func NewRecordRepository(h infra.SqlHandler) database.RecordRepository {
 	return &RecordRepository{h}
 }
 

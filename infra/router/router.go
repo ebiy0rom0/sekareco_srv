@@ -1,39 +1,46 @@
 package router
 
 import (
-	"sekareco_srv/infra"
+	"database/sql"
 	"sekareco_srv/infra/web"
 	"sekareco_srv/interface/controller"
 	"sekareco_srv/interface/database"
 	"sekareco_srv/interface/handler"
+	"sekareco_srv/interface/infra"
 	"sekareco_srv/logic"
 
 	"github.com/gorilla/mux"
 )
 
-func InitRouter(h *infra.SqlHandler) *mux.Router {
+func InitRouter(h infra.SqlHandler) *mux.Router {
 	// create handler rooting
 	r := mux.NewRouter()
 
+	// FIXME: db connection is dummy
+	var db *sql.DB
 	authHandler := handler.NewAuthHandler(
 		logic.NewAuthLogic(
 			database.NewLoginRepository(h),
+			database.NewTransaction(db),
 		),
 	)
 	musicHandler := handler.NewMusicHandler(
 		logic.NewMusicLogic(
 			database.NewMusicRepository(h),
+			database.NewTransaction(db),
 		),
 	)
 	personHandler := handler.NewPersonHandler(
 		logic.NewPersonLogic(
 			database.NewPersonRepository(h),
 			database.NewLoginRepository(h),
+			database.NewTransaction(db),
 		),
 	)
 	recordHandler := handler.NewRecordHandler(
 		logic.NewRecordLogic(
 			database.NewRecordRepository(h),
+			database.NewTransaction(db),
 		),
 	)
 
@@ -48,6 +55,7 @@ func InitRouter(h *infra.SqlHandler) *mux.Router {
 	ac := controller.NewAuthController(
 		logic.NewAuthLogic(
 			database.NewLoginRepository(h),
+			database.NewTransaction(db),
 		),
 	)
 	iar.Use(ac.CheckAuth)

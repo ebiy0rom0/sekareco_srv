@@ -4,20 +4,22 @@ import (
 	"encoding/json"
 	"net/http"
 	"sekareco_srv/domain/model"
+	"sekareco_srv/interface/infra"
+	"sekareco_srv/logic/inputport"
 	"strconv"
 )
 
 type RecordHandler struct {
-	recordLogic model.RecordLogic
+	recordLogic inputport.RecordLogic
 }
 
-func NewRecordHandler(r model.RecordLogic) *RecordHandler {
+func NewRecordHandler(r inputport.RecordLogic) *RecordHandler {
 	return &RecordHandler{
 		recordLogic: r,
 	}
 }
 
-func (h *RecordHandler) Get(ctx HttpContext) {
+func (h *RecordHandler) Get(ctx infra.HttpContext) {
 	vars := ctx.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
 
@@ -31,7 +33,7 @@ func (h *RecordHandler) Get(ctx HttpContext) {
 	ctx.Response(http.StatusOK, output)
 }
 
-func (h *RecordHandler) Post(ctx HttpContext) {
+func (h *RecordHandler) Post(ctx infra.HttpContext) {
 	vars := ctx.Vars()
 	var record model.Record
 	if err := ctx.Decode(&record); err != nil {
@@ -45,18 +47,18 @@ func (h *RecordHandler) Post(ctx HttpContext) {
 	personID, _ := strconv.Atoi(vars["personID"])
 	record.PersonID = personID
 
-	recordID, err := h.recordLogic.Store(record)
-	if err != nil {
-		ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("レコード情報の登録に失敗しました。"))
-		return
-	}
-	record.RecordID = recordID
+	// recordID, err := h.recordLogic.Store(dum, record)
+	// if err != nil {
+	// 	ctx.Response(http.StatusServiceUnavailable, ctx.MakeError("レコード情報の登録に失敗しました。"))
+	// 	return
+	// }
+	// record.RecordID = recordID
 
 	output, _ := json.Marshal(record)
 	ctx.Response(http.StatusCreated, output)
 }
 
-func (h *RecordHandler) Put(ctx HttpContext) {
+func (h *RecordHandler) Put(ctx infra.HttpContext) {
 	vars := ctx.Vars()
 	var record model.Record
 	if err := ctx.Decode(&record); err != nil {

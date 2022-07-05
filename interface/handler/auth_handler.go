@@ -2,22 +2,23 @@ package handler
 
 import (
 	"net/http"
-	"sekareco_srv/domain/model"
+	"sekareco_srv/interface/infra"
+	"sekareco_srv/logic/inputport"
 	"strconv"
 )
 
 type AuthHandler struct {
-	authLogic model.AuthLogic
+	authLogic inputport.AuthLogic
 }
 
-func NewAuthHandler(a model.AuthLogic) *AuthHandler {
+func NewAuthHandler(a inputport.AuthLogic) *AuthHandler {
 	return &AuthHandler{
 		authLogic: a,
 	}
 }
 
 // synonymous with 'sign in'
-func (h *AuthHandler) Post(ctx HttpContext) {
+func (h *AuthHandler) Post(ctx infra.HttpContext) {
 	var req map[string]string
 	if err := ctx.Decode(&req); err != nil {
 		ctx.Response(http.StatusBadRequest, ctx.MakeError("リクエストパラメータの取得に失敗しました。"))
@@ -35,7 +36,7 @@ func (h *AuthHandler) Post(ctx HttpContext) {
 }
 
 // synonymous with 'sign out'
-func (h *AuthHandler) Delete(ctx HttpContext) {
+func (h *AuthHandler) Delete(ctx infra.HttpContext) {
 	var req map[string]string
 	if err := ctx.Decode(&req); err != nil {
 		ctx.Response(http.StatusBadRequest, ctx.MakeError("リクエストパラメータの取得に失敗しました。"))

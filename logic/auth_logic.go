@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"sekareco_srv/domain/model"
 	_infra "sekareco_srv/infra"
+	"sekareco_srv/logic/database"
+	"sekareco_srv/logic/inputport"
 	"strings"
 	"time"
 
@@ -22,16 +24,18 @@ type personToken struct {
 }
 
 type AuthLogic struct {
-	loginRepo model.LoginRepository
+	loginRepo   database.LoginRepository
+	transaction database.SqlTransaction
 	// access token mapping
 	// key: personID, value: token
 	tokens map[int]*personToken
 }
 
-func NewAuthLogic(l model.LoginRepository) model.AuthLogic {
+func NewAuthLogic(l database.LoginRepository, tx database.SqlTransaction) inputport.AuthLogic {
 	return &AuthLogic{
-		loginRepo: l,
-		tokens:    make(map[int]*personToken, MAX_TOKENS),
+		loginRepo:   l,
+		transaction: tx,
+		tokens:      make(map[int]*personToken, MAX_TOKENS),
 	}
 }
 

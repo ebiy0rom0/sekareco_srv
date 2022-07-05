@@ -1,7 +1,5 @@
 package model
 
-import "net/http"
-
 // RFC 6750 Bearer Token Conform
 const (
 	REQUEST_HEADER  = "Authorization"
@@ -15,13 +13,3 @@ const (
 	HEADER_INVALID_TOKEN = "Bearer error=\"invalid_token\""
 	HEADER_FORBIDDEN     = "Bearer error=\"insufficient_scope\""
 )
-
-type AuthLogic interface {
-	CheckAuth(string, string) (int, error)
-	GenerateNewToken() string
-	AddToken(int, string)
-	RevokeToken(int)
-	GetHeaderToken(*http.Request) string
-	IsEnabledToken(int, string) bool
-	DeleteExpiredToken()
-}

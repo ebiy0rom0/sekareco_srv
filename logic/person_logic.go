@@ -5,25 +5,29 @@ import (
 	"hash/fnv"
 	"sekareco_srv/domain/model"
 	_infra "sekareco_srv/infra"
+	"sekareco_srv/logic/database"
+	"sekareco_srv/logic/inputport"
 
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type PersonLogic struct {
-	personRepo model.PersonRepository
-	loginRepo  model.LoginRepository
+	personRepo  database.PersonRepository
+	loginRepo   database.LoginRepository
+	transaction database.SqlTransaction
 }
 
-func NewPersonLogic(p model.PersonRepository, l model.LoginRepository) model.PersonLogic {
+func NewPersonLogic(p database.PersonRepository, l database.LoginRepository, tx database.SqlTransaction) inputport.PersonLogic {
 	return &PersonLogic{
-		personRepo: p,
-		loginRepo:  l,
+		personRepo:  p,
+		loginRepo:   l,
+		transaction: tx,
 	}
 }
 
 func (l *PersonLogic) Store(p model.PostPerson) (model.Person, error) {
-	l.personRepo.StartTransaction()
+	// l.personRepo.StartTransaction()
 
 	code, _ := l.generateFriendCode(p.LoginID)
 	person := model.Person{
@@ -32,14 +36,14 @@ func (l *PersonLogic) Store(p model.PostPerson) (model.Person, error) {
 	}
 	personID, err := l.personRepo.Store(person)
 	if err != nil {
-		l.loginRepo.Rollback()
+		// l.loginRepo.Rollback()
 		return model.Person{}, err
 	}
 	person.PersonID = personID
 
 	hash, err := l.toHashPassword(p.Password)
 	if err != nil {
-		l.loginRepo.Rollback()
+		// l.loginRepo.Rollback()
 		return model.Person{}, err
 	}
 	login := model.Login{
@@ -49,11 +53,11 @@ func (l *PersonLogic) Store(p model.PostPerson) (model.Person, error) {
 	}
 
 	if err = l.loginRepo.Store(login); err != nil {
-		l.personRepo.Rollback()
+		// l.personRepo.Rollback()
 		return model.Person{}, err
 	}
 
-	l.personRepo.Commit()
+	// l.personRepo.Commit()
 	return person, nil
 }
 

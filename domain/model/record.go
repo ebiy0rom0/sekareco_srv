@@ -17,18 +17,3 @@ type Record struct {
 	RecordExpert int `json:"record_expert"`
 	RecordMaster int `json:"record_master"`
 }
-
-type RecordRepository interface {
-	StartTransaction() error
-	Commit() error
-	Rollback() error
-	Store(Record) (int, error)
-	Update(int, int, Record) error
-	GetByPersonID(int) ([]Record, error)
-}
-
-type RecordLogic interface {
-	Store(Record) (int, error)
-	Update(int, int, Record) error
-	GetByPersonID(int) ([]Record, error)
-}

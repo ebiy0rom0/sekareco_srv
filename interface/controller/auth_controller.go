@@ -3,14 +3,15 @@ package controller
 import (
 	"net/http"
 	"sekareco_srv/domain/model"
+	"sekareco_srv/logic/inputport"
 	"time"
 )
 
 type AuthController struct {
-	authLogic model.AuthLogic
+	authLogic inputport.AuthLogic
 }
 
-func NewAuthController(a model.AuthLogic) *AuthController {
+func NewAuthController(a inputport.AuthLogic) *AuthController {
 	return &AuthController{
 		authLogic: a,
 	}

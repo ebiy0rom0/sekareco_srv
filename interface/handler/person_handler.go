@@ -3,20 +3,22 @@ package handler
 import (
 	"net/http"
 	"sekareco_srv/domain/model"
+	"sekareco_srv/interface/infra"
+	"sekareco_srv/logic/inputport"
 	"strconv"
 )
 
 type PersonHandler struct {
-	personLogic model.PersonLogic
+	personLogic inputport.PersonLogic
 }
 
-func NewPersonHandler(p model.PersonLogic) *PersonHandler {
+func NewPersonHandler(p inputport.PersonLogic) *PersonHandler {
 	return &PersonHandler{
 		personLogic: p,
 	}
 }
 
-func (h *PersonHandler) Get(ctx HttpContext) {
+func (h *PersonHandler) Get(ctx infra.HttpContext) {
 	vars := ctx.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
 
@@ -30,7 +32,7 @@ func (h *PersonHandler) Get(ctx HttpContext) {
 }
 
 // synonymous with 'sign out'
-func (h *PersonHandler) Post(ctx HttpContext) {
+func (h *PersonHandler) Post(ctx infra.HttpContext) {
 	var req model.PostPerson
 	if err := ctx.Decode(&req); err != nil {
 		ctx.Response(http.StatusBadRequest, ctx.MakeError("リクエストパラメータの取得に失敗しました。"))
@@ -62,7 +64,7 @@ func (h *PersonHandler) Post(ctx HttpContext) {
 }
 
 // TODO: Implement
-func (h *PersonHandler) Put(ctx HttpContext) {
+func (h *PersonHandler) Put(ctx infra.HttpContext) {
 
 	vars := ctx.Vars()
 

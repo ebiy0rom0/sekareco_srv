@@ -3,6 +3,7 @@ package database
 import (
 	"reflect"
 	"sekareco_srv/domain/model"
+	_database "sekareco_srv/logic/database"
 	"testing"
 )
 
@@ -12,7 +13,7 @@ func Test_Store(t *testing.T) {
 	}
 	tests := []struct {
 		name         string
-		r            model.RecordRepository
+		r            _database.RecordRepository
 		args         args
 		wantRecordID int
 		wantErr      bool
@@ -41,7 +42,7 @@ func Test_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		r       model.RecordRepository
+		r       _database.RecordRepository
 		args    args
 		wantErr bool
 	}{
@@ -62,7 +63,7 @@ func Test_GetByPersonID(t *testing.T) {
 	}
 	tests := []struct {
 		name        string
-		r           model.RecordRepository
+		r           _database.RecordRepository
 		args        args
 		wantRecords []model.Record
 		wantErr     bool

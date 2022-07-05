@@ -2,6 +2,7 @@ package database_test
 
 import (
 	"sekareco_srv/domain/model"
+	"sekareco_srv/logic/database"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,7 +11,7 @@ import (
 func Test_Fetch(t *testing.T) {
 	tests := []struct {
 		name       string
-		r          model.MusicRepository
+		r          database.MusicRepository
 		wantMusics []model.Music
 		wantErr    bool
 	}{

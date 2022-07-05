@@ -11,17 +11,3 @@ type PostPerson struct {
 	LoginID    string `json:"login_id"`
 	Password   string `json:"password"`
 }
-
-type PersonRepository interface {
-	StartTransaction() error
-	Commit() error
-	Rollback() error
-	Store(Person) (int, error)
-	GetByID(int) (Person, error)
-}
-
-type PersonLogic interface {
-	Store(PostPerson) (Person, error)
-	GetByID(int) (Person, error)
-	IsDuplicateLoginID(string) (bool, error)
-}

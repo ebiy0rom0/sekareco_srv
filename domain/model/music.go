@@ -17,11 +17,3 @@ type Artist struct {
 	ArtistName string `json:"artist_name"`
 	LogoURL    string `json:"logo_url"`
 }
-
-type MusicRepository interface {
-	Fetch() ([]Music, error)
-}
-
-type MusicLogic interface {
-	Fetch() ([]Music, error)
-}

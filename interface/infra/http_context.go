@@ -1,4 +1,4 @@
-package handler
+package infra
 
 type HttpContext interface {
 	Vars() map[string]string
