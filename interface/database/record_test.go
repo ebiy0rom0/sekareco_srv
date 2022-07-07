@@ -1,19 +1,21 @@
 package database
 
 import (
+	"context"
 	"reflect"
 	"sekareco_srv/domain/model"
-	_database "sekareco_srv/usecase/database"
+	"sekareco_srv/usecase/database"
 	"testing"
 )
 
-func Test_Store(t *testing.T) {
+func TestRecordRepository_Store(t *testing.T) {
+	ctx := context.Background()
 	type args struct {
 		rec model.Record
 	}
 	tests := []struct {
 		name         string
-		r            _database.RecordRepository
+		r            database.RecordRepository
 		args         args
 		wantRecordID int
 		wantErr      bool
@@ -22,7 +24,7 @@ func Test_Store(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotRecordID, err := tt.r.Store(tt.args.rec)
+			gotRecordID, err := tt.r.Store(ctx, tt.args.rec)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("RecordRepository.Store() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -34,7 +36,8 @@ func Test_Store(t *testing.T) {
 	}
 }
 
-func Test_Update(t *testing.T) {
+func TestRecordRepository_Update(t *testing.T) {
+	ctx := context.Background()
 	type args struct {
 		personID int
 		musicID  int
@@ -42,7 +45,7 @@ func Test_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		r       _database.RecordRepository
+		r       database.RecordRepository
 		args    args
 		wantErr bool
 	}{
@@ -50,20 +53,21 @@ func Test_Update(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.r.Update(tt.args.personID, tt.args.musicID, tt.args.rec); (err != nil) != tt.wantErr {
+			if err := tt.r.Update(ctx, tt.args.personID, tt.args.musicID, tt.args.rec); (err != nil) != tt.wantErr {
 				t.Errorf("RecordRepository.Update() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func Test_GetByPersonID(t *testing.T) {
+func TestRecordRepository_GetByPersonID(t *testing.T) {
+	ctx := context.Background()
 	type args struct {
 		personID int
 	}
 	tests := []struct {
 		name        string
-		r           _database.RecordRepository
+		r           database.RecordRepository
 		args        args
 		wantRecords []model.Record
 		wantErr     bool
@@ -72,7 +76,7 @@ func Test_GetByPersonID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotRecords, err := tt.r.GetByPersonID(tt.args.personID)
+			gotRecords, err := tt.r.GetByPersonID(ctx, tt.args.personID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("RecordRepository.GetByPersonID() error = %v, wantErr %v", err, tt.wantErr)
 				return

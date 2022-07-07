@@ -26,15 +26,15 @@ func main() {
 	infra.InitLogger()
 	defer infra.DropLogFile()
 
-	// sql handler setup
+	// sql & tx handler setup
 	dbPath := os.Getenv("DATABASE_SETUP_PATH")
-	h, err := sql.NewSqlHandler(dbPath)
+	h, th, err := sql.NewSqlHandler(dbPath)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	// router setup
-	r := router.InitRouter(h)
+	r := router.InitRouter(h, th)
 
 	// common middleware setup
 	r.Use(middleware.LoggingAccessLog)

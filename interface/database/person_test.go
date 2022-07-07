@@ -1,20 +1,21 @@
 package database_test
 
 import (
+	"context"
 	"reflect"
 	"sekareco_srv/domain/model"
-	"sekareco_srv/interface/database"
-	_database "sekareco_srv/usecase/database"
+	"sekareco_srv/usecase/database"
 	"testing"
 )
 
-func TestP_Store(t *testing.T) {
+func TestPersonRepository_Store(t *testing.T) {
+	ctx := context.Background()
 	type args struct {
 		p model.Person
 	}
 	tests := []struct {
 		name         string
-		r            _database.PersonRepository
+		r            database.PersonRepository
 		args         args
 		wantPersonID int
 		wantErr      bool
@@ -23,7 +24,7 @@ func TestP_Store(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotPersonID, err := tt.r.Store(tt.args.p)
+			gotPersonID, err := tt.r.Store(ctx, tt.args.p)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PersonRepository.Store() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -35,7 +36,8 @@ func TestP_Store(t *testing.T) {
 	}
 }
 
-func Test_GetByID(t *testing.T) {
+func TestPersonRepository_GetByID(t *testing.T) {
+	ctx := context.Background()
 	type args struct {
 		personID int
 	}
@@ -50,7 +52,7 @@ func Test_GetByID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotUser, err := tt.r.GetByID(tt.args.personID)
+			gotUser, err := tt.r.GetByID(ctx, tt.args.personID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PersonRepository.GetByID() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -23,7 +23,7 @@ func (h *PersonHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
 
-	person, err := h.person.GetByID(personID)
+	person, err := h.person.GetByID(ctx, personID)
 	if err != nil {
 		hc.Response(http.StatusServiceUnavailable, hc.MakeError("パーソン情報が取得できません。"))
 		return
@@ -46,7 +46,7 @@ func (h *PersonHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	// 	return
 	// }
 
-	ok, err := h.person.IsDuplicateLoginID(req.LoginID)
+	ok, err := h.person.IsDuplicateLoginID(ctx, req.LoginID)
 	if err != nil {
 		hc.Response(http.StatusServiceUnavailable, hc.MakeError("重複チェックの検証に失敗しました。"))
 		return
@@ -55,7 +55,7 @@ func (h *PersonHandler) Post(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	person, err := h.person.Store(req)
+	person, err := h.person.Store(ctx, req)
 	if err != nil {
 		hc.Response(http.StatusServiceUnavailable, hc.MakeError("パーソンの登録に失敗しました。"))
 		return

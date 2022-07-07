@@ -1,15 +1,37 @@
 package sql
 
-import "database/sql"
+import (
+	"context"
+	"database/sql"
+)
 
 type txHandler struct {
-	tx *sql.Tx
+	con *sql.DB
+	tx  *sql.Tx
 }
 
-func newTxHandler(tx *sql.Tx) *txHandler {
-	return &txHandler{
-		tx: tx,
+func (h *txHandler) Begin(ctx context.Context, opt *sql.TxOptions) error {
+	tx, err := h.con.BeginTx(ctx, opt)
+	if err != nil {
+		return err
 	}
+
+	h.tx = tx
+	return nil
+}
+
+func (h *txHandler) Execute(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+	stmt, err := h.tx.PrepareContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(args...)
+	if err != nil {
+		return res, err
+	}
+	return res, nil
 }
 
 func (h *txHandler) Commit() error {
@@ -18,19 +40,4 @@ func (h *txHandler) Commit() error {
 
 func (h *txHandler) Rollback() error {
 	return h.tx.Rollback()
-}
-
-func (h *txHandler) Execute(query string, args ...interface{}) (sql.Result, error) {
-	h.tx.ExecContext()
-	// stmt, err := h.tx.PrepareContext(query)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// defer stmt.Close()
-
-	// res, err := stmt.Exec(args...)
-	// if err != nil {
-	// 	return res, err
-	// }
-	// return res, nil
 }

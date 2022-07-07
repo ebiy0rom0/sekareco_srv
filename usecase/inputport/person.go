@@ -1,9 +1,12 @@
 package inputport
 
-import "sekareco_srv/domain/model"
+import (
+	"context"
+	"sekareco_srv/domain/model"
+)
 
 type PersonInputport interface {
-	Store(model.PostPerson) (model.Person, error)
-	GetByID(int) (model.Person, error)
-	IsDuplicateLoginID(string) (bool, error)
+	Store(context.Context, model.PostPerson) (model.Person, error)
+	GetByID(context.Context, int) (model.Person, error)
+	IsDuplicateLoginID(context.Context, string) (bool, error)
 }

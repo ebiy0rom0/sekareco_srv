@@ -2,14 +2,19 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/database"
 )
 
-var txCtxKey = struct{}{}
+var txKey = struct{}{}
 
 type tx struct {
 	infra.TxHandler
+}
+
+type Dao interface {
+	Execute(context.Context, string, ...interface{}) (sql.Result, error)
 }
 
 func NewTransaction(h infra.TxHandler) database.SqlTransaction {
@@ -17,8 +22,7 @@ func NewTransaction(h infra.TxHandler) database.SqlTransaction {
 }
 
 func (t *tx) Do(ctx context.Context, fn database.ExecFunc) (interface{}, error) {
-	ctx = context.WithValue(ctx, &txCtxKey, t)
-
+	t.Begin(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	v, err := fn(ctx)
 	if err != nil {
 		t.Rollback()
@@ -30,4 +34,9 @@ func (t *tx) Do(ctx context.Context, fn database.ExecFunc) (interface{}, error) 
 		return nil, err
 	}
 	return v, nil
+}
+
+func GetTx(ctx context.Context) (Dao, bool) {
+	dao, ok := ctx.Value(&txKey).(infra.TxHandler)
+	return dao, ok
 }

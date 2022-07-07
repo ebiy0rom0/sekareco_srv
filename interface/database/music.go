@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/infra"
@@ -9,16 +10,17 @@ import (
 	"github.com/pkg/errors"
 )
 
-type MusicRepository struct {
+type musicRepository struct {
 	infra.SqlHandler
 }
 
 func NewMusicRepository(h infra.SqlHandler) database.MusicRepository {
-	return &MusicRepository{h}
+	return &musicRepository{h}
 }
 
-func (r *MusicRepository) Fetch() (musics []model.Music, err error) {
-	rows, err := r.Query("SELECT music_id, artist_id, music_name, jacket_url, level_easy, level_normal, level_hard, level_expert, level_master FROM master_music")
+func (r *musicRepository) Fetch(ctx context.Context) (musics []model.Music, err error) {
+	query := "SELECT music_id, artist_id, music_name, jacket_url, level_easy, level_normal, level_hard, level_expert, level_master FROM master_music"
+	rows, err := r.Query(ctx, query)
 	if err != nil {
 		err = errors.Wrap(err, "failed")
 		return

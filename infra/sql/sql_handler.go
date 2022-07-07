@@ -4,17 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"os"
-
-	"sekareco_srv/interface/infra"
 )
 
-var txCtxKey = struct{}{}
-
-type SqlHandler struct {
-	Con *sql.DB
+type sqlHandler struct {
+	con *sql.DB
 }
 
-func NewSqlHandler(dbPath string) (h *SqlHandler, err error) {
+func NewSqlHandler(dbPath string) (h *sqlHandler, th *txHandler, err error) {
 	var db *sql.DB
 
 	if _, err = os.Stat(dbPath); err != nil {
@@ -36,45 +32,36 @@ func NewSqlHandler(dbPath string) (h *SqlHandler, err error) {
 		}
 	}
 
-	h = &SqlHandler{db}
+	h = &sqlHandler{con: db}
+	th = &txHandler{con: db}
 	return
 }
 
-func (h *SqlHandler) Execute(query string, args ...interface{}) (sql.Result, error) {
-	stmt, err := h.Con.Prepare(query)
+func (h *sqlHandler) Execute(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+	stmt, err := h.con.PrepareContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(args...)
+	res, err := stmt.ExecContext(ctx, args...)
 	if err != nil {
 		return res, err
 	}
 	return res, nil
 }
 
-func (h *SqlHandler) QueryRow(query string, args ...interface{}) *sql.Row {
+func (h *sqlHandler) QueryRow(ctx context.Context, query string, args ...interface{}) *sql.Row {
 	// lint:ignore SA5007 too many argments
-	row := h.Con.QueryRow(query, args...)
+	row := h.con.QueryRowContext(ctx, query, args...)
 	return row
 }
 
-func (h *SqlHandler) Query(query string, args ...interface{}) (*sql.Rows, error) {
+func (h *sqlHandler) Query(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error) {
 	// lint:ignore SA5007 too many argments
-	rows, err := h.Con.Query(query, args...)
+	rows, err := h.con.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
 	return rows, nil
-}
-
-func (h *SqlHandler) BeginTx(ctx context.Context) (infra.TxHandler, error) {
-	tx, err := h.Con.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
-	if err != nil {
-		// failed to start transaction
-		return nil, err
-	}
-
-	return newTxHandler(tx), nil
 }

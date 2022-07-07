@@ -24,7 +24,7 @@ func (h *RecordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
 
-	records, err := h.record.GetByPersonID(personID)
+	records, err := h.record.GetByPersonID(ctx, personID)
 	if err != nil {
 		hc.Response(http.StatusServiceUnavailable, hc.MakeError("指定パーソンのレコード情報が取得できません。"))
 		return
@@ -71,7 +71,7 @@ func (h *RecordHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	personID, _ := strconv.Atoi(vars["personID"])
 	musicID, _ := strconv.Atoi(vars["musicID"])
 
-	if err := h.record.Update(personID, musicID, record); err != nil {
+	if err := h.record.Update(ctx, personID, musicID, record); err != nil {
 		hc.Response(http.StatusServiceUnavailable, hc.MakeError("レコード情報の更新に失敗しました。"))
 		return
 	}

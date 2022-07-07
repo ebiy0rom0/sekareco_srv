@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/database"
@@ -8,19 +9,24 @@ import (
 	"github.com/pkg/errors"
 )
 
-type PersonRepository struct {
+type personRepository struct {
 	infra.SqlHandler
 }
 
 func NewPersonRepository(h infra.SqlHandler) database.PersonRepository {
-	return &PersonRepository{h}
+	return &personRepository{h}
 }
 
-func (r *PersonRepository) Store(p model.Person) (personID int, err error) {
+func (r *personRepository) Store(ctx context.Context, p model.Person) (personID int, err error) {
 	query := "INSERT INTO person (person_name, friend_code)"
 	query += " VALUES (?, ?);"
 
-	result, err := r.Execute(query, p.PersonName, p.FriendCode)
+	dao, ok := GetTx(ctx)
+	if !ok {
+		dao = r
+	}
+
+	result, err := dao.Execute(ctx, p.PersonName, p.FriendCode)
 	if err != nil {
 		err = errors.Wrap(err, "failed")
 		return
@@ -35,9 +41,9 @@ func (r *PersonRepository) Store(p model.Person) (personID int, err error) {
 	return
 }
 
-func (r *PersonRepository) GetByID(personID int) (user model.Person, err error) {
+func (r *personRepository) GetByID(ctx context.Context, personID int) (user model.Person, err error) {
 	query := "SELECT person_id, person_name, friend_code FROM person WHERE person_id = ?;"
-	row := r.QueryRow(query, personID)
+	row := r.QueryRow(ctx, query, personID)
 
 	var (
 		personName string

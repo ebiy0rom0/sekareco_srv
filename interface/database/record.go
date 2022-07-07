@@ -1,23 +1,24 @@
 package database
 
 import (
+	"context"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/database"
 )
 
-type RecordRepository struct {
+type recordRepository struct {
 	infra.SqlHandler
 }
 
 func NewRecordRepository(h infra.SqlHandler) database.RecordRepository {
-	return &RecordRepository{h}
+	return &recordRepository{h}
 }
 
-func (r *RecordRepository) Store(rec model.Record) (recordID int, err error) {
+func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordID int, err error) {
 	query := "INSERT INTO record (person_id, music_id, record_easy, record_nomarl, record_hard, record_expert, record_master)"
 	query += " VALUES (?, ?, ?, ?, ?, ?, ?);"
-	result, err := r.Execute(query,
+	result, err := r.Execute(ctx, query,
 		rec.PersonID,
 		rec.MusicID,
 		rec.RecordEasy,
@@ -39,9 +40,9 @@ func (r *RecordRepository) Store(rec model.Record) (recordID int, err error) {
 	return
 }
 
-func (r *RecordRepository) Update(personID int, musicID int, rec model.Record) (err error) {
+func (r *recordRepository) Update(ctx context.Context, personID int, musicID int, rec model.Record) (err error) {
 	query := "UPDATE record SET record_easy = ?, record_normal = ?, record_hard = ?, record_expert = ?, record_master = ? WHERE person_id = ? AND music_id = ?;"
-	_, err = r.Execute(query,
+	_, err = r.Execute(ctx, query,
 		rec.RecordEasy,
 		rec.RecordNormal,
 		rec.RecordNormal,
@@ -53,9 +54,9 @@ func (r *RecordRepository) Update(personID int, musicID int, rec model.Record) (
 	return
 }
 
-func (r *RecordRepository) GetByPersonID(personID int) (records []model.Record, err error) {
+func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (records []model.Record, err error) {
 	query := "SELECT person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master FROM record WHERE person_id = ?;"
-	rows, err := r.Query(query, personID)
+	rows, err := r.Query(ctx, query, personID)
 	if err != nil {
 		return
 	}

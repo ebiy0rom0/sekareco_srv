@@ -1,8 +1,11 @@
 package database
 
-import "sekareco_srv/domain/model"
+import (
+	"context"
+	"sekareco_srv/domain/model"
+)
 
 type PersonRepository interface {
-	Store(model.Person) (int, error)
-	GetByID(int) (model.Person, error)
+	Store(context.Context, model.Person) (int, error)
+	GetByID(context.Context, int) (model.Person, error)
 }

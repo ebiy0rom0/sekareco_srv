@@ -1,6 +1,7 @@
 package database_test
 
 import (
+	"context"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/usecase/database"
 	"testing"
@@ -8,7 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_Fetch(t *testing.T) {
+func TestMusicRepository_Fetch(t *testing.T) {
+	ctx := context.Background()
 	tests := []struct {
 		name       string
 		r          database.MusicRepository
@@ -19,7 +21,7 @@ func Test_Fetch(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotMusics, err := tt.r.Fetch()
+			gotMusics, err := tt.r.Fetch(ctx)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("MusicRepository.Fetch() error = %v, wantErr %v", err, tt.wantErr)
 				return

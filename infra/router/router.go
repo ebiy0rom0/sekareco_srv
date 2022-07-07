@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func InitRouter(h infra.SqlHandler) *mux.Router {
+func InitRouter(h infra.SqlHandler, th infra.TxHandler) *mux.Router {
 	// create handler rooting
 	r := mux.NewRouter()
 
@@ -19,30 +19,26 @@ func InitRouter(h infra.SqlHandler) *mux.Router {
 	authHandler := handler.NewAuthHandler(
 		interactor.NewAuthInteractor(
 			database.NewLoginRepository(h),
-			// database.NewTransaction(db),
-			nil,
+			database.NewTransaction(th),
 		),
 	)
 	musicHandler := handler.NewMusicHandler(
 		interactor.NewMusicInteractor(
 			database.NewMusicRepository(h),
-			// database.NewTransaction(db),
-			nil,
+			database.NewTransaction(th),
 		),
 	)
 	personHandler := handler.NewPersonHandler(
 		interactor.NewPersonInteractor(
 			database.NewPersonRepository(h),
 			database.NewLoginRepository(h),
-			// database.NewTransaction(db),
-			nil,
+			database.NewTransaction(th),
 		),
 	)
 	recordHandler := handler.NewRecordHandler(
 		interactor.NewRecordInteractor(
 			database.NewRecordRepository(h),
-			// database.NewTransaction(db),
-			nil,
+			database.NewTransaction(th),
 		),
 	)
 

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputport"
@@ -26,7 +27,7 @@ func (h *AuthHandler) Post(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	personID, err := h.auth.CheckAuth(req["login_id"], req["password"])
+	personID, err := h.auth.CheckAuth(ctx, req["login_id"], req["password"])
 	if err != nil {
 		hc.Response(http.StatusUnauthorized, hc.MakeError("IDまたはパスワードが間違っています。"))
 		return
@@ -35,6 +36,7 @@ func (h *AuthHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	token := h.auth.GenerateNewToken()
 	// TODO: functionality is provided from infra.AuthMiddleware
 	// h.auth.AddToken(personID, token)
+	fmt.Printf("add token: personID->%d, token->%s", personID, token)
 }
 
 // synonymous with 'sign out'
@@ -48,6 +50,7 @@ func (h *AuthHandler) Delete(ctx context.Context, hc infra.HttpContext) {
 	personID, _ := strconv.Atoi(req["person_id"])
 	// TODO: functionality is provided from infra.AuthMiddleware
 	// h.auth.RevokeToken(personID)
+	fmt.Printf("revoke token: personID->%d", personID)
 
 	hc.Response(http.StatusOK)
 }

@@ -1,6 +1,7 @@
 package interactor
 
 import (
+	"context"
 	"database/sql"
 	"hash/fnv"
 	"sekareco_srv/domain/model"
@@ -12,64 +13,65 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type PersonInteractor struct {
+type personInteractor struct {
 	person      database.PersonRepository
 	login       database.LoginRepository
 	transaction database.SqlTransaction
 }
 
 func NewPersonInteractor(p database.PersonRepository, l database.LoginRepository, tx database.SqlTransaction) inputport.PersonInputport {
-	return &PersonInteractor{
+	return &personInteractor{
 		person:      p,
 		login:       l,
 		transaction: tx,
 	}
 }
 
-func (i *PersonInteractor) Store(p model.PostPerson) (model.Person, error) {
-	// l.personRepo.StartTransaction()
-
+func (i *personInteractor) Store(ctx context.Context, p model.PostPerson) (model.Person, error) {
 	code, _ := i.generateFriendCode(p.LoginID)
 	person := model.Person{
 		PersonName: p.PersonName,
 		FriendCode: code,
 	}
-	personID, err := i.person.Store(person)
-	if err != nil {
-		// l.loginRepo.Rollback()
-		return model.Person{}, err
-	}
-	person.PersonID = personID
 
-	hash, err := i.toHashPassword(p.Password)
-	if err != nil {
-		// l.loginRepo.Rollback()
-		return model.Person{}, err
-	}
-	login := model.Login{
-		LoginID:      p.LoginID,
-		PersonID:     personID,
-		PasswordHash: hash,
-	}
+	v, err := i.transaction.Do(ctx, func(ctx context.Context) (interface{}, error) {
+		personID, err := i.person.Store(ctx, person)
+		if err != nil {
+			// l.loginRepo.Rollback()
+			return model.Person{}, err
+		}
+		person.PersonID = personID
 
-	if err = i.login.Store(login); err != nil {
-		// l.personRepo.Rollback()
-		return model.Person{}, err
-	}
+		hash, err := i.toHashPassword(p.Password)
+		if err != nil {
+			// l.loginRepo.Rollback()
+			return model.Person{}, err
+		}
+		login := model.Login{
+			LoginID:      p.LoginID,
+			PersonID:     personID,
+			PasswordHash: hash,
+		}
 
-	// l.personRepo.Commit()
-	return person, nil
+		if err = i.login.Store(ctx, login); err != nil {
+			// l.personRepo.Rollback()
+			return model.Person{}, err
+		}
+		return person, nil
+	})
+
+	return v.(model.Person), err
 }
 
-func (i *PersonInteractor) GetByID(personID int) (person model.Person, err error) {
-	if person, err = i.person.GetByID(personID); err != nil {
+func (i *personInteractor) GetByID(ctx context.Context, personID int) (person model.Person, err error) {
+	if person, err = i.person.GetByID(ctx, personID); err != nil {
 		infra.Logger.Error(errors.Wrapf(err, "failed to select person: person_id=%d", personID))
 	}
 	return
 }
 
-func (i *PersonInteractor) IsDuplicateLoginID(loginID string) (bool, error) {
-	_, err := i.login.GetByID(loginID)
+func (i *personInteractor) IsDuplicateLoginID(ctx context.Context, loginID string) (bool, error) {
+	_, err := i.login.GetByID(ctx, loginID)
 	if err == sql.ErrNoRows {
 		return true, nil
 	} else if err != nil {
@@ -80,7 +82,7 @@ func (i *PersonInteractor) IsDuplicateLoginID(loginID string) (bool, error) {
 	return false, nil
 }
 
-func (i *PersonInteractor) generateFriendCode(loginID string) (code int, err error) {
+func (i *personInteractor) generateFriendCode(loginID string) (code int, err error) {
 	// Failed generate is not problem now.
 	// This parameter usage in future content.
 	if code, err = fnv.New32().Write([]byte(loginID)); err != nil {
@@ -89,7 +91,7 @@ func (i *PersonInteractor) generateFriendCode(loginID string) (code int, err err
 	return
 }
 
-func (i *PersonInteractor) toHashPassword(password string) (hash string, err error) {
+func (i *personInteractor) toHashPassword(password string) (hash string, err error) {
 	bhash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
 		infra.Logger.Error(errors.Wrap(err, "failed to generate password hash"))

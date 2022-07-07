@@ -1,30 +1,37 @@
 package database
 
 import (
+	"context"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/database"
 )
 
-type LoginRepository struct {
+type loginRepository struct {
 	infra.SqlHandler
 }
 
 func NewLoginRepository(h infra.SqlHandler) database.LoginRepository {
-	return &LoginRepository{h}
+	return &loginRepository{h}
 }
 
-func (r *LoginRepository) Store(l model.Login) (err error) {
+func (r *loginRepository) Store(ctx context.Context, l model.Login) (err error) {
 	query := "INSERT INTO person_login (login_id, person_id, password_hash)"
 	query += " VALUES (?, ?, ?);"
 
-	_, err = r.Execute(query, l.LoginID, l.PersonID, l.PasswordHash)
+	dao, ok := GetTx(ctx)
+	if !ok {
+		//
+		dao = r
+	}
+
+	_, err = dao.Execute(ctx, query, l.LoginID, l.PersonID, l.PasswordHash)
 	return
 }
 
-func (r *LoginRepository) GetByID(loginID string) (login model.Login, err error) {
+func (r *loginRepository) GetByID(ctx context.Context, loginID string) (login model.Login, err error) {
 	query := "SELECT password_hash, person_id FROM person_login WHERE login_id = ?;"
-	row := r.QueryRow(query, loginID)
+	row := r.QueryRow(ctx, query, loginID)
 
 	var (
 		personID     int

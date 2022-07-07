@@ -1,7 +1,10 @@
 package database
 
-import "sekareco_srv/domain/model"
+import (
+	"context"
+	"sekareco_srv/domain/model"
+)
 
 type MusicRepository interface {
-	Fetch() ([]model.Music, error)
+	Fetch(context.Context) ([]model.Music, error)
 }
