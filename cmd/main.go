@@ -26,9 +26,9 @@ func main() {
 	infra.InitLogger()
 	defer infra.DropLogFile()
 
-	// common sql handler setup
+	// sql handler setup
 	dbPath := os.Getenv("DATABASE_SETUP_PATH")
-	h, err := infra.NewSqlHandler(dbPath)
+	h, err := sql.NewSqlHandler(dbPath)
 	if err != nil {
 		fmt.Println(err)
 	}

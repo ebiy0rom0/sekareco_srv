@@ -3,7 +3,7 @@ package database
 import (
 	"reflect"
 	"sekareco_srv/domain/model"
-	_database "sekareco_srv/logic/database"
+	_database "sekareco_srv/usecase/database"
 	"testing"
 )
 

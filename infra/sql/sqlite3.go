@@ -5,9 +5,10 @@ import (
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/tanimutomo/sqlfile"
 )
 
-func OpenSqlite3(dbPath string) (*sql.DB, error) {
+func openSqlite3(dbPath string) (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return nil, err
@@ -16,12 +17,28 @@ func OpenSqlite3(dbPath string) (*sql.DB, error) {
 	return db, nil
 }
 
-func CreateDB(dbPath string) error {
+func createDB(dbPath string) error {
 	file, err := os.Create(dbPath)
 	if err != nil {
 		return err
 	}
 	file.Close()
+
+	return nil
+}
+
+func createTable(db *sql.DB) error {
+	s := sqlfile.New()
+
+	err := s.Directory("./../doc/db")
+	if err != nil {
+		return err
+	}
+
+	_, err = s.Exec(db)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

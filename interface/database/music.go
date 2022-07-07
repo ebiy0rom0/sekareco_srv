@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/infra"
-	"sekareco_srv/logic/database"
+	"sekareco_srv/usecase/database"
 
 	"github.com/pkg/errors"
 )

@@ -2,7 +2,7 @@ package database_test
 
 import (
 	"sekareco_srv/domain/model"
-	"sekareco_srv/logic/database"
+	"sekareco_srv/usecase/database"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

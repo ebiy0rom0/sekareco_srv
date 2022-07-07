@@ -1,27 +1,28 @@
-package infra
+package sql
 
 import (
+	"context"
 	"database/sql"
 	"os"
 
-	_sql "sekareco_srv/infra/sql"
-
-	"github.com/tanimutomo/sqlfile"
+	"sekareco_srv/interface/infra"
 )
 
+var txCtxKey = struct{}{}
+
 type SqlHandler struct {
-	Conn *sql.DB
+	Con *sql.DB
 }
 
 func NewSqlHandler(dbPath string) (h *SqlHandler, err error) {
 	var db *sql.DB
 
 	if _, err = os.Stat(dbPath); err != nil {
-		if err = _sql.CreateDB(dbPath); err != nil {
+		if err = createDB(dbPath); err != nil {
 			return
 		}
 
-		if db, err = _sql.OpenSqlite3(dbPath); err != nil {
+		if db, err = openSqlite3(dbPath); err != nil {
 			return
 		}
 
@@ -30,35 +31,17 @@ func NewSqlHandler(dbPath string) (h *SqlHandler, err error) {
 		}
 
 	} else {
-		if db, err = _sql.OpenSqlite3(dbPath); err != nil {
+		if db, err = openSqlite3(dbPath); err != nil {
 			return
 		}
 	}
 
-	h = &SqlHandler{
-		Conn: db,
-	}
+	h = &SqlHandler{db}
 	return
 }
 
-func createTable(db *sql.DB) error {
-	s := sqlfile.New()
-
-	err := s.Directory("./../doc/db")
-	if err != nil {
-		return err
-	}
-
-	_, err = s.Exec(db)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (h *SqlHandler) Execute(query string, args ...interface{}) (sql.Result, error) {
-	stmt, err := h.Conn.Prepare(query)
+	stmt, err := h.Con.Prepare(query)
 	if err != nil {
 		return nil, err
 	}
@@ -72,14 +55,26 @@ func (h *SqlHandler) Execute(query string, args ...interface{}) (sql.Result, err
 }
 
 func (h *SqlHandler) QueryRow(query string, args ...interface{}) *sql.Row {
-	row := h.Conn.QueryRow(query, args...)
+	// lint:ignore SA5007 too many argments
+	row := h.Con.QueryRow(query, args...)
 	return row
 }
 
 func (h *SqlHandler) Query(query string, args ...interface{}) (*sql.Rows, error) {
-	rows, err := h.Conn.Query(query, args...)
+	// lint:ignore SA5007 too many argments
+	rows, err := h.Con.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
 	return rows, nil
+}
+
+func (h *SqlHandler) BeginTx(ctx context.Context) (infra.TxHandler, error) {
+	tx, err := h.Con.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
+	if err != nil {
+		// failed to start transaction
+		return nil, err
+	}
+
+	return newTxHandler(tx), nil
 }

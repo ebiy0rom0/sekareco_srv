@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/database"
-	_database "sekareco_srv/logic/database"
+	_database "sekareco_srv/usecase/database"
 	"testing"
 )
 
