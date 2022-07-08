@@ -9,18 +9,18 @@ import (
 	"strconv"
 )
 
-type AuthHandler struct {
+type authHandler struct {
 	auth inputport.AuthInputport
 }
 
-func NewAuthHandler(a inputport.AuthInputport) *AuthHandler {
-	return &AuthHandler{
+func NewAuthHandler(a inputport.AuthInputport) *authHandler {
+	return &authHandler{
 		auth: a,
 	}
 }
 
 // synonymous with 'sign in'
-func (h *AuthHandler) Post(ctx context.Context, hc infra.HttpContext) {
+func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	var req map[string]string
 	if err := hc.Decode(&req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError("リクエストパラメータの取得に失敗しました。"))
@@ -40,7 +40,7 @@ func (h *AuthHandler) Post(ctx context.Context, hc infra.HttpContext) {
 }
 
 // synonymous with 'sign out'
-func (h *AuthHandler) Delete(ctx context.Context, hc infra.HttpContext) {
+func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
 	var req map[string]string
 	if err := hc.Decode(&req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError("リクエストパラメータの取得に失敗しました。"))

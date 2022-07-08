@@ -8,17 +8,17 @@ import (
 	"sekareco_srv/usecase/inputport"
 )
 
-type MusicHandler struct {
+type musicHandler struct {
 	music inputport.MusicInputport
 }
 
-func NewMusicHandler(m inputport.MusicInputport) *MusicHandler {
-	return &MusicHandler{
+func NewMusicHandler(m inputport.MusicInputport) *musicHandler {
+	return &musicHandler{
 		music: m,
 	}
 }
 
-func (h *MusicHandler) Get(ctx context.Context, hc infra.HttpContext) {
+func (h *musicHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	musics, err := h.music.Fetch(ctx)
 	if err != nil {
 		hc.Response(http.StatusServiceUnavailable, hc.MakeError("楽曲情報一覧が取得できません。"))

@@ -10,17 +10,17 @@ import (
 	"strconv"
 )
 
-type RecordHandler struct {
+type recordHandler struct {
 	record inputport.RecordInputport
 }
 
-func NewRecordHandler(r inputport.RecordInputport) *RecordHandler {
-	return &RecordHandler{
+func NewRecordHandler(r inputport.RecordInputport) *recordHandler {
+	return &recordHandler{
 		record: r,
 	}
 }
 
-func (h *RecordHandler) Get(ctx context.Context, hc infra.HttpContext) {
+func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
 
@@ -34,7 +34,7 @@ func (h *RecordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	hc.Response(http.StatusOK, output)
 }
 
-func (h *RecordHandler) Post(ctx context.Context, hc infra.HttpContext) {
+func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	var record model.Record
 	if err := hc.Decode(&record); err != nil {
@@ -59,7 +59,7 @@ func (h *RecordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	hc.Response(http.StatusCreated, output)
 }
 
-func (h *RecordHandler) Put(ctx context.Context, hc infra.HttpContext) {
+func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	var record model.Record
 	if err := hc.Decode(&record); err != nil {

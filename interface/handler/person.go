@@ -9,17 +9,17 @@ import (
 	"strconv"
 )
 
-type PersonHandler struct {
+type personHandler struct {
 	person inputport.PersonInputport
 }
 
-func NewPersonHandler(p inputport.PersonInputport) *PersonHandler {
-	return &PersonHandler{
+func NewPersonHandler(p inputport.PersonInputport) *personHandler {
+	return &personHandler{
 		person: p,
 	}
 }
 
-func (h *PersonHandler) Get(ctx context.Context, hc infra.HttpContext) {
+func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
 
@@ -33,7 +33,7 @@ func (h *PersonHandler) Get(ctx context.Context, hc infra.HttpContext) {
 }
 
 // synonymous with 'sign out'
-func (h *PersonHandler) Post(ctx context.Context, hc infra.HttpContext) {
+func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	var req model.PostPerson
 	if err := hc.Decode(&req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError("リクエストパラメータの取得に失敗しました。"))
@@ -65,7 +65,7 @@ func (h *PersonHandler) Post(ctx context.Context, hc infra.HttpContext) {
 }
 
 // TODO: Implement
-func (h *PersonHandler) Put(ctx context.Context, hc infra.HttpContext) {
+func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 
 	vars := hc.Vars()
 

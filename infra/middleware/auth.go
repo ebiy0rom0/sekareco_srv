@@ -31,20 +31,20 @@ type personToken struct {
 	expiredIn time.Time
 }
 
-type AuthMiddleware struct {
+type authMiddleware struct {
 	// access token mapping
 	// key: personID, value: token
 	tokens map[int]*personToken
 }
 
-func NewAuthMiddleware() *AuthMiddleware {
-	return &AuthMiddleware{
+func NewAuthMiddleware() *authMiddleware {
+	return &authMiddleware{
 		tokens: make(map[int]*personToken, MAX_TOKENS),
 	}
 }
 
 // using middleware
-func (m *AuthMiddleware) CheckAuth(next http.Handler) http.Handler {
+func (m *authMiddleware) CheckAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := m.getHeaderToken(r)
 		if len(token) == 0 {
@@ -68,19 +68,19 @@ func (m *AuthMiddleware) CheckAuth(next http.Handler) http.Handler {
 	})
 }
 
-func (m *AuthMiddleware) AddToken(pid int, token string) {
+func (m *authMiddleware) AddToken(pid int, token string) {
 	m.tokens[pid] = &personToken{
 		token:     token,
 		expiredIn: infra.Timer.Add(EXPIRED_IN),
 	}
 }
 
-func (m *AuthMiddleware) RevokeToken(pid int) {
+func (m *authMiddleware) RevokeToken(pid int) {
 	delete(m.tokens, pid)
 }
 
 // automatically delete the expired token at over time
-func (m *AuthMiddleware) DeleteExpiredToken() {
+func (m *authMiddleware) DeleteExpiredToken() {
 	// t := time.NewTicker(auth.EXPIRED_TOKEN_DELETE_SPAN)
 	t := time.NewTicker(1 * time.Second)
 	defer t.Stop()
@@ -91,19 +91,19 @@ func (m *AuthMiddleware) DeleteExpiredToken() {
 	}
 }
 
-func (m *AuthMiddleware) getHeaderToken(r *http.Request) string {
+func (m *authMiddleware) getHeaderToken(r *http.Request) string {
 	token := r.Header.Get(REQUEST_HEADER)
 	return strings.Trim(strings.Replace(token, "Bearer", "", -1), " ")
 }
 
-func (m *AuthMiddleware) isEnabledToken(pid int, token string) bool {
+func (m *authMiddleware) isEnabledToken(pid int, token string) bool {
 	access, ok := m.tokens[pid]
 
 	// not exist token or token unmatch or token expired
 	return !ok || token != access.token || infra.Timer.Before(access.expiredIn)
 }
 
-func (l *AuthMiddleware) deleteExpiredToken() {
+func (l *authMiddleware) deleteExpiredToken() {
 	for k, t := range l.tokens {
 		if infra.Timer.Before(t.expiredIn) {
 			l.RevokeToken(k)
