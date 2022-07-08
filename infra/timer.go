@@ -4,43 +4,39 @@ import (
 	"time"
 )
 
-type ITimer interface {
-	NowTime() time.Time
-	NowDatetime() string
-	NowTimestamp() int64
-	Add(time.Duration) time.Time
-	Before(time.Time) bool
-}
+var Timer *timeManager
 
-var Timer ITimer
-
-type TimeManager struct {
+type timeManager struct {
 	timer *time.Location
 }
 
 func InitTimer() {
 	jst, _ := time.LoadLocation("Asia/Tokyo")
-	Timer = &TimeManager{
+	Timer = &timeManager{
 		timer: jst,
 	}
 }
 
-func (t *TimeManager) NowTime() time.Time {
+func (t *timeManager) NowTime() time.Time {
 	return time.Now().In(t.timer)
 }
 
-func (t *TimeManager) NowDatetime() string {
+func (t *timeManager) NowDatetime() string {
 	return t.NowTime().Format("2006-01-02 15:04:05")
 }
 
-func (t *TimeManager) NowTimestamp() int64 {
+func (t *timeManager) NowTimestamp() int64 {
 	return t.NowTime().Unix()
 }
 
-func (t *TimeManager) Add(d time.Duration) time.Time {
+func (t *timeManager) Add(d time.Duration) time.Time {
 	return t.NowTime().Add(d)
 }
 
-func (t *TimeManager) Before(u time.Time) bool {
+func (t *timeManager) Sub(u time.Time) time.Duration {
+	return t.NowTime().Sub(u)
+}
+
+func (t *timeManager) Before(u time.Time) bool {
 	return t.NowTime().Before(u)
 }

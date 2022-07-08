@@ -7,5 +7,6 @@ type Timer interface {
 	NowDatetime() string
 	NowTimestamp() int64
 	Add(time.Duration) time.Time
+	Sub(time.Time) time.Duration
 	Before(time.Time) bool
 }
