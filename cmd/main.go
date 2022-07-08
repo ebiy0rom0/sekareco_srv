@@ -11,6 +11,8 @@ import (
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
+
+	"github.com/rs/zerolog"
 )
 
 func main() {
@@ -28,16 +30,17 @@ func main() {
 
 	// sql & tx handler setup
 	dbPath := os.Getenv("DATABASE_SETUP_PATH")
-	h, th, err := sql.NewSqlHandler(dbPath)
+	sh, th, err := sql.NewSqlHandler(dbPath)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	// router setup
-	r := router.InitRouter(h, th)
+	r := router.InitRouter(sh, th)
 
-	// common middleware setup
-	r.Use(middleware.LoggingAccessLog)
+	// middleware setup
+	logger := zerolog.New(os.Stdout)
+	r.Use(middleware.WithLogger(logger))
 
 	// cors setup
 	c := middleware.InitCors()
