@@ -15,7 +15,7 @@ func InitRouter(sh infra.SqlHandler, th infra.TxHandler) *mux.Router {
 	// create handler rooting
 	r := mux.NewRouter()
 
-	// FIXME: db connection is dummy
+	healthHandler := handler.NewHealthHandler()
 	authHandler := handler.NewAuthHandler(
 		interactor.NewAuthInteractor(
 			database.NewLoginRepository(sh),
@@ -41,6 +41,9 @@ func InitRouter(sh infra.SqlHandler, th infra.TxHandler) *mux.Router {
 			database.NewTransaction(th),
 		),
 	)
+
+	// health check end point
+	r.HandleFunc("/_/health", web.HttpHandler(healthHandler.Get).Exec).Methods("GET")
 
 	// account api
 	r.HandleFunc("/signup", web.HttpHandler(personHandler.Post).Exec).Methods("POST")
