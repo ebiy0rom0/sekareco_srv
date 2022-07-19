@@ -3,8 +3,8 @@ package handler
 import (
 	"context"
 	"net/http"
-	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/infra"
+	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
 	"strconv"
 )
@@ -34,17 +34,16 @@ func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 
 // synonymous with 'sign out'
 func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
-	var req model.PostPerson
+	var req inputdata.PostPerson
 	if err := hc.Decode(&req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError("リクエストパラメータの取得に失敗しました。"))
 		return
 	}
 
-	// TODO: request parameter validation
-	// if err != nil {
-	// 	hc.Response(http.StatusBadRequest, ctx.MakeError("リクエストパラメータが不正です。"))
-	// 	return
-	// }
+	if err := req.Valiation(); err != nil {
+		hc.Response(http.StatusBadRequest, hc.MakeError(err.Error()))
+		return
+	}
 
 	ok, err := h.person.IsDuplicateLoginID(ctx, req.LoginID)
 	if err != nil {
@@ -64,15 +63,20 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	hc.Response(http.StatusCreated, person)
 }
 
-// TODO: Implement
 func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
-
 	vars := hc.Vars()
+	personID, _ := strconv.Atoi(vars["personID"])
 
-	// @debug
-	vars["uri"] = "person"
-	vars["methods"] = "put"
-	// output, _ := json.Marshal(vars)
+	var req inputdata.PutPerson
+	if err := hc.Decode(&req); err != nil {
+		hc.Response(http.StatusBadRequest, hc.MakeError("failed to decode request parameter"))
+		return
+	}
 
-	hc.Response(http.StatusOK, vars)
+	if err := h.person.Update(ctx, personID, req); err != nil {
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err.Error()))
+		return
+	}
+
+	hc.Response(http.StatusOK)
 }

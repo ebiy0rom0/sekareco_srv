@@ -7,6 +7,7 @@ import (
 	"sekareco_srv/domain/model"
 	"sekareco_srv/infra"
 	"sekareco_srv/usecase/database"
+	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
 
 	"github.com/pkg/errors"
@@ -27,7 +28,7 @@ func NewPersonInteractor(p database.PersonRepository, l database.LoginRepository
 	}
 }
 
-func (i *personInteractor) Store(ctx context.Context, p model.PostPerson) (model.Person, error) {
+func (i *personInteractor) Store(ctx context.Context, p inputdata.PostPerson) (model.Person, error) {
 	code, _ := i.generateFriendCode(p.LoginID)
 	person := model.Person{
 		PersonName: p.PersonName,
@@ -61,6 +62,11 @@ func (i *personInteractor) Store(ctx context.Context, p model.PostPerson) (model
 	})
 
 	return v.(model.Person), err
+}
+
+func (i *personInteractor) Update(ctx context.Context, pid int, p inputdata.PutPerson) error {
+	// TODO: create update in repository
+	return nil
 }
 
 func (i *personInteractor) GetByID(ctx context.Context, personID int) (person model.Person, err error) {
