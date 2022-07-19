@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"sekareco_srv/interface/infra"
+	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
 	"strconv"
 )
@@ -21,13 +22,17 @@ func NewAuthHandler(a inputport.AuthInputport) *authHandler {
 
 // synonymous with 'sign in'
 func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
-	var req map[string]string
+	var req inputdata.PostAuth
 	if err := hc.Decode(&req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError("リクエストパラメータの取得に失敗しました。"))
 		return
 	}
 
-	personID, err := h.auth.CheckAuth(ctx, req["login_id"], req["password"])
+	if err := req.Validation(); err != nil {
+		hc.Response(http.StatusBadRequest, hc.MakeError(err.Error()))
+	}
+
+	personID, err := h.auth.CheckAuth(ctx, req.LoginID, req.Password)
 	if err != nil {
 		hc.Response(http.StatusUnauthorized, hc.MakeError("IDまたはパスワードが間違っています。"))
 		return
@@ -41,13 +46,13 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 
 // synonymous with 'sign out'
 func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
-	var req map[string]string
+	var req inputdata.DeleteAuth
 	if err := hc.Decode(&req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError("リクエストパラメータの取得に失敗しました。"))
 		return
 	}
 
-	personID, _ := strconv.Atoi(req["person_id"])
+	personID, _ := strconv.Atoi(req.PersonID)
 	// TODO: functionality is provided from infra.AuthMiddleware
 	// h.auth.RevokeToken(personID)
 	fmt.Printf("revoke token: personID->%d", personID)
