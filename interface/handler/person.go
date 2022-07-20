@@ -25,7 +25,7 @@ func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 
 	person, err := h.person.GetByID(ctx, personID)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError("パーソン情報が取得できません。"))
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
 
@@ -36,27 +36,27 @@ func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	var req inputdata.PostPerson
 	if err := hc.Decode(&req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError("リクエストパラメータの取得に失敗しました。"))
+		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}
 
 	if err := req.Valiation(); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err.Error()))
+		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}
 
 	ok, err := h.person.IsDuplicateLoginID(ctx, req.LoginID)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError("重複チェックの検証に失敗しました。"))
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	} else if !ok {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError("ログインIDは既に存在しています。"))
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
 
 	person, err := h.person.Store(ctx, req)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError("パーソンの登録に失敗しました。"))
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
 
@@ -69,12 +69,12 @@ func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 
 	var req inputdata.PutPerson
 	if err := hc.Decode(&req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError("failed to decode request parameter"))
+		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}
 
 	if err := h.person.Update(ctx, personID, req); err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err.Error()))
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
 

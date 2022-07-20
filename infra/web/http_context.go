@@ -48,6 +48,6 @@ func (c *HttpContext) Response(code int, v ...interface{}) error {
 	return nil
 }
 
-func (c *HttpContext) MakeError(msg string) map[string]string {
-	return map[string]string{"error": msg}
+func (c *HttpContext) MakeError(err error) map[string]string {
+	return map[string]string{"error": err.Error()}
 }

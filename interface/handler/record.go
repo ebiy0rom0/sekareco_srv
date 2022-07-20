@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/infra"
+	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
 	"strconv"
 )
@@ -26,7 +26,7 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 
 	records, err := h.record.GetByPersonID(ctx, personID)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError("指定パーソンのレコード情報が取得できません。"))
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
 
@@ -36,9 +36,9 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 
 func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
-	var record model.Record
+	var record inputdata.PostRecord
 	if err := hc.Decode(&record); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError("リクエストパラメータの取得に失敗しました。"))
+		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}
 
@@ -61,9 +61,9 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 
 func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
-	var record model.Record
+	var record inputdata.PutRecord
 	if err := hc.Decode(&record); err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError("レコード情報の登録に失敗しました。"))
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
 
@@ -72,7 +72,7 @@ func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	musicID, _ := strconv.Atoi(vars["musicID"])
 
 	if err := h.record.Update(ctx, personID, musicID, record); err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError("レコード情報の更新に失敗しました。"))
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
 	hc.Response(http.StatusOK, nil)

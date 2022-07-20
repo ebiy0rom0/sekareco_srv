@@ -21,7 +21,7 @@ func NewMusicHandler(m inputport.MusicInputport) *musicHandler {
 func (h *musicHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	musics, err := h.music.Fetch(ctx)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError("楽曲情報一覧が取得できません。"))
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
 

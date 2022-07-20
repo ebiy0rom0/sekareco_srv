@@ -24,17 +24,17 @@ func NewAuthHandler(a inputport.AuthInputport) *authHandler {
 func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	var req inputdata.PostAuth
 	if err := hc.Decode(&req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError("リクエストパラメータの取得に失敗しました。"))
+		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}
 
 	if err := req.Validation(); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err.Error()))
+		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 	}
 
 	personID, err := h.auth.CheckAuth(ctx, req.LoginID, req.Password)
 	if err != nil {
-		hc.Response(http.StatusUnauthorized, hc.MakeError("IDまたはパスワードが間違っています。"))
+		hc.Response(http.StatusUnauthorized, hc.MakeError(err))
 		return
 	}
 
@@ -48,7 +48,7 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
 	var req inputdata.DeleteAuth
 	if err := hc.Decode(&req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError("リクエストパラメータの取得に失敗しました。"))
+		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}
 
