@@ -3,8 +3,8 @@ package inputdata
 import "errors"
 
 type PostAuth struct {
-	LoginID  string
-	Password string
+	LoginID  string `json:"login_id"`
+	Password string `json:"password"`
 }
 
 func (a *PostAuth) Validation() error {
