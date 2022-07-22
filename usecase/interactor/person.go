@@ -38,14 +38,12 @@ func (i *personInteractor) Store(ctx context.Context, p inputdata.PostPerson) (m
 	v, err := i.transaction.Do(ctx, func(ctx context.Context) (interface{}, error) {
 		personID, err := i.person.Store(ctx, person)
 		if err != nil {
-			// l.loginRepo.Rollback()
 			return model.Person{}, err
 		}
 		person.PersonID = personID
 
 		hash, err := i.toHashPassword(p.Password)
 		if err != nil {
-			// l.loginRepo.Rollback()
 			return model.Person{}, err
 		}
 		login := model.Login{
