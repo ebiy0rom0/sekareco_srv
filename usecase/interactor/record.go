@@ -5,6 +5,7 @@ import (
 	"sekareco_srv/domain/model"
 	"sekareco_srv/infra"
 	"sekareco_srv/usecase/database"
+	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
 
 	"github.com/pkg/errors"
@@ -22,9 +23,18 @@ func NewRecordInteractor(r database.RecordRepository, tx database.SqlTransaction
 	}
 }
 
-func (l *recordInteractor) Store(ctx context.Context, r model.Record) (int, error) {
+func (l *recordInteractor) Store(ctx context.Context, r inputdata.PostRecord) (int, error) {
 	v, err := l.transaction.Do(ctx, func(ctx context.Context) (interface{}, error) {
-		recordID, err := l.record.Store(ctx, r)
+		recordID, err := l.record.Store(ctx, model.Record{
+			RecordID:     r.RecordID,
+			PersonID:     r.PersonID,
+			MusicID:      r.MusicID,
+			RecordEasy:   r.RecordEasy,
+			RecordNormal: r.RecordNormal,
+			RecordHard:   r.RecordHard,
+			RecordExpert: r.RecordExpert,
+			RecordMaster: r.RecordMaster,
+		})
 		if err != nil {
 			infra.Logger.Error(errors.Wrapf(err, "failed to regist record: %#v", r))
 		}
@@ -34,15 +44,17 @@ func (l *recordInteractor) Store(ctx context.Context, r model.Record) (int, erro
 	return v.(int), err
 }
 
-func (l *recordInteractor) Update(ctx context.Context, personID int, musicID int, r model.Record) error {
+func (l *recordInteractor) Update(ctx context.Context, personID int, musicID int, r inputdata.PutRecord) error {
 	_, err := l.transaction.Do(ctx, func(ctx context.Context) (interface{}, error) {
-		err := l.record.Update(ctx, personID, musicID, r)
+		err := l.record.Update(ctx, personID, musicID, model.Record{
+			RecordID: r.RecordID,
+			PersonID: r.PersonID,
+		})
 		if err != nil {
 			infra.Logger.Error(errors.Wrapf(err, "failed to modify record: %#v", r))
 		}
 
-		var d interface{}
-		return d, err
+		return nil, err
 	})
 	return err
 }

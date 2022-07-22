@@ -48,12 +48,12 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	personID, _ := strconv.Atoi(vars["personID"])
 	record.PersonID = personID
 
-	// recordID, err := h.recordLogic.Store(dum, record)
-	// if err != nil {
-	// 	hc.Response(http.StatusServiceUnavailable, hc.MakeError("レコード情報の登録に失敗しました。"))
-	// 	return
-	// }
-	// record.RecordID = recordID
+	recordID, err := h.record.Store(ctx, record)
+	if err != nil {
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
+		return
+	}
+	record.RecordID = recordID
 
 	output, _ := json.Marshal(record)
 	hc.Response(http.StatusCreated, output)

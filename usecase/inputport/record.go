@@ -3,10 +3,11 @@ package inputport
 import (
 	"context"
 	"sekareco_srv/domain/model"
+	"sekareco_srv/usecase/inputdata"
 )
 
 type RecordInputport interface {
-	Store(context.Context, model.Record) (int, error)
-	Update(context.Context, int, int, model.Record) error
+	Store(context.Context, inputdata.PostRecord) (int, error)
+	Update(context.Context, int, int, inputdata.PutRecord) error
 	GetByPersonID(context.Context, int) ([]model.Record, error)
 }
