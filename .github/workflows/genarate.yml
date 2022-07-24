@@ -9,6 +9,8 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
+
     - name: Set up Go and swag
       uses: actions/setup-go@v3
       with:
