@@ -24,6 +24,59 @@
     "basePath": "/api/v1",
     "paths": {
         "/prsk/person": {
+            "post": {
+                "description": "wip",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "proseka"
+                ],
+                "summary": "wip",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    }
+                }
+            }
+        },
+        "/prsk/person/{personID}": {
+            "get": {
+                "description": "wip",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "proseka"
+                ],
+                "summary": "wip",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Person ID",
+                        "name": "person_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    }
+                }
+            },
             "put": {
                 "description": "wip",
                 "consumes": [

@@ -12,6 +12,41 @@ info:
   version: 1.0.0-beta
 paths:
   /prsk/person:
+    post:
+      consumes:
+      - application/json
+      description: wip
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "503":
+          description: Service Unavailable
+      summary: wip
+      tags:
+      - proseka
+  /prsk/person/{personID}:
+    get:
+      consumes:
+      - application/json
+      description: wip
+      parameters:
+      - description: Person ID
+        in: path
+        name: person_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "503":
+          description: Service Unavailable
+      summary: wip
+      tags:
+      - proseka
     put:
       consumes:
       - application/json
