@@ -17,10 +17,8 @@ jobs:
         go-version: 1.17
     - run: go mod tidy
 
-    - name: Install swag
-      run: go install github.com/swaggo/swag/cmd/swag
-
     - name: Generate new API docs
+      working-directory: ./
       run: swag init -o ./doc/api/ -d ./cmd/,./interface/handler/ --generatedTime
 
     - name: Commit
