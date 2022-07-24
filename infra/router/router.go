@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// @BasePath /api/v1
 func InitRouter(sh infra.SqlHandler, th infra.TxHandler) *mux.Router {
 	// create handler rooting
 	r := mux.NewRouter()
@@ -42,8 +43,11 @@ func InitRouter(sh infra.SqlHandler, th infra.TxHandler) *mux.Router {
 		),
 	)
 
+	// rest api root path prefix
+	r.PathPrefix("/api/v1")
+
 	// health check end point
-	r.HandleFunc("/_/health", web.HttpHandler(healthHandler.Get).Exec).Methods("GET")
+	r.HandleFunc("/health", web.HttpHandler(healthHandler.Get).Exec).Methods("GET")
 
 	// account api
 	r.HandleFunc("/signup", web.HttpHandler(personHandler.Post).Exec).Methods("POST")
@@ -51,7 +55,7 @@ func InitRouter(sh infra.SqlHandler, th infra.TxHandler) *mux.Router {
 	r.HandleFunc("/signout", web.HttpHandler(authHandler.Delete).Exec).Methods("DELETE")
 
 	// in-app api needs authentication
-	iar := r.PathPrefix("/app").Subrouter()
+	iar := r.PathPrefix("/prsk").Subrouter()
 
 	am := middleware.NewAuthMiddleware()
 	iar.Use(am.CheckAuth)
