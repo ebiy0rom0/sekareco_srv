@@ -25,7 +25,7 @@ func NewPersonHandler(p inputport.PersonInputport) *personHandler {
 // @Tags		proseka
 // @Accept		json
 // @Produce		json
-// @param		person_id path	int	false
+// @param		person_id path	int		true	"Person ID"
 // @Success		200
 // @Failure		503
 // @Router		/prsk/person/{personID} [get]
