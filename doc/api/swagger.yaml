@@ -1,0 +1,17 @@
+info:
+  contact: {}
+paths:
+  /prsk/person:
+    put:
+      consumes:
+      - application/json
+      description: wip
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: wip
+      tags:
+      - proseka
+swagger: "2.0"
