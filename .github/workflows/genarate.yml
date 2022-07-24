@@ -15,13 +15,13 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: 1.17
+      run: go mod tidy
 
-    - name: Install swag and generate new API docs
-      working-directory: ./
-      run: |
-        go mod tidy
-        go install github.com/swaggo/swag/cmd/swag
-        swag init -o ./doc/api/ -d ./cmd/,./interface/handler/ --generatedTime
+    - name: Install swag
+      run: go install github.com/swaggo/swag/cmd/swag
+
+    - name: Generate new API docs
+      run: swag init -o ./doc/api/ -d ./cmd/,./interface/handler/ --generatedTime
 
     - name: Commit
       uses: stefanzweifel/git-auto-commit-action@v4
