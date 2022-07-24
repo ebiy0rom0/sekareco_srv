@@ -63,6 +63,14 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	hc.Response(http.StatusCreated, person)
 }
 
+// person account status change
+// @Summary     wip
+// @Description wip
+// @Tags        proseka
+// @Accept      json
+// @Produce     json
+// @Success     200
+// @Router      /prsk/person [put]
 func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])

@@ -1,8 +1,27 @@
 {
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "http",
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "sekareco REST API server.",
+        "title": "sekareco_srv",
+        "contact": {},
+        "license": {
+            "name": "MIT License",
+            "url": "https://github.com/ebiy0rom0/sekareco_srv/blob/develop/LICENSE"
+        },
+        "version": "1.0.0-beta"
     },
+    "host": "localhost:8000",
+    "basePath": "/api/v1",
     "paths": {
         "/prsk/person": {
             "put": {

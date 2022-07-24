@@ -1,5 +1,15 @@
+basePath: /api/v1
+consumes:
+- application/json
+host: localhost:8000
 info:
   contact: {}
+  description: sekareco REST API server.
+  license:
+    name: MIT License
+    url: https://github.com/ebiy0rom0/sekareco_srv/blob/develop/LICENSE
+  title: sekareco_srv
+  version: 1.0.0-beta
 paths:
   /prsk/person:
     put:
@@ -14,4 +24,9 @@ paths:
       summary: wip
       tags:
       - proseka
+produces:
+- application/json
+schemes:
+- http
+- https
 swagger: "2.0"
