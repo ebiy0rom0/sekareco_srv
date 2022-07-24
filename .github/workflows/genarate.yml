@@ -23,5 +23,5 @@ jobs:
     - name: Generate new API docs
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit-message: Automatically generated new API docs
+        commit_message: Automatically generated new API docs
 
