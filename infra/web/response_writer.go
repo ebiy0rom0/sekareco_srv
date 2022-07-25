@@ -64,5 +64,4 @@ func (r *ResponseWriterWrapper) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("protocol", r.request.Proto)
 }
 
-// http response writer override
 var _ http.ResponseWriter = &ResponseWriterWrapper{}

@@ -15,11 +15,6 @@ const logKey contextKey = "log"
 func WithLogger(logger zerolog.Logger) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			traceId := r.Header.Get("Trace-Id")
-			if traceId == "" {
-				traceId = "hoge"
-			}
-			logger = logger.With().Str("Trace-Id", traceId).Logger()
 			ctx := context.WithValue(r.Context(), logKey, logger)
 
 			writer := web.NewResponseWriterWrapper(w, r)
