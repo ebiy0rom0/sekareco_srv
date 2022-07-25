@@ -19,16 +19,16 @@ func NewPersonHandler(p inputport.PersonInputport) *personHandler {
 	}
 }
 
-// get my person and friend person status
 // @Summary		wip
-// @Description wip
-// @Tags		proseka
+// @Description get my person and friend person status
+// @Tags		persons
 // @Accept		json
 // @Produce		json
 // @param		person_id path	int		true	"Person ID"
 // @Success		200
 // @Failure		503
-// @Router		/prsk/person/{personID} [get]
+// @Router		/prsk/persons/{personID} [get]
+
 func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
@@ -42,15 +42,14 @@ func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	hc.Response(http.StatusOK, person)
 }
 
-// synonymous with 'sign up'
 // @Summary		wip
 // @Description wip
-// @Tags		proseka
+// @Tags		accounts
 // @Accept		json
 // @Produce		json
 // @Success		200
 // @Failure		503
-// @Router		/prsk/person [post]
+// @Router		/signup	[post]
 func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	var req inputdata.PostPerson
 	if err := hc.Decode(&req); err != nil {
@@ -81,14 +80,13 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	hc.Response(http.StatusCreated, person)
 }
 
-// person account status change
-// @Summary     wip
-// @Description wip
-// @Tags        proseka
-// @Accept      json
-// @Produce     json
-// @Success     200
-// @Router      /prsk/person/{personID} [put]
+// @Summary		wip
+// @Description	person account status change
+// @Tags		persons
+// @Accept		json
+// @Produce		json
+// @Success		200
+// @Router		/prsk/persons/{personID} [put]
 func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])

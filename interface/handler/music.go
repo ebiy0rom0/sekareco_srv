@@ -18,6 +18,16 @@ func NewMusicHandler(m inputport.MusicInputport) *musicHandler {
 	}
 }
 
+// @Summary		wip
+// @Description	get all music master records
+// @Tags		musics
+// @Accept		json
+// @Produce		json
+// @Success		200
+// @Failure		503
+// @Router		/musics	[get]
+// @SecurityDefinitions.apikey	Authentication
+// @in							header
 func (h *musicHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	musics, err := h.music.Fetch(ctx)
 	if err != nil {

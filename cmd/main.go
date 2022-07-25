@@ -32,6 +32,10 @@ import (
 // @accept   json
 // @produce  json
 
+// @SecurityDefinitions.apikey	Authentication
+// @in							header
+// @description					use Bearer Token authentication
+
 func main() {
 	// load env
 	if err := infra.LoadEnv(".env.development"); err != nil {
