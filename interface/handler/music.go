@@ -23,7 +23,6 @@ func NewMusicHandler(m inputport.MusicInputport) *musicHandler {
 // @Tags		musics
 // @Accept		json
 // @Produce		json
-// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
 // @Success		200	{object}	[]model.Music
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication

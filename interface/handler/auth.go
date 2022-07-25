@@ -61,7 +61,6 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Tags		accounts
 // @Accept		json
 // @Produce		json
-// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
 // @param		person_id		body	string	true	"Want to delete token personID"
 // @Success		200
 // @Failure		400	{object}	infra.HttpError

@@ -25,7 +25,6 @@ func NewRecordHandler(r inputport.RecordInputport) *recordHandler {
 // @Tags		records
 // @Accept		json
 // @Produce		json
-// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
 // @param		person_id		query	int		true	"Want to get personID"
 // @Success		200	{object}	[]model.Record
 // @Failure		503	{object}	infra.HttpError
@@ -50,7 +49,6 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 // @Tags		records
 // @Accept		json
 // @Produce		json
-// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
 // @param		person_id		query	int		true	"Want to add personID"
 // @param		music_id		body	int		true	"store target musicID"
 // @param		record_easy		body	int		false	"easy's clear status"		enums(0,1,2,3)
@@ -93,7 +91,6 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Tags		records
 // @Accept		json
 // @Produce		json
-// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
 // @param		person_id		query	int		true	"Want to update personID"
 // @param		music_id		query	int		true	"Want to update musicID"
 // @param		record_easy		body	int		false	"easy's clear status"		enums(0,1,2,3)

@@ -24,7 +24,6 @@ func NewPersonHandler(p inputport.PersonInputport) *personHandler {
 // @Tags		persons
 // @Accept		json
 // @Produce		json
-// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
 // @param		person_id		query	int		true	"Want to get person ID"
 // @Success		200 {object}	model.Person
 // @Failure		503	{object}	infra.HttpError
@@ -90,7 +89,6 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Tags		persons
 // @Accept		json
 // @Produce		json
-// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
 // @param		person_id		query	int		true	"Update person ID"
 // @param		login_id		body	string	false	"Hope New login ID"
 // @param		person_name		body	string	false	"Hope new person_name"
