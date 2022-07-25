@@ -30,7 +30,7 @@ import (
 // @BasePath  /api/v1
 // @schemes   http https
 
-// @securityDefinitions.apikey  Authentication
+// @securityDefinitions.apikey  Bearer Authentication
 // @in                          header
 // @name                        Authorization
 func main() {
