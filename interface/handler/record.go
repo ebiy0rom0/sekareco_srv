@@ -20,6 +20,17 @@ func NewRecordHandler(r inputport.RecordInputport) *recordHandler {
 	}
 }
 
+// @Summary		get list | get all records data by person
+// @Description	get all records data by person
+// @Tags		records
+// @Accept		json
+// @Produce		json
+// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
+// @param		person_id		query	int		true	"Want to get personID"
+// @Success		200	{object}	[]model.Record
+// @Failure		503	{object}	infra.HttpError
+// @Security	Authentication
+// @Router		/prsk/records/{person_id}	[get]
 func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
@@ -34,6 +45,24 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	hc.Response(http.StatusOK, output)
 }
 
+// @Summary		new record | create new record
+// @Description	create new record
+// @Tags		records
+// @Accept		json
+// @Produce		json
+// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
+// @param		person_id		query	int		true	"Want to add personID"
+// @param		music_id		body	int		true	"store target musicID"
+// @param		record_easy		body	int		false	"easy's clear status"		enums(0,1,2,3)
+// @param		record_normal	body	int		false	"normal's clear status"		enums(0,1,2,3)
+// @param		record_hard		body	int		false	"hard's clear status"		enums(0,1,2,3)
+// @param		record_expert	body	int		false	"expert's clear status"		enums(0,1,2,3)
+// @param		record_master	body	int		false	"master's clear status"		enums(0,1,2,3)
+// @Success		200	{object}	model.Record
+// @Failure		400	{object}	infra.HttpError
+// @Failure		503	{object}	infra.HttpError
+// @Security	Authentication
+// @Router		/prsk/records/{person_id}	[post]
 func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	var record inputdata.PostRecord
@@ -59,11 +88,29 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	hc.Response(http.StatusCreated, output)
 }
 
+// @Summary		update status | update record clear status
+// @Description	update record clear status
+// @Tags		records
+// @Accept		json
+// @Produce		json
+// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
+// @param		person_id		query	int		true	"Want to update personID"
+// @param		music_id		query	int		true	"Want to update musicID"
+// @param		record_easy		body	int		false	"easy's clear status"		enums(0,1,2,3)
+// @param		record_normal	body	int		false	"normal's clear status"		enums(0,1,2,3)
+// @param		record_hard		body	int		false	"hard's clear status"		enums(0,1,2,3)
+// @param		record_expert	body	int		false	"expert's clear status"		enums(0,1,2,3)
+// @param		record_master	body	int		false	"master's clear status"		enums(0,1,2,3)
+// @Success		200	{object}	[]model.Record
+// @Failure		400	{object}	infra.HttpError
+// @Failure		503	{object}	infra.HttpError
+// @Security	Authentication
+// @Router		/prsk/records/{person_id}/{music_id}	[put]
 func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	var record inputdata.PutRecord
 	if err := hc.Decode(&record); err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
+		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}
 

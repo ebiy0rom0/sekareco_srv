@@ -19,16 +19,17 @@ func NewPersonHandler(p inputport.PersonInputport) *personHandler {
 	}
 }
 
-// @Summary		wip
-// @Description get my person and friend person status
+// @Summary		get one | get one person by ID
+// @Description	get one person by ID
 // @Tags		persons
 // @Accept		json
 // @Produce		json
-// @param		person_id path	int		true	"Person ID"
-// @Success		200
-// @Failure		503
-// @Router		/prsk/persons/{personID} [get]
-
+// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
+// @param		person_id		query	int		true	"Want to get person ID"
+// @Success		200 {object}	model.Person
+// @Failure		503	{object}	infra.HttpError
+// @Security	Authentication
+// @Router		/prsk/person/{person_id}	[get]
 func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
@@ -42,13 +43,17 @@ func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	hc.Response(http.StatusOK, person)
 }
 
-// @Summary		wip
-// @Description wip
+// @Summary		new account | create new person
+// @Description	create new person
 // @Tags		accounts
 // @Accept		json
 // @Produce		json
-// @Success		200
-// @Failure		503
+// @param		login_id	body	string	true	"Hope ID"
+// @param		person_name	body	string	true	"Hope display name"
+// @param		password	body	string	true	"Hope password"
+// @Success		200	{object}	model.Person
+// @Failure		400	{object}	infra.HttpError
+// @Failure		503	{object}	infra.HttpError
 // @Router		/signup	[post]
 func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	var req inputdata.PostPerson
@@ -80,13 +85,21 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	hc.Response(http.StatusCreated, person)
 }
 
-// @Summary		wip
-// @Description	person account status change
+// @Summary		update status | update person register status
+// @Description	update person register status
 // @Tags		persons
 // @Accept		json
 // @Produce		json
+// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
+// @param		person_id		query	int		true	"Update person ID"
+// @param		login_id		body	string	false	"Hope New login ID"
+// @param		person_name		body	string	false	"Hope new person_name"
+// @param		password		body	string	false	"Hope new password"
 // @Success		200
-// @Router		/prsk/persons/{personID} [put]
+// @Failure		400	{object}	infra.HttpError
+// @Failure		503	{object}	infra.HttpError
+// @Security	Authentication
+// @Router		/prsk/person/{person_id}	[put]
 func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])

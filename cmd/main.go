@@ -29,11 +29,10 @@ import (
 // @host     localhost:8000
 // @BasePath /api/v1
 // @schemes  http https
-// @accept   json
-// @produce  json
 
-// @SecurityDefinitions.apikey	Authentication
+// @securityDefinitions.apikey	Authentication
 // @in							header
+// @name						Authorization
 // @description					use Bearer Token authentication
 
 func main() {

@@ -21,6 +21,17 @@ func NewAuthHandler(a inputport.AuthInputport) *authHandler {
 }
 
 // synonymous with 'sign in'
+// @Summary		add token | generate and stored token
+// @Description	generate and stored token
+// @Tags		accounts
+// @Accept		json
+// @Produce		json
+// @param		login_id	body	string	true	"LoginID"
+// @param		password	body	string	true	"password"
+// @Success		200	{string}	string	"generate new token"
+// @Failure		400	{object}	infra.HttpError
+// @Failure		401	{object}	infra.HttpError
+// @Router		/signin	[post]
 func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	var req inputdata.PostAuth
 	if err := hc.Decode(&req); err != nil {
@@ -45,6 +56,17 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 }
 
 // synonymous with 'sign out'
+// @Summary		delete token | delete a stored token
+// @Description	delete a stored token
+// @Tags		accounts
+// @Accept		json
+// @Produce		json
+// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
+// @param		person_id		body	string	true	"Want to delete token personID"
+// @Success		200
+// @Failure		400	{object}	infra.HttpError
+// @Security	Authentication
+// @Router		/prsk/signout	[delete]
 func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
 	var req inputdata.DeleteAuth
 	if err := hc.Decode(&req); err != nil {
