@@ -19,22 +19,20 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger" // http-swagger middleware
 )
 
-// @title       sekareco_srv
-// @version     1.0.0-beta
-// @description sekareco REST API server.
+// @title        sekareco_srv
+// @version      1.0.0-beta
+// @description  sekareco REST API server.
 
-// @license.name MIT License
-// @license.url  https://github.com/ebiy0rom0/sekareco_srv/blob/develop/LICENSE
+// @license.name  MIT License
+// @license.url   https://github.com/ebiy0rom0/sekareco_srv/blob/develop/LICENSE
 
-// @host     localhost:8000
-// @BasePath /api/v1
-// @schemes  http https
+// @host      localhost:8000
+// @BasePath  /api/v1
+// @schemes   http https
 
-// @securityDefinitions.apikey	Authentication
-// @in							header
-// @name						Authorization
-// @description					use Bearer Token authentication
-
+// @securityDefinitions.apikey  Authentication
+// @in                          header
+// @name                        Authorization
 func main() {
 	// load env
 	if err := infra.LoadEnv(".env.development"); err != nil {
