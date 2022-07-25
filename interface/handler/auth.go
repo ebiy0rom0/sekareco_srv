@@ -23,7 +23,7 @@ func NewAuthHandler(a inputport.AuthInputport) *authHandler {
 // synonymous with 'sign in'
 // @Summary		add token | generate and stored token
 // @Description	generate and stored token
-// @Tags		accounts
+// @Tags		account
 // @Accept		json
 // @Produce		json
 // @param		login_id	body	string	true	"LoginID"
@@ -58,7 +58,7 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // synonymous with 'sign out'
 // @Summary		delete token | delete a stored token
 // @Description	delete a stored token
-// @Tags		accounts
+// @Tags		account
 // @Accept		json
 // @Produce		json
 // @param		person_id		body	string	true	"Want to delete token personID"

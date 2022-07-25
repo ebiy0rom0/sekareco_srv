@@ -20,7 +20,7 @@ func NewMusicHandler(m inputport.MusicInputport) *musicHandler {
 
 // @Summary		get list | get all music master records
 // @Description	get all music master records
-// @Tags		musics
+// @Tags		music
 // @Accept		json
 // @Produce		json
 // @Success		200	{object}	[]model.Music

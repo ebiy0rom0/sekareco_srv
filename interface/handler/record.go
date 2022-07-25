@@ -22,7 +22,7 @@ func NewRecordHandler(r inputport.RecordInputport) *recordHandler {
 
 // @Summary		get list | get all records data by person
 // @Description	get all records data by person
-// @Tags		records
+// @Tags		record
 // @Accept		json
 // @Produce		json
 // @param		person_id		query	int		true	"Want to get personID"
@@ -46,7 +46,7 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 
 // @Summary		new record | create new record
 // @Description	create new record
-// @Tags		records
+// @Tags		record
 // @Accept		json
 // @Produce		json
 // @param		person_id		query	int		true	"Want to add personID"
@@ -88,7 +88,7 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 
 // @Summary		update status | update record clear status
 // @Description	update record clear status
-// @Tags		records
+// @Tags		record
 // @Accept		json
 // @Produce		json
 // @param		person_id		query	int		true	"Want to update personID"

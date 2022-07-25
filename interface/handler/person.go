@@ -21,7 +21,7 @@ func NewPersonHandler(p inputport.PersonInputport) *personHandler {
 
 // @Summary		get one | get one person by ID
 // @Description	get one person by ID
-// @Tags		persons
+// @Tags		person
 // @Accept		json
 // @Produce		json
 // @param		person_id		query	int		true	"Want to get person ID"
@@ -44,7 +44,7 @@ func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 
 // @Summary		new account | create new person
 // @Description	create new person
-// @Tags		accounts
+// @Tags		account
 // @Accept		json
 // @Produce		json
 // @param		login_id	body	string	true	"Hope ID"
@@ -86,7 +86,7 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 
 // @Summary		update status | update person register status
 // @Description	update person register status
-// @Tags		persons
+// @Tags		person
 // @Accept		json
 // @Produce		json
 // @param		person_id		query	int		true	"Update person ID"
