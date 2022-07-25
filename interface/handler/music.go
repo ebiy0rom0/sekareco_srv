@@ -18,16 +18,16 @@ func NewMusicHandler(m inputport.MusicInputport) *musicHandler {
 	}
 }
 
-// @Summary		wip
+// @Summary		get list | get all music master records
 // @Description	get all music master records
 // @Tags		musics
 // @Accept		json
 // @Produce		json
-// @Success		200
-// @Failure		503
+// @param		Authorization	header	string	true	"Bearer token"	example(Bearer {auth_token})
+// @Success		200	{object}	[]model.Music
+// @Failure		503	{object}	infra.HttpError
+// @Security	Authentication
 // @Router		/musics	[get]
-// @SecurityDefinitions.apikey	Authentication
-// @in							header
 func (h *musicHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	musics, err := h.music.Fetch(ctx)
 	if err != nil {
