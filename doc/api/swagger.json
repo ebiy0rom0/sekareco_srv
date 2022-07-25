@@ -23,9 +23,9 @@
     "host": "localhost:8000",
     "basePath": "/api/v1",
     "paths": {
-        "/prsk/person": {
-            "post": {
-                "description": "wip",
+        "/musics": {
+            "get": {
+                "description": "get all music master records",
                 "consumes": [
                     "application/json"
                 ],
@@ -33,7 +33,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "proseka"
+                    "musics"
                 ],
                 "summary": "wip",
                 "responses": {
@@ -46,8 +46,28 @@
                 }
             }
         },
-        "/prsk/person/{personID}": {
-            "get": {
+        "/prsk/persons/{personID}": {
+            "put": {
+                "description": "person account status change",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "persons"
+                ],
+                "summary": "wip",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/signup": {
+            "post": {
                 "description": "wip",
                 "consumes": [
                     "application/json"
@@ -56,42 +76,15 @@
                     "application/json"
                 ],
                 "tags": [
-                    "proseka"
+                    "accounts"
                 ],
                 "summary": "wip",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Person ID",
-                        "name": "person_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK"
                     },
                     "503": {
                         "description": "Service Unavailable"
-                    }
-                }
-            },
-            "put": {
-                "description": "wip",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "proseka"
-                ],
-                "summary": "wip",
-                "responses": {
-                    "200": {
-                        "description": "OK"
                     }
                 }
             }

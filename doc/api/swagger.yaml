@@ -11,7 +11,35 @@ info:
   title: sekareco_srv
   version: 1.0.0-beta
 paths:
-  /prsk/person:
+  /musics:
+    get:
+      consumes:
+      - application/json
+      description: get all music master records
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "503":
+          description: Service Unavailable
+      summary: wip
+      tags:
+      - musics
+  /prsk/persons/{personID}:
+    put:
+      consumes:
+      - application/json
+      description: person account status change
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: wip
+      tags:
+      - persons
+  /signup:
     post:
       consumes:
       - application/json
@@ -25,40 +53,7 @@ paths:
           description: Service Unavailable
       summary: wip
       tags:
-      - proseka
-  /prsk/person/{personID}:
-    get:
-      consumes:
-      - application/json
-      description: wip
-      parameters:
-      - description: Person ID
-        in: path
-        name: person_id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "503":
-          description: Service Unavailable
-      summary: wip
-      tags:
-      - proseka
-    put:
-      consumes:
-      - application/json
-      description: wip
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      summary: wip
-      tags:
-      - proseka
+      - accounts
 produces:
 - application/json
 schemes:
