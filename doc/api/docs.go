@@ -38,16 +38,6 @@ const docTemplate = `{
                     "musics"
                 ],
                 "summary": "get list | get all music master records",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "example": "Bearer {auth_token}",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -86,14 +76,6 @@ const docTemplate = `{
                 ],
                 "summary": "get one | get one person by ID",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "example": "Bearer {auth_token}",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "Want to get person ID",
@@ -135,14 +117,6 @@ const docTemplate = `{
                 ],
                 "summary": "update status | update person register status",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "example": "Bearer {auth_token}",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "Update person ID",
@@ -214,14 +188,6 @@ const docTemplate = `{
                 "summary": "get list | get all records data by person",
                 "parameters": [
                     {
-                        "type": "string",
-                        "example": "Bearer {auth_token}",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "description": "Want to get personID",
                         "name": "person_id",
@@ -265,14 +231,6 @@ const docTemplate = `{
                 ],
                 "summary": "new record | create new record",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "example": "Bearer {auth_token}",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "Want to add personID",
@@ -402,14 +360,6 @@ const docTemplate = `{
                 "summary": "update status | update record clear status",
                 "parameters": [
                     {
-                        "type": "string",
-                        "example": "Bearer {auth_token}",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "description": "Want to update personID",
                         "name": "person_id",
@@ -538,14 +488,6 @@ const docTemplate = `{
                 ],
                 "summary": "delete token | delete a stored token",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "example": "Bearer {auth_token}",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Want to delete token personID",
                         "name": "person_id",
@@ -773,6 +715,13 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "Authentication": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

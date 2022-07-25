@@ -70,13 +70,6 @@ paths:
       consumes:
       - application/json
       description: get all music master records
-      parameters:
-      - description: Bearer token
-        example: Bearer {auth_token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -101,12 +94,6 @@ paths:
       - application/json
       description: get one person by ID
       parameters:
-      - description: Bearer token
-        example: Bearer {auth_token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Want to get person ID
         in: query
         name: person_id
@@ -133,12 +120,6 @@ paths:
       - application/json
       description: update person register status
       parameters:
-      - description: Bearer token
-        example: Bearer {auth_token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Update person ID
         in: query
         name: person_id
@@ -183,12 +164,6 @@ paths:
       - application/json
       description: get all records data by person
       parameters:
-      - description: Bearer token
-        example: Bearer {auth_token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Want to get personID
         in: query
         name: person_id
@@ -217,12 +192,6 @@ paths:
       - application/json
       description: create new record
       parameters:
-      - description: Bearer token
-        example: Bearer {auth_token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Want to add personID
         in: query
         name: person_id
@@ -310,12 +279,6 @@ paths:
       - application/json
       description: update record clear status
       parameters:
-      - description: Bearer token
-        example: Bearer {auth_token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Want to update personID
         in: query
         name: person_id
@@ -404,12 +367,6 @@ paths:
       - application/json
       description: delete a stored token
       parameters:
-      - description: Bearer token
-        example: Bearer {auth_token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Want to delete token personID
         in: body
         name: person_id
@@ -511,4 +468,9 @@ paths:
 schemes:
 - http
 - https
+securityDefinitions:
+  Authentication:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
