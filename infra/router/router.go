@@ -52,7 +52,6 @@ func InitRouter(sh infra.SqlHandler, th infra.TxHandler) *mux.Router {
 	// account api
 	r.HandleFunc("/signup", web.HttpHandler(personHandler.Post).Exec).Methods("POST")
 	r.HandleFunc("/signin", web.HttpHandler(authHandler.Post).Exec).Methods("POST")
-	r.HandleFunc("/signout", web.HttpHandler(authHandler.Delete).Exec).Methods("DELETE")
 
 	// in-app api needs authentication
 	iar := r.PathPrefix("/prsk").Subrouter()
@@ -60,17 +59,20 @@ func InitRouter(sh infra.SqlHandler, th infra.TxHandler) *mux.Router {
 	am := middleware.NewAuthMiddleware()
 	iar.Use(am.CheckAuth)
 
+	// account api
+	iar.HandleFunc("/signout", web.HttpHandler(authHandler.Delete).Exec).Methods("DELETE")
+
 	// person api
-	iar.HandleFunc("/person/{personID}", web.HttpHandler(personHandler.Get).Exec).Methods("GET")
-	iar.HandleFunc("/person/{personID}", web.HttpHandler(personHandler.Put).Exec).Methods("PUT")
+	iar.HandleFunc("/persons/{personID}", web.HttpHandler(personHandler.Get).Exec).Methods("GET")
+	iar.HandleFunc("/persons/{personID}", web.HttpHandler(personHandler.Put).Exec).Methods("PUT")
 
 	// music api
-	iar.HandleFunc("/music", web.HttpHandler(musicHandler.Get).Exec).Methods("GET")
+	iar.HandleFunc("/musics", web.HttpHandler(musicHandler.Get).Exec).Methods("GET")
 
 	// record api
-	iar.HandleFunc("/record/{personID}", web.HttpHandler(recordHandler.Get).Exec).Methods("GET")
-	iar.HandleFunc("/record/{personID}", web.HttpHandler(recordHandler.Post).Exec).Methods("POST")
-	iar.HandleFunc("/record/{personID}/{musicID}", web.HttpHandler(recordHandler.Put).Exec).Methods("PUT")
+	iar.HandleFunc("/records/{personID}", web.HttpHandler(recordHandler.Get).Exec).Methods("GET")
+	iar.HandleFunc("/records/{personID}", web.HttpHandler(recordHandler.Post).Exec).Methods("POST")
+	iar.HandleFunc("/records/{personID}/{musicID}", web.HttpHandler(recordHandler.Put).Exec).Methods("PUT")
 
 	return r
 }
