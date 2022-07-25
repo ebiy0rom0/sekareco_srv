@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sekareco_srv/domain/infra"
 
 	"github.com/gorilla/mux"
 )
@@ -48,6 +49,8 @@ func (c *HttpContext) Response(code int, v ...interface{}) error {
 	return nil
 }
 
-func (c *HttpContext) MakeError(err error) map[string]string {
-	return map[string]string{"error": err.Error()}
+func (c *HttpContext) MakeError(err error) *infra.HttpError {
+	return &infra.HttpError{
+		Error: err.Error(),
+	}
 }
