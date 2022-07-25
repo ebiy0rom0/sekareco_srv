@@ -1,6 +1,60 @@
 basePath: /api/v1
-consumes:
-- application/json
+definitions:
+  infra.HttpError:
+    properties:
+      error:
+        example: set a server error message
+        type: string
+    type: object
+  model.Music:
+    properties:
+      artist_id:
+        type: integer
+      jacket_url:
+        type: string
+      level_easy:
+        type: integer
+      level_expert:
+        type: integer
+      level_hard:
+        type: integer
+      level_master:
+        type: integer
+      level_normal:
+        type: integer
+      music_id:
+        type: integer
+      music_name:
+        type: string
+    type: object
+  model.Person:
+    properties:
+      friend_code:
+        type: integer
+      person_id:
+        type: integer
+      person_name:
+        type: string
+    type: object
+  model.Record:
+    properties:
+      music_id:
+        type: integer
+      person_id:
+        type: integer
+      record_easy:
+        type: integer
+      record_expert:
+        type: integer
+      record_hard:
+        type: integer
+      record_id:
+        type: integer
+      record_master:
+        type: integer
+      record_normal:
+        type: integer
+    type: object
 host: localhost:8000
 info:
   contact: {}
@@ -16,46 +70,444 @@ paths:
       consumes:
       - application/json
       description: get all music master records
+      parameters:
+      - description: Bearer token
+        example: Bearer {auth_token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Music'
+            type: array
         "503":
           description: Service Unavailable
-      summary: wip
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+      security:
+      - Authentication: []
+      summary: get list | get all music master records
       tags:
       - musics
-  /prsk/persons/{personID}:
+  /prsk/person/{person_id}:
+    get:
+      consumes:
+      - application/json
+      description: get one person by ID
+      parameters:
+      - description: Bearer token
+        example: Bearer {auth_token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Want to get person ID
+        in: query
+        name: person_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Person'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+      security:
+      - Authentication: []
+      summary: get one | get one person by ID
+      tags:
+      - persons
     put:
       consumes:
       - application/json
-      description: person account status change
+      description: update person register status
+      parameters:
+      - description: Bearer token
+        example: Bearer {auth_token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Update person ID
+        in: query
+        name: person_id
+        required: true
+        type: integer
+      - description: Hope New login ID
+        in: body
+        name: login_id
+        schema:
+          type: string
+      - description: Hope new person_name
+        in: body
+        name: person_name
+        schema:
+          type: string
+      - description: Hope new password
+        in: body
+        name: password
+        schema:
+          type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
-      summary: wip
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+      security:
+      - Authentication: []
+      summary: update status | update person register status
       tags:
       - persons
+  /prsk/records/{person_id}:
+    get:
+      consumes:
+      - application/json
+      description: get all records data by person
+      parameters:
+      - description: Bearer token
+        example: Bearer {auth_token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Want to get personID
+        in: query
+        name: person_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Record'
+            type: array
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+      security:
+      - Authentication: []
+      summary: get list | get all records data by person
+      tags:
+      - records
+    post:
+      consumes:
+      - application/json
+      description: create new record
+      parameters:
+      - description: Bearer token
+        example: Bearer {auth_token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Want to add personID
+        in: query
+        name: person_id
+        required: true
+        type: integer
+      - description: store target musicID
+        in: body
+        name: music_id
+        required: true
+        schema:
+          type: integer
+      - description: easy's clear status
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: body
+        name: record_easy
+        schema:
+          type: integer
+      - description: normal's clear status
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: body
+        name: record_normal
+        schema:
+          type: integer
+      - description: hard's clear status
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: body
+        name: record_hard
+        schema:
+          type: integer
+      - description: expert's clear status
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: body
+        name: record_expert
+        schema:
+          type: integer
+      - description: master's clear status
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: body
+        name: record_master
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Record'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+      security:
+      - Authentication: []
+      summary: new record | create new record
+      tags:
+      - records
+  /prsk/records/{person_id}/{music_id}:
+    put:
+      consumes:
+      - application/json
+      description: update record clear status
+      parameters:
+      - description: Bearer token
+        example: Bearer {auth_token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Want to update personID
+        in: query
+        name: person_id
+        required: true
+        type: integer
+      - description: Want to update musicID
+        in: query
+        name: music_id
+        required: true
+        type: integer
+      - description: easy's clear status
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: body
+        name: record_easy
+        schema:
+          type: integer
+      - description: normal's clear status
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: body
+        name: record_normal
+        schema:
+          type: integer
+      - description: hard's clear status
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: body
+        name: record_hard
+        schema:
+          type: integer
+      - description: expert's clear status
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: body
+        name: record_expert
+        schema:
+          type: integer
+      - description: master's clear status
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: body
+        name: record_master
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Record'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+      security:
+      - Authentication: []
+      summary: update status | update record clear status
+      tags:
+      - records
+  /prsk/signout:
+    delete:
+      consumes:
+      - application/json
+      description: delete a stored token
+      parameters:
+      - description: Bearer token
+        example: Bearer {auth_token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Want to delete token personID
+        in: body
+        name: person_id
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+      security:
+      - Authentication: []
+      summary: delete token | delete a stored token
+      tags:
+      - accounts
+  /signin:
+    post:
+      consumes:
+      - application/json
+      description: generate and stored token
+      parameters:
+      - description: LoginID
+        in: body
+        name: login_id
+        required: true
+        schema:
+          type: string
+      - description: password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: generate new token
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+      summary: add token | generate and stored token
+      tags:
+      - accounts
   /signup:
     post:
       consumes:
       - application/json
-      description: wip
+      description: create new person
+      parameters:
+      - description: Hope ID
+        in: body
+        name: login_id
+        required: true
+        schema:
+          type: string
+      - description: Hope display name
+        in: body
+        name: person_name
+        required: true
+        schema:
+          type: string
+      - description: Hope password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/model.Person'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/infra.HttpError'
         "503":
           description: Service Unavailable
-      summary: wip
+          schema:
+            $ref: '#/definitions/infra.HttpError'
+      summary: new account | create new person
       tags:
       - accounts
-produces:
-- application/json
 schemes:
 - http
 - https

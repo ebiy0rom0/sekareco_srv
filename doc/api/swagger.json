@@ -1,10 +1,4 @@
 {
-    "consumes": [
-        "application/json"
-    ],
-    "produces": [
-        "application/json"
-    ],
     "schemes": [
         "http",
         "https"
@@ -25,6 +19,11 @@
     "paths": {
         "/musics": {
             "get": {
+                "security": [
+                    {
+                        "Authentication": []
+                    }
+                ],
                 "description": "get all music master records",
                 "consumes": [
                     "application/json"
@@ -35,20 +34,44 @@
                 "tags": [
                     "musics"
                 ],
-                "summary": "wip",
+                "summary": "get list | get all music master records",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "Bearer {auth_token}",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Music"
+                            }
+                        }
                     },
                     "503": {
-                        "description": "Service Unavailable"
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
                     }
                 }
             }
         },
-        "/prsk/persons/{personID}": {
-            "put": {
-                "description": "person account status change",
+        "/prsk/person/{person_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Authentication": []
+                    }
+                ],
+                "description": "get one person by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -58,17 +81,449 @@
                 "tags": [
                     "persons"
                 ],
-                "summary": "wip",
+                "summary": "get one | get one person by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "Bearer {auth_token}",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Want to get person ID",
+                        "name": "person_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Person"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Authentication": []
+                    }
+                ],
+                "description": "update person register status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "persons"
+                ],
+                "summary": "update status | update person register status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "Bearer {auth_token}",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Update person ID",
+                        "name": "person_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Hope New login ID",
+                        "name": "login_id",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Hope new person_name",
+                        "name": "person_name",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Hope new password",
+                        "name": "password",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
                     }
                 }
             }
         },
-        "/signup": {
+        "/prsk/records/{person_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Authentication": []
+                    }
+                ],
+                "description": "get all records data by person",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "records"
+                ],
+                "summary": "get list | get all records data by person",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "Bearer {auth_token}",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Want to get personID",
+                        "name": "person_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Record"
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    }
+                }
+            },
             "post": {
-                "description": "wip",
+                "security": [
+                    {
+                        "Authentication": []
+                    }
+                ],
+                "description": "create new record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "records"
+                ],
+                "summary": "new record | create new record",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "Bearer {auth_token}",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Want to add personID",
+                        "name": "person_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "store target musicID",
+                        "name": "music_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "description": "easy's clear status",
+                        "name": "record_easy",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "description": "normal's clear status",
+                        "name": "record_normal",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "description": "hard's clear status",
+                        "name": "record_hard",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "description": "expert's clear status",
+                        "name": "record_expert",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "description": "master's clear status",
+                        "name": "record_master",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Record"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/prsk/records/{person_id}/{music_id}": {
+            "put": {
+                "security": [
+                    {
+                        "Authentication": []
+                    }
+                ],
+                "description": "update record clear status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "records"
+                ],
+                "summary": "update status | update record clear status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "Bearer {auth_token}",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Want to update personID",
+                        "name": "person_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Want to update musicID",
+                        "name": "music_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "description": "easy's clear status",
+                        "name": "record_easy",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "description": "normal's clear status",
+                        "name": "record_normal",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "description": "hard's clear status",
+                        "name": "record_hard",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "description": "expert's clear status",
+                        "name": "record_expert",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "description": "master's clear status",
+                        "name": "record_master",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Record"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/prsk/signout": {
+            "delete": {
+                "security": [
+                    {
+                        "Authentication": []
+                    }
+                ],
+                "description": "delete a stored token",
                 "consumes": [
                     "application/json"
                 ],
@@ -78,14 +533,241 @@
                 "tags": [
                     "accounts"
                 ],
-                "summary": "wip",
+                "summary": "delete token | delete a stored token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "Bearer {auth_token}",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Want to delete token personID",
+                        "name": "person_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
                     },
-                    "503": {
-                        "description": "Service Unavailable"
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
                     }
+                }
+            }
+        },
+        "/signin": {
+            "post": {
+                "description": "generate and stored token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "add token | generate and stored token",
+                "parameters": [
+                    {
+                        "description": "LoginID",
+                        "name": "login_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "password",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "generate new token",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/signup": {
+            "post": {
+                "description": "create new person",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "new account | create new person",
+                "parameters": [
+                    {
+                        "description": "Hope ID",
+                        "name": "login_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Hope display name",
+                        "name": "person_name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Hope password",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Person"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "infra.HttpError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "set a server error message"
+                }
+            }
+        },
+        "model.Music": {
+            "type": "object",
+            "properties": {
+                "artist_id": {
+                    "type": "integer"
+                },
+                "jacket_url": {
+                    "type": "string"
+                },
+                "level_easy": {
+                    "type": "integer"
+                },
+                "level_expert": {
+                    "type": "integer"
+                },
+                "level_hard": {
+                    "type": "integer"
+                },
+                "level_master": {
+                    "type": "integer"
+                },
+                "level_normal": {
+                    "type": "integer"
+                },
+                "music_id": {
+                    "type": "integer"
+                },
+                "music_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Person": {
+            "type": "object",
+            "properties": {
+                "friend_code": {
+                    "type": "integer"
+                },
+                "person_id": {
+                    "type": "integer"
+                },
+                "person_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Record": {
+            "type": "object",
+            "properties": {
+                "music_id": {
+                    "type": "integer"
+                },
+                "person_id": {
+                    "type": "integer"
+                },
+                "record_easy": {
+                    "type": "integer"
+                },
+                "record_expert": {
+                    "type": "integer"
+                },
+                "record_hard": {
+                    "type": "integer"
+                },
+                "record_id": {
+                    "type": "integer"
+                },
+                "record_master": {
+                    "type": "integer"
+                },
+                "record_normal": {
+                    "type": "integer"
                 }
             }
         }
