@@ -32,7 +32,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "musics"
+                    "music"
                 ],
                 "summary": "get list | get all music master records",
                 "responses": {
@@ -69,7 +69,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "persons"
+                    "person"
                 ],
                 "summary": "get one | get one person by ID",
                 "parameters": [
@@ -110,7 +110,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "persons"
+                    "person"
                 ],
                 "summary": "update status | update person register status",
                 "parameters": [
@@ -180,7 +180,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "records"
+                    "record"
                 ],
                 "summary": "get list | get all records data by person",
                 "parameters": [
@@ -224,7 +224,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "records"
+                    "record"
                 ],
                 "summary": "new record | create new record",
                 "parameters": [
@@ -352,7 +352,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "records"
+                    "record"
                 ],
                 "summary": "update status | update record clear status",
                 "parameters": [
@@ -481,7 +481,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "account"
                 ],
                 "summary": "delete token | delete a stored token",
                 "parameters": [
@@ -518,7 +518,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "account"
                 ],
                 "summary": "add token | generate and stored token",
                 "parameters": [
@@ -573,7 +573,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "account"
                 ],
                 "summary": "new account | create new person",
                 "parameters": [
@@ -715,7 +715,7 @@
         }
     },
     "securityDefinitions": {
-        "Authentication": {
+        "Bearer Authentication": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

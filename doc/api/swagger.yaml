@@ -87,7 +87,7 @@ paths:
       - Authentication: []
       summary: get list | get all music master records
       tags:
-      - musics
+      - music
   /prsk/person/{person_id}:
     get:
       consumes:
@@ -114,7 +114,7 @@ paths:
       - Authentication: []
       summary: get one | get one person by ID
       tags:
-      - persons
+      - person
     put:
       consumes:
       - application/json
@@ -157,7 +157,7 @@ paths:
       - Authentication: []
       summary: update status | update person register status
       tags:
-      - persons
+      - person
   /prsk/records/{person_id}:
     get:
       consumes:
@@ -186,7 +186,7 @@ paths:
       - Authentication: []
       summary: get list | get all records data by person
       tags:
-      - records
+      - record
     post:
       consumes:
       - application/json
@@ -272,7 +272,7 @@ paths:
       - Authentication: []
       summary: new record | create new record
       tags:
-      - records
+      - record
   /prsk/records/{person_id}/{music_id}:
     put:
       consumes:
@@ -360,7 +360,7 @@ paths:
       - Authentication: []
       summary: update status | update record clear status
       tags:
-      - records
+      - record
   /prsk/signout:
     delete:
       consumes:
@@ -386,7 +386,7 @@ paths:
       - Authentication: []
       summary: delete token | delete a stored token
       tags:
-      - accounts
+      - account
   /signin:
     post:
       consumes:
@@ -422,7 +422,7 @@ paths:
             $ref: '#/definitions/infra.HttpError'
       summary: add token | generate and stored token
       tags:
-      - accounts
+      - account
   /signup:
     post:
       consumes:
@@ -464,12 +464,12 @@ paths:
             $ref: '#/definitions/infra.HttpError'
       summary: new account | create new person
       tags:
-      - accounts
+      - account
 schemes:
 - http
 - https
 securityDefinitions:
-  Authentication:
+  Bearer Authentication:
     in: header
     name: Authorization
     type: apiKey

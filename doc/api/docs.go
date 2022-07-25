@@ -35,7 +35,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "musics"
+                    "music"
                 ],
                 "summary": "get list | get all music master records",
                 "responses": {
@@ -72,7 +72,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "persons"
+                    "person"
                 ],
                 "summary": "get one | get one person by ID",
                 "parameters": [
@@ -113,7 +113,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "persons"
+                    "person"
                 ],
                 "summary": "update status | update person register status",
                 "parameters": [
@@ -183,7 +183,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "records"
+                    "record"
                 ],
                 "summary": "get list | get all records data by person",
                 "parameters": [
@@ -227,7 +227,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "records"
+                    "record"
                 ],
                 "summary": "new record | create new record",
                 "parameters": [
@@ -355,7 +355,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "records"
+                    "record"
                 ],
                 "summary": "update status | update record clear status",
                 "parameters": [
@@ -484,7 +484,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "account"
                 ],
                 "summary": "delete token | delete a stored token",
                 "parameters": [
@@ -521,7 +521,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "account"
                 ],
                 "summary": "add token | generate and stored token",
                 "parameters": [
@@ -576,7 +576,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "account"
                 ],
                 "summary": "new account | create new person",
                 "parameters": [
@@ -718,7 +718,7 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "Authentication": {
+        "Bearer Authentication": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
