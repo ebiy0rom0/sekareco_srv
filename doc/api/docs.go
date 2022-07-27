@@ -57,7 +57,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/person/{person_id}": {
+        "/persons/{person_id}": {
             "get": {
                 "security": [
                     {

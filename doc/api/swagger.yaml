@@ -88,7 +88,7 @@ paths:
       summary: get list | get all music master records
       tags:
       - music
-  /person/{person_id}:
+  /persons/{person_id}:
     get:
       consumes:
       - application/json
