@@ -19,6 +19,9 @@ func WithLogger(logger zerolog.Logger) func(next http.Handler) http.Handler {
 
 			writer := web.NewResponseWriterWrapper(w, r)
 
+			if next == nil {
+				next = http.NotFoundHandler()
+			}
 			next.ServeHTTP(writer, r.WithContext(ctx))
 			logger.Info().Object("httpRequest", writer).Send()
 		})
