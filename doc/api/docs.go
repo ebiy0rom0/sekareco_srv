@@ -57,7 +57,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/prsk/person/{person_id}": {
+        "/person/{person_id}": {
             "get": {
                 "security": [
                     {
@@ -168,7 +168,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/prsk/records/{person_id}": {
+        "/records/{person_id}": {
             "get": {
                 "security": [
                     {
@@ -340,7 +340,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/prsk/records/{person_id}/{music_id}": {
+        "/records/{person_id}/{music_id}": {
             "put": {
                 "security": [
                     {
@@ -469,48 +469,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/prsk/signout": {
-            "delete": {
-                "security": [
-                    {
-                        "Authentication": []
-                    }
-                ],
-                "description": "delete a stored token",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "account"
-                ],
-                "summary": "delete token | delete a stored token",
-                "parameters": [
-                    {
-                        "description": "Want to delete token personID",
-                        "name": "person_id",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/infra.HttpError"
-                        }
-                    }
-                }
-            }
-        },
         "/signin": {
             "post": {
                 "description": "generate and stored token",
@@ -559,6 +517,48 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/infra.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/signout": {
+            "delete": {
+                "security": [
+                    {
+                        "Authentication": []
+                    }
+                ],
+                "description": "delete a stored token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "delete token | delete a stored token",
+                "parameters": [
+                    {
+                        "description": "Want to delete token personID",
+                        "name": "person_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/infra.HttpError"
                         }
