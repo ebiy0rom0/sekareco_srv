@@ -1,20 +1,23 @@
 package router
 
 import (
+	"os"
+	"sekareco_srv/infra"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/web"
 	"sekareco_srv/interface/database"
 	"sekareco_srv/interface/handler"
-	"sekareco_srv/interface/infra"
+	_infra "sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/interactor"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/zerolog"
 )
 
 // @BasePath /api/v1
-func InitRouter(sh infra.SqlHandler, th infra.TxHandler) *mux.Router {
+func InitRouter(sh _infra.SqlHandler, th _infra.TxHandler) *mux.Router {
 	// create handler rooting
-	r := mux.NewRouter()
+	router := mux.NewRouter()
 
 	healthHandler := handler.NewHealthHandler()
 	authHandler := handler.NewAuthHandler(
@@ -43,36 +46,42 @@ func InitRouter(sh infra.SqlHandler, th infra.TxHandler) *mux.Router {
 		),
 	)
 
-	// rest api root path prefix
-	r.PathPrefix("/api/v1")
-
+	// @debug: swagger-UI end point
+	router.PathPrefix("/swagger").Handler(infra.SwaggerUI())
 	// health check end point
-	r.HandleFunc("/health", web.HttpHandler(healthHandler.Get).Exec).Methods("GET")
+	router.HandleFunc("/health", web.HttpHandler(healthHandler.Get).Exec).Methods("GET")
+
+	// middleware setup
+	logger := zerolog.New(os.Stdout)
+	router.Use(middleware.WithLogger(logger))
+
+	// rest api root path prefix
+	appRouter := router.PathPrefix("/api/v1").Subrouter()
 
 	// account api
-	r.HandleFunc("/signup", web.HttpHandler(personHandler.Post).Exec).Methods("POST")
-	r.HandleFunc("/signin", web.HttpHandler(authHandler.Post).Exec).Methods("POST")
+	appRouter.HandleFunc("/signup", web.HttpHandler(personHandler.Post).Exec).Methods("POST")
+	appRouter.HandleFunc("/signin", web.HttpHandler(authHandler.Post).Exec).Methods("POST")
 
 	// in-app api needs authentication
-	iar := r.PathPrefix("/prsk").Subrouter()
+	authRouter := appRouter.PathPrefix("").Subrouter()
 
 	am := middleware.NewAuthMiddleware()
-	iar.Use(am.CheckAuth)
+	authRouter.Use(am.CheckAuth)
 
 	// account api
-	iar.HandleFunc("/signout", web.HttpHandler(authHandler.Delete).Exec).Methods("DELETE")
+	authRouter.HandleFunc("/signout", web.HttpHandler(authHandler.Delete).Exec).Methods("DELETE")
 
 	// person api
-	iar.HandleFunc("/persons/{personID}", web.HttpHandler(personHandler.Get).Exec).Methods("GET")
-	iar.HandleFunc("/persons/{personID}", web.HttpHandler(personHandler.Put).Exec).Methods("PUT")
+	authRouter.HandleFunc("/persons/{person_id:[0-9]+}", web.HttpHandler(personHandler.Get).Exec).Methods("GET")
+	authRouter.HandleFunc("/persons/{person_id:[0-9]+}", web.HttpHandler(personHandler.Put).Exec).Methods("PUT")
 
 	// music api
-	iar.HandleFunc("/musics", web.HttpHandler(musicHandler.Get).Exec).Methods("GET")
+	authRouter.HandleFunc("/musics", web.HttpHandler(musicHandler.Get).Exec).Methods("GET")
 
 	// record api
-	iar.HandleFunc("/records/{personID}", web.HttpHandler(recordHandler.Get).Exec).Methods("GET")
-	iar.HandleFunc("/records/{personID}", web.HttpHandler(recordHandler.Post).Exec).Methods("POST")
-	iar.HandleFunc("/records/{personID}/{musicID}", web.HttpHandler(recordHandler.Put).Exec).Methods("PUT")
+	authRouter.HandleFunc("/records/{person_id:[0-9]+}", web.HttpHandler(recordHandler.Get).Exec).Methods("GET")
+	authRouter.HandleFunc("/records/{person_id:[0-9]+}", web.HttpHandler(recordHandler.Post).Exec).Methods("POST")
+	authRouter.HandleFunc("/records/{person_id:[0-9]+}/{music_id:[0-9]+}", web.HttpHandler(recordHandler.Put).Exec).Methods("PUT")
 
-	return r
+	return router
 }

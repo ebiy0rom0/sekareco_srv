@@ -13,10 +13,6 @@ import (
 	"sekareco_srv/infra/sql"
 
 	_ "sekareco_srv/doc/api"
-
-	"github.com/rs/zerolog"
-
-	httpSwagger "github.com/swaggo/http-swagger" // http-swagger middleware
 )
 
 // @title        sekareco_srv
@@ -55,21 +51,10 @@ func main() {
 
 	// router setup
 	r := router.InitRouter(sh, th)
-	// TODO: swagger is middleware
-	// move to infra dir
-	// swagger
-	r.PathPrefix("/swagger").Handler(httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8000/swagger/doc.json"),
-	))
-
-	// middleware setup
-	logger := zerolog.New(os.Stdout)
-	r.Use(middleware.WithLogger(logger))
 
 	// cors setup
 	c := middleware.InitCors()
 
-	// server setup
 	srv := &http.Server{
 		Handler:      c.Handler(r),
 		Addr:         "0.0.0.0:8000",
