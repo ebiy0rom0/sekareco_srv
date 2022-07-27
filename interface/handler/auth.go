@@ -65,7 +65,7 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Success		200
 // @Failure		400	{object}	infra.HttpError
 // @Security	Authentication
-// @Router		/prsk/signout	[delete]
+// @Router		/signout	[delete]
 func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
 	var req inputdata.DeleteAuth
 	if err := hc.Decode(&req); err != nil {

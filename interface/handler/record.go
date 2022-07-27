@@ -29,7 +29,7 @@ func NewRecordHandler(r inputport.RecordInputport) *recordHandler {
 // @Success		200	{object}	[]model.Record
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
-// @Router		/prsk/records/{person_id}	[get]
+// @Router		/records/{person_id}	[get]
 func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
@@ -60,7 +60,7 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
-// @Router		/prsk/records/{person_id}	[post]
+// @Router		/records/{person_id}	[post]
 func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	var record inputdata.PostRecord
@@ -102,7 +102,7 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
-// @Router		/prsk/records/{person_id}/{music_id}	[put]
+// @Router		/records/{person_id}/{music_id}	[put]
 func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	var record inputdata.PutRecord
