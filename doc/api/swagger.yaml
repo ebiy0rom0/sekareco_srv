@@ -6,6 +6,34 @@ definitions:
         example: set a server error message
         type: string
     type: object
+  inputdata.AddRecord:
+    properties:
+      musicID:
+        type: integer
+      recordEasy:
+        type: integer
+      recordExpert:
+        type: integer
+      recordHard:
+        type: integer
+      recordMaster:
+        type: integer
+      recordNormal:
+        type: integer
+    type: object
+  inputdata.UpdateRecord:
+    properties:
+      recordEasy:
+        type: integer
+      recordExpert:
+        type: integer
+      recordHard:
+        type: integer
+      recordMaster:
+        type: integer
+      recordNormal:
+        type: integer
+    type: object
   model.Music:
     properties:
       artist_id:
@@ -165,7 +193,7 @@ paths:
       description: get all records data by person
       parameters:
       - description: Want to get personID
-        in: query
+        in: path
         name: person_id
         required: true
         type: integer
@@ -193,71 +221,21 @@ paths:
       description: create new record
       parameters:
       - description: Want to add personID
-        in: query
+        in: path
         name: person_id
         required: true
         type: integer
-      - description: store target musicID
+      - description: store Record
         in: body
-        name: music_id
+        name: record
         required: true
         schema:
-          type: integer
-      - description: easy's clear status
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: body
-        name: record_easy
-        schema:
-          type: integer
-      - description: normal's clear status
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: body
-        name: record_normal
-        schema:
-          type: integer
-      - description: hard's clear status
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: body
-        name: record_hard
-        schema:
-          type: integer
-      - description: expert's clear status
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: body
-        name: record_expert
-        schema:
-          type: integer
-      - description: master's clear status
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: body
-        name: record_master
-        schema:
-          type: integer
+          $ref: '#/definitions/inputdata.AddRecord'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/model.Record'
         "400":
@@ -280,74 +258,26 @@ paths:
       description: update record clear status
       parameters:
       - description: Want to update personID
-        in: query
+        in: path
         name: person_id
         required: true
         type: integer
       - description: Want to update musicID
-        in: query
+        in: path
         name: music_id
         required: true
         type: integer
-      - description: easy's clear status
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
+      - description: update Record
         in: body
-        name: record_easy
+        name: record
+        required: true
         schema:
-          type: integer
-      - description: normal's clear status
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: body
-        name: record_normal
-        schema:
-          type: integer
-      - description: hard's clear status
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: body
-        name: record_hard
-        schema:
-          type: integer
-      - description: expert's clear status
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: body
-        name: record_expert
-        schema:
-          type: integer
-      - description: master's clear status
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: body
-        name: record_master
-        schema:
-          type: integer
+          $ref: '#/definitions/inputdata.UpdateRecord'
       produces:
       - application/json
       responses:
         "200":
           description: OK
-          schema:
-            items:
-              $ref: '#/definitions/model.Record'
-            type: array
         "400":
           description: Bad Request
           schema:

@@ -191,7 +191,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Want to get personID",
                         "name": "person_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -235,92 +235,22 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Want to add personID",
                         "name": "person_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     },
                     {
-                        "description": "store target musicID",
-                        "name": "music_id",
+                        "description": "store Record",
+                        "name": "record",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "description": "easy's clear status",
-                        "name": "record_easy",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "description": "normal's clear status",
-                        "name": "record_normal",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "description": "hard's clear status",
-                        "name": "record_hard",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "description": "expert's clear status",
-                        "name": "record_expert",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "description": "master's clear status",
-                        "name": "record_master",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/inputdata.AddRecord"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/model.Record"
                         }
@@ -363,96 +293,29 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Want to update personID",
                         "name": "person_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "Want to update musicID",
                         "name": "music_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     },
                     {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "description": "easy's clear status",
-                        "name": "record_easy",
+                        "description": "update Record",
+                        "name": "record",
                         "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "description": "normal's clear status",
-                        "name": "record_normal",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "description": "hard's clear status",
-                        "name": "record_hard",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "description": "expert's clear status",
-                        "name": "record_expert",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "description": "master's clear status",
-                        "name": "record_master",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/inputdata.UpdateRecord"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.Record"
-                            }
-                        }
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -638,6 +501,49 @@ const docTemplate = `{
                 "error": {
                     "type": "string",
                     "example": "set a server error message"
+                }
+            }
+        },
+        "inputdata.AddRecord": {
+            "type": "object",
+            "properties": {
+                "musicID": {
+                    "type": "integer"
+                },
+                "recordEasy": {
+                    "type": "integer"
+                },
+                "recordExpert": {
+                    "type": "integer"
+                },
+                "recordHard": {
+                    "type": "integer"
+                },
+                "recordMaster": {
+                    "type": "integer"
+                },
+                "recordNormal": {
+                    "type": "integer"
+                }
+            }
+        },
+        "inputdata.UpdateRecord": {
+            "type": "object",
+            "properties": {
+                "recordEasy": {
+                    "type": "integer"
+                },
+                "recordExpert": {
+                    "type": "integer"
+                },
+                "recordHard": {
+                    "type": "integer"
+                },
+                "recordMaster": {
+                    "type": "integer"
+                },
+                "recordNormal": {
+                    "type": "integer"
                 }
             }
         },
