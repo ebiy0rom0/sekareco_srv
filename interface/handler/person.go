@@ -28,7 +28,7 @@ func NewPersonHandler(p inputport.PersonInputport) *personHandler {
 // @Success		200 {object}	model.Person
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
-// @Router		/person/{person_id}	[get]
+// @Router		/persons/{person_id}	[get]
 func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
@@ -97,7 +97,7 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
-// @Router		/person/{person_id}	[put]
+// @Router		/persons/{person_id}	[put]
 func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
