@@ -64,7 +64,15 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (rec
 
 	for rows.Next() {
 		var record model.Record
-		err = rows.Scan(&record.PersonID, &record.MusicID, &record.RecordEasy, &record.RecordNormal, &record.RecordHard, &record.RecordExpert, &record.RecordMaster)
+		err = rows.Scan(
+			&record.PersonID,
+			&record.MusicID,
+			&record.RecordEasy,
+			&record.RecordNormal,
+			&record.RecordHard,
+			&record.RecordExpert,
+			&record.RecordMaster,
+		)
 		if err != nil {
 			return
 		}

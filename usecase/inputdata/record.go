@@ -1,8 +1,6 @@
 package inputdata
 
-type PostRecord struct {
-	RecordID     int
-	PersonID     int
+type AddRecord struct {
 	MusicID      int
 	RecordEasy   int
 	RecordNormal int
@@ -11,10 +9,7 @@ type PostRecord struct {
 	RecordMaster int
 }
 
-type PutRecord struct {
-	RecordID     int
-	PersonID     int
-	MusicID      int
+type UpdateRecord struct {
 	RecordEasy   int
 	RecordNormal int
 	RecordHard   int

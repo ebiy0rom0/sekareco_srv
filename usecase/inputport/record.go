@@ -7,7 +7,7 @@ import (
 )
 
 type RecordInputport interface {
-	Store(context.Context, inputdata.PostRecord) (int, error)
-	Update(context.Context, int, int, inputdata.PutRecord) error
+	Store(context.Context, int, inputdata.AddRecord) (model.Record, error)
+	Update(context.Context, int, int, inputdata.UpdateRecord) error
 	GetByPersonID(context.Context, int) ([]model.Record, error)
 }

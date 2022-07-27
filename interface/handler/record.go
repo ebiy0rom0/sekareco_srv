@@ -25,7 +25,7 @@ func NewRecordHandler(r inputport.RecordInputport) *recordHandler {
 // @Tags		record
 // @Accept		json
 // @Produce		json
-// @param		person_id		query	int		true	"Want to get personID"
+// @param		person_id		path	int		true	"Want to get personID"
 // @Success		200	{object}	[]model.Record
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
@@ -49,22 +49,17 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 // @Tags		record
 // @Accept		json
 // @Produce		json
-// @param		person_id		query	int		true	"Want to add personID"
-// @param		music_id		body	int		true	"store target musicID"
-// @param		record_easy		body	int		false	"easy's clear status"		enums(0,1,2,3)
-// @param		record_normal	body	int		false	"normal's clear status"		enums(0,1,2,3)
-// @param		record_hard		body	int		false	"hard's clear status"		enums(0,1,2,3)
-// @param		record_expert	body	int		false	"expert's clear status"		enums(0,1,2,3)
-// @param		record_master	body	int		false	"master's clear status"		enums(0,1,2,3)
-// @Success		200	{object}	model.Record
+// @param		person_id		path	int						true	"Want to add personID"
+// @param		record			body	inputdata.AddRecord		true	"store Record"
+// @Success		201	{object}	model.Record
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
 // @Router		/records/{person_id}	[post]
 func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
-	var record inputdata.PostRecord
-	if err := hc.Decode(&record); err != nil {
+	var addRecord inputdata.AddRecord
+	if err := hc.Decode(&addRecord); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}
@@ -72,17 +67,15 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	// TODO: validation
 
 	// ID check is already finished in middleware check-auth
-	personID, _ := strconv.Atoi(vars["personID"])
-	record.PersonID = personID
+	personID, _ := strconv.Atoi(vars["person_id"])
 
-	recordID, err := h.record.Store(ctx, record)
+	newRecord, err := h.record.Store(ctx, personID, addRecord)
 	if err != nil {
 		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
-	record.RecordID = recordID
 
-	output, _ := json.Marshal(record)
+	output, _ := json.Marshal(newRecord)
 	hc.Response(http.StatusCreated, output)
 }
 
@@ -91,21 +84,17 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Tags		record
 // @Accept		json
 // @Produce		json
-// @param		person_id		query	int		true	"Want to update personID"
-// @param		music_id		query	int		true	"Want to update musicID"
-// @param		record_easy		body	int		false	"easy's clear status"		enums(0,1,2,3)
-// @param		record_normal	body	int		false	"normal's clear status"		enums(0,1,2,3)
-// @param		record_hard		body	int		false	"hard's clear status"		enums(0,1,2,3)
-// @param		record_expert	body	int		false	"expert's clear status"		enums(0,1,2,3)
-// @param		record_master	body	int		false	"master's clear status"		enums(0,1,2,3)
-// @Success		200	{object}	[]model.Record
+// @param		person_id		path	int							true	"Want to update personID"
+// @param		music_id		path	int							true	"Want to update musicID"
+// @param		record			body	inputdata.UpdateRecord		true	"update Record"
+// @Success		200
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
 // @Router		/records/{person_id}/{music_id}	[put]
 func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
-	var record inputdata.PutRecord
+	var record inputdata.UpdateRecord
 	if err := hc.Decode(&record); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
