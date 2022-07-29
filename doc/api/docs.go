@@ -80,7 +80,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Want to get person ID",
                         "name": "person_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -118,34 +118,12 @@ const docTemplate = `{
                 "summary": "update status | update person register status",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Update person ID",
-                        "name": "person_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Hope New login ID",
-                        "name": "login_id",
+                        "description": "update person status",
+                        "name": "person",
                         "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Hope new person_name",
-                        "name": "person_name",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Hope new password",
-                        "name": "password",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/inputdata.UpdatePerson"
                         }
                     }
                 ],
@@ -444,30 +422,12 @@ const docTemplate = `{
                 "summary": "new account | create new person",
                 "parameters": [
                     {
-                        "description": "Hope ID",
-                        "name": "login_id",
+                        "description": "add person status",
+                        "name": "person",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Hope display name",
-                        "name": "person_name",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Hope password",
-                        "name": "password",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/inputdata.AddPerson"
                         }
                     }
                 ],
@@ -504,6 +464,20 @@ const docTemplate = `{
                 }
             }
         },
+        "inputdata.AddPerson": {
+            "type": "object",
+            "properties": {
+                "loginID": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "personName": {
+                    "type": "string"
+                }
+            }
+        },
         "inputdata.AddRecord": {
             "type": "object",
             "properties": {
@@ -524,6 +498,20 @@ const docTemplate = `{
                 },
                 "recordNormal": {
                     "type": "integer"
+                }
+            }
+        },
+        "inputdata.UpdatePerson": {
+            "type": "object",
+            "properties": {
+                "loginID": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "personName": {
+                    "type": "string"
                 }
             }
         },

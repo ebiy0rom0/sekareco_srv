@@ -6,6 +6,15 @@ definitions:
         example: set a server error message
         type: string
     type: object
+  inputdata.AddPerson:
+    properties:
+      loginID:
+        type: string
+      password:
+        type: string
+      personName:
+        type: string
+    type: object
   inputdata.AddRecord:
     properties:
       musicID:
@@ -20,6 +29,15 @@ definitions:
         type: integer
       recordNormal:
         type: integer
+    type: object
+  inputdata.UpdatePerson:
+    properties:
+      loginID:
+        type: string
+      password:
+        type: string
+      personName:
+        type: string
     type: object
   inputdata.UpdateRecord:
     properties:
@@ -123,7 +141,7 @@ paths:
       description: get one person by ID
       parameters:
       - description: Want to get person ID
-        in: query
+        in: path
         name: person_id
         required: true
         type: integer
@@ -148,26 +166,12 @@ paths:
       - application/json
       description: update person register status
       parameters:
-      - description: Update person ID
-        in: query
-        name: person_id
+      - description: update person status
+        in: body
+        name: person
         required: true
-        type: integer
-      - description: Hope New login ID
-        in: body
-        name: login_id
         schema:
-          type: string
-      - description: Hope new person_name
-        in: body
-        name: person_name
-        schema:
-          type: string
-      - description: Hope new password
-        in: body
-        name: password
-        schema:
-          type: string
+          $ref: '#/definitions/inputdata.UpdatePerson'
       produces:
       - application/json
       responses:
@@ -359,24 +363,12 @@ paths:
       - application/json
       description: create new person
       parameters:
-      - description: Hope ID
+      - description: add person status
         in: body
-        name: login_id
+        name: person
         required: true
         schema:
-          type: string
-      - description: Hope display name
-        in: body
-        name: person_name
-        required: true
-        schema:
-          type: string
-      - description: Hope password
-        in: body
-        name: password
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/inputdata.AddPerson'
       produces:
       - application/json
       responses:
