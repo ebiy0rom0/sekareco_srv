@@ -7,8 +7,8 @@ import (
 )
 
 type PersonInputport interface {
-	Store(context.Context, inputdata.PostPerson) (model.Person, error)
-	Update(context.Context, int, inputdata.PutPerson) error
+	Store(context.Context, inputdata.AddPerson) (model.Person, error)
+	Update(context.Context, int, inputdata.UpdatePerson) error
 	GetByID(context.Context, int) (model.Person, error)
 	IsDuplicateLoginID(context.Context, string) (bool, error)
 }

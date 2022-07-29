@@ -4,13 +4,13 @@ import (
 	"errors"
 )
 
-type PostPerson struct {
+type AddPerson struct {
 	LoginID    string
 	PersonName string
 	Password   string
 }
 
-func (p *PostPerson) Valiation() error {
+func (p *AddPerson) Valiation() error {
 	if len(p.LoginID) == 0 {
 		return errors.New("loginID is required")
 	}
@@ -26,7 +26,7 @@ func (p *PostPerson) Valiation() error {
 	return nil
 }
 
-type PutPerson struct {
+type UpdatePerson struct {
 	LoginID    string
 	PersonName string
 	Password   string

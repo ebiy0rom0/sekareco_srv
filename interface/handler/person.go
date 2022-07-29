@@ -24,7 +24,7 @@ func NewPersonHandler(p inputport.PersonInputport) *personHandler {
 // @Tags		person
 // @Accept		json
 // @Produce		json
-// @param		person_id		query	int		true	"Want to get person ID"
+// @param		person_id		path	int		true	"Want to get person ID"
 // @Success		200 {object}	model.Person
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
@@ -47,15 +47,13 @@ func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 // @Tags		account
 // @Accept		json
 // @Produce		json
-// @param		login_id	body	string	true	"Hope ID"
-// @param		person_name	body	string	true	"Hope display name"
-// @param		password	body	string	true	"Hope password"
+// @param		person	body	inputdata.AddPerson	true	"add person status"
 // @Success		200	{object}	model.Person
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
 // @Router		/signup	[post]
 func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
-	var req inputdata.PostPerson
+	var req inputdata.AddPerson
 	if err := hc.Decode(&req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
@@ -89,10 +87,7 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Tags		person
 // @Accept		json
 // @Produce		json
-// @param		person_id		query	int		true	"Update person ID"
-// @param		login_id		body	string	false	"Hope New login ID"
-// @param		person_name		body	string	false	"Hope new person_name"
-// @param		password		body	string	false	"Hope new password"
+// @param		person		body	inputdata.UpdatePerson	true	"update person status"
 // @Success		200
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
@@ -102,7 +97,7 @@ func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
 
-	var req inputdata.PutPerson
+	var req inputdata.UpdatePerson
 	if err := hc.Decode(&req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return

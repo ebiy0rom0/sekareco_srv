@@ -28,7 +28,7 @@ func NewPersonInteractor(p database.PersonRepository, l database.LoginRepository
 	}
 }
 
-func (i *personInteractor) Store(ctx context.Context, p inputdata.PostPerson) (model.Person, error) {
+func (i *personInteractor) Store(ctx context.Context, p inputdata.AddPerson) (model.Person, error) {
 	code, _ := i.generateFriendCode(p.LoginID)
 	person := model.Person{
 		PersonName: p.PersonName,
@@ -62,7 +62,7 @@ func (i *personInteractor) Store(ctx context.Context, p inputdata.PostPerson) (m
 	return v.(model.Person), err
 }
 
-func (i *personInteractor) Update(ctx context.Context, pid int, p inputdata.PutPerson) error {
+func (i *personInteractor) Update(ctx context.Context, pid int, p inputdata.UpdatePerson) error {
 	// TODO: create update in repository
 	return nil
 }
