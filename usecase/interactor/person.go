@@ -35,16 +35,16 @@ func (i *personInteractor) Store(ctx context.Context, p inputdata.AddPerson) (mo
 		FriendCode: code,
 	}
 
-	v, err := i.transaction.Do(ctx, func(ctx context.Context) (interface{}, error) {
+	_, err := i.transaction.Do(ctx, func(ctx context.Context) (interface{}, error) {
 		personID, err := i.person.Store(ctx, person)
 		if err != nil {
-			return model.Person{}, err
+			return nil, err
 		}
 		person.PersonID = personID
 
 		hash, err := i.toHashPassword(p.Password)
 		if err != nil {
-			return model.Person{}, err
+			return nil, err
 		}
 		login := model.Login{
 			LoginID:      p.LoginID,
@@ -53,13 +53,15 @@ func (i *personInteractor) Store(ctx context.Context, p inputdata.AddPerson) (mo
 		}
 
 		if err = i.login.Store(ctx, login); err != nil {
-			// l.personRepo.Rollback()
-			return model.Person{}, err
+			return nil, err
 		}
-		return person, nil
+		return nil, nil
 	})
 
-	return v.(model.Person), err
+	if err != nil {
+		return model.Person{}, err
+	}
+	return person, err
 }
 
 func (i *personInteractor) Update(ctx context.Context, pid int, p inputdata.UpdatePerson) error {
