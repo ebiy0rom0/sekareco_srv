@@ -14,5 +14,5 @@ func NewHealthHandler() *healthHandler {
 }
 
 func (h *healthHandler) Get(ctx context.Context, hc infra.HttpContext) {
-	hc.Response(http.StatusOK)
+	hc.Response(http.StatusOK, nil)
 }

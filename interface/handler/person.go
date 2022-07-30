@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputdata"
@@ -69,6 +70,7 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	} else if !ok {
+		err = errors.New("loginID is duplicate: " + req.LoginID)
 		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
@@ -108,5 +110,5 @@ func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	hc.Response(http.StatusOK)
+	hc.Response(http.StatusOK, nil)
 }

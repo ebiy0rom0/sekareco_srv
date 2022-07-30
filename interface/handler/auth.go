@@ -78,5 +78,5 @@ func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
 	// h.auth.RevokeToken(personID)
 	fmt.Printf("revoke token: personID->%d", personID)
 
-	hc.Response(http.StatusOK)
+	hc.Response(http.StatusOK, nil)
 }

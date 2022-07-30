@@ -25,7 +25,6 @@ func (c *HttpContext) Vars() map[string]string {
 	return mux.Vars(c.Request)
 }
 
-// TODO: bag - unmarshal failed
 func (c *HttpContext) Decode(i interface{}) error {
 	err := json.NewDecoder(c.Request.Body).Decode(&i)
 	if err != nil {
@@ -34,7 +33,7 @@ func (c *HttpContext) Decode(i interface{}) error {
 	return nil
 }
 
-func (c *HttpContext) Response(code int, v ...interface{}) error {
+func (c *HttpContext) Response(code int, v interface{}) error {
 	c.Writer.Header().Set("Content-Type", "application/json")
 	c.Writer.WriteHeader(code)
 
