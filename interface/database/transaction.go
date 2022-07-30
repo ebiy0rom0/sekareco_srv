@@ -22,7 +22,12 @@ func NewTransaction(h infra.TxHandler) database.SqlTransaction {
 }
 
 func (t *tx) Do(ctx context.Context, fn database.ExecFunc) (interface{}, error) {
-	t.Begin(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
+	err := t.Begin(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
+	if err != nil {
+		return nil, err
+	}
+
+	ctx = context.WithValue(ctx, &txKey, t)
 	v, err := fn(ctx)
 	if err != nil {
 		t.Rollback()
