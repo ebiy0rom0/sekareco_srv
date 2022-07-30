@@ -21,7 +21,6 @@ func (r *loginRepository) Store(ctx context.Context, l model.Login) (err error) 
 
 	dao, ok := GetTx(ctx)
 	if !ok {
-		//
 		dao = r
 	}
 

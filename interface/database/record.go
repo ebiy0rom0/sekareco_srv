@@ -18,7 +18,13 @@ func NewRecordRepository(h infra.SqlHandler) database.RecordRepository {
 func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordID int, err error) {
 	query := "INSERT INTO record (person_id, music_id, record_easy, record_nomarl, record_hard, record_expert, record_master)"
 	query += " VALUES (?, ?, ?, ?, ?, ?, ?);"
-	result, err := r.Execute(ctx, query,
+
+	dao, ok := GetTx(ctx)
+	if !ok {
+		dao = r
+	}
+
+	result, err := dao.Execute(ctx, query,
 		rec.PersonID,
 		rec.MusicID,
 		rec.RecordEasy,
@@ -42,7 +48,13 @@ func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordI
 
 func (r *recordRepository) Update(ctx context.Context, personID int, musicID int, rec model.Record) (err error) {
 	query := "UPDATE record SET record_easy = ?, record_normal = ?, record_hard = ?, record_expert = ?, record_master = ? WHERE person_id = ? AND music_id = ?;"
-	_, err = r.Execute(ctx, query,
+
+	dao, ok := GetTx(ctx)
+	if !ok {
+		dao = r
+	}
+
+	_, err = dao.Execute(ctx, query,
 		rec.RecordEasy,
 		rec.RecordNormal,
 		rec.RecordNormal,
@@ -73,12 +85,11 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (rec
 			&record.RecordExpert,
 			&record.RecordMaster,
 		)
+
 		if err != nil {
 			return
 		}
-
 		records = append(records, record)
 	}
-
 	return
 }
