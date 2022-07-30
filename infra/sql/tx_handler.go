@@ -27,9 +27,9 @@ func (h *txHandler) Execute(ctx context.Context, query string, args ...interface
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(args...)
+	res, err := stmt.ExecContext(ctx, args...)
 	if err != nil {
-		return res, err
+		return nil, err
 	}
 	return res, nil
 }

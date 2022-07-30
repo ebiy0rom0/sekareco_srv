@@ -46,7 +46,7 @@ func (h *sqlHandler) Execute(ctx context.Context, query string, args ...interfac
 
 	res, err := stmt.ExecContext(ctx, args...)
 	if err != nil {
-		return res, err
+		return nil, err
 	}
 	return res, nil
 }
