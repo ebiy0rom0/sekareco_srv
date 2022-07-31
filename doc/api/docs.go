@@ -119,7 +119,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "update person status",
-                        "name": "person",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -218,7 +218,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "store Record",
-                        "name": "record",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -283,7 +283,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "update Record",
-                        "name": "record",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -325,21 +325,12 @@ const docTemplate = `{
                 "summary": "add token | generate and stored token",
                 "parameters": [
                     {
-                        "description": "LoginID",
-                        "name": "login_id",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
                         "description": "password",
-                        "name": "password",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/inputdata.PostAuth"
                         }
                     }
                 ],
@@ -385,12 +376,12 @@ const docTemplate = `{
                 "summary": "delete token | delete a stored token",
                 "parameters": [
                     {
-                        "description": "Want to delete token personID",
-                        "name": "person_id",
+                        "description": "personID whose token is to be deleted",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/inputdata.DeleteAuth"
                         }
                     }
                 ],
@@ -423,7 +414,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "add person status",
-                        "name": "person",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -498,6 +489,25 @@ const docTemplate = `{
                 },
                 "recordNormal": {
                     "type": "integer"
+                }
+            }
+        },
+        "inputdata.DeleteAuth": {
+            "type": "object",
+            "properties": {
+                "personID": {
+                    "type": "string"
+                }
+            }
+        },
+        "inputdata.PostAuth": {
+            "type": "object",
+            "properties": {
+                "login_id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         },
