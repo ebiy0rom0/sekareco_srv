@@ -30,6 +30,18 @@ definitions:
       recordNormal:
         type: integer
     type: object
+  inputdata.DeleteAuth:
+    properties:
+      personID:
+        type: string
+    type: object
+  inputdata.PostAuth:
+    properties:
+      login_id:
+        type: string
+      password:
+        type: string
+    type: object
   inputdata.UpdatePerson:
     properties:
       loginID:
@@ -168,7 +180,7 @@ paths:
       parameters:
       - description: update person status
         in: body
-        name: person
+        name: data
         required: true
         schema:
           $ref: '#/definitions/inputdata.UpdatePerson'
@@ -231,7 +243,7 @@ paths:
         type: integer
       - description: store Record
         in: body
-        name: record
+        name: data
         required: true
         schema:
           $ref: '#/definitions/inputdata.AddRecord'
@@ -273,7 +285,7 @@ paths:
         type: integer
       - description: update Record
         in: body
-        name: record
+        name: data
         required: true
         schema:
           $ref: '#/definitions/inputdata.UpdateRecord'
@@ -301,18 +313,12 @@ paths:
       - application/json
       description: generate and stored token
       parameters:
-      - description: LoginID
-        in: body
-        name: login_id
-        required: true
-        schema:
-          type: string
       - description: password
         in: body
-        name: password
+        name: data
         required: true
         schema:
-          type: string
+          $ref: '#/definitions/inputdata.PostAuth'
       produces:
       - application/json
       responses:
@@ -337,12 +343,12 @@ paths:
       - application/json
       description: delete a stored token
       parameters:
-      - description: Want to delete token personID
+      - description: personID whose token is to be deleted
         in: body
-        name: person_id
+        name: data
         required: true
         schema:
-          type: string
+          $ref: '#/definitions/inputdata.DeleteAuth'
       produces:
       - application/json
       responses:
@@ -365,7 +371,7 @@ paths:
       parameters:
       - description: add person status
         in: body
-        name: person
+        name: data
         required: true
         schema:
           $ref: '#/definitions/inputdata.AddPerson'
