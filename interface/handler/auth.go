@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"sekareco_srv/infra/middleware"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
@@ -26,8 +27,7 @@ func NewAuthHandler(a inputport.AuthInputport) *authHandler {
 // @Tags		account
 // @Accept		json
 // @Produce		json
-// @param		login_id	body	string	true	"LoginID"
-// @param		password	body	string	true	"password"
+// @param		data	body	inputdata.PostAuth	true	"password"
 // @Success		200	{string}	string	"generate new token"
 // @Failure		400	{object}	infra.HttpError
 // @Failure		401	{object}	infra.HttpError
@@ -51,7 +51,12 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 
 	token := h.auth.GenerateNewToken()
 	// TODO: functionality is provided from infra.AuthMiddleware
-	// h.auth.AddToken(personID, token)
+	mid, ok := middleware.GetAuth(ctx)
+	if !ok {
+		fmt.Println("failed to get auth middleware")
+	}
+
+	mid.AddToken(personID, token)
 	fmt.Printf("add token: personID->%d, token->%s", personID, token)
 }
 
@@ -61,7 +66,7 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Tags		account
 // @Accept		json
 // @Produce		json
-// @param		person_id		body	string	true	"Want to delete token personID"
+// @param		data	body	inputdate.DeleteAuth	true	"personID whose token is to be deleted"
 // @Success		200
 // @Failure		400	{object}	infra.HttpError
 // @Security	Authentication
@@ -75,7 +80,12 @@ func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
 
 	personID, _ := strconv.Atoi(req.PersonID)
 	// TODO: functionality is provided from infra.AuthMiddleware
-	// h.auth.RevokeToken(personID)
+	mid, ok := middleware.GetAuth(ctx)
+	if !ok {
+		fmt.Println("failed to get auth middleware")
+	}
+
+	mid.RevokeToken(personID)
 	fmt.Printf("revoke token: personID->%d", personID)
 
 	hc.Response(http.StatusOK, nil)

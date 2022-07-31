@@ -93,3 +93,6 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (rec
 	}
 	return
 }
+
+// interface implemention checks
+var _ database.RecordRepository = &recordRepository{}

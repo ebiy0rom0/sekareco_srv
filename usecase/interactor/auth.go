@@ -40,3 +40,6 @@ func (i *authInteractor) CheckAuth(ctx context.Context, loginID string, password
 func (i *authInteractor) GenerateNewToken() string {
 	return base64.StdEncoding.EncodeToString([]byte(infra.Timer.NowDatetime()))
 }
+
+// interface implemention checks
+var _ inputport.AuthInputport = &authInteractor{}

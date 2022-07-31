@@ -25,7 +25,7 @@ func NewPersonHandler(p inputport.PersonInputport) *personHandler {
 // @Tags		person
 // @Accept		json
 // @Produce		json
-// @param		person_id		path	int		true	"Want to get person ID"
+// @param		person_id	path	int		true	"Want to get person ID"
 // @Success		200 {object}	model.Person
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
@@ -48,7 +48,7 @@ func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 // @Tags		account
 // @Accept		json
 // @Produce		json
-// @param		person	body	inputdata.AddPerson	true	"add person status"
+// @param		data	body	inputdata.AddPerson	true	"add person status"
 // @Success		200	{object}	model.Person
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
@@ -89,7 +89,7 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Tags		person
 // @Accept		json
 // @Produce		json
-// @param		person		body	inputdata.UpdatePerson	true	"update person status"
+// @param		data	body	inputdata.UpdatePerson	true	"update person status"
 // @Success		200
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError

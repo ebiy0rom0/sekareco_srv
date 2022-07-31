@@ -53,3 +53,6 @@ func (r *musicRepository) Fetch(ctx context.Context) (musics []model.Music, err 
 	}
 	return
 }
+
+// interface implemention checks
+var _ database.MusicRepository = &musicRepository{}

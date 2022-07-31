@@ -107,3 +107,6 @@ func (i *personInteractor) toHashPassword(password string) (hash string, err err
 	hash = string(bhash)
 	return
 }
+
+// interface implemention checks
+var _ inputport.PersonInputport = &personInteractor{}

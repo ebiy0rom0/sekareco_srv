@@ -78,3 +78,6 @@ func (l *recordInteractor) GetByPersonID(ctx context.Context, personID int) (rec
 	}
 	return
 }
+
+// interface implemention checks
+var _ inputport.RecordInputport = &recordInteractor{}

@@ -59,3 +59,6 @@ func (r *personRepository) GetByID(ctx context.Context, personID int) (user mode
 	user.FriendCode = friendCode
 	return
 }
+
+// interface implemention checks
+var _ database.PersonRepository = &personRepository{}

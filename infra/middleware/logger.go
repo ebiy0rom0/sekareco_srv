@@ -19,6 +19,7 @@ func WithLogger(logger zerolog.Logger) func(next http.Handler) http.Handler {
 
 			writer := web.NewResponseWriterWrapper(w, r)
 
+			// access tot unauthorized path
 			if next == nil {
 				next = http.NotFoundHandler()
 			}
@@ -32,4 +33,5 @@ func GetLogger(ctx context.Context) zerolog.Logger {
 	return ctx.Value(logKey).(zerolog.Logger)
 }
 
+// interface implementation check
 var _ zerolog.LogObjectMarshaler = &web.ResponseWriterWrapper{}

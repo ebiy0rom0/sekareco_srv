@@ -25,7 +25,7 @@ func NewRecordHandler(r inputport.RecordInputport) *recordHandler {
 // @Tags		record
 // @Accept		json
 // @Produce		json
-// @param		person_id		path	int		true	"Want to get personID"
+// @param		person_id	path	int		true	"Want to get personID"
 // @Success		200	{object}	[]model.Record
 // @Failure		503	{object}	infra.HttpError
 // @Security	Authentication
@@ -49,8 +49,8 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 // @Tags		record
 // @Accept		json
 // @Produce		json
-// @param		person_id		path	int						true	"Want to add personID"
-// @param		record			body	inputdata.AddRecord		true	"store Record"
+// @param		person_id	path	int						true	"Want to add personID"
+// @param		data		body	inputdata.AddRecord		true	"store Record"
 // @Success		201	{object}	model.Record
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
@@ -84,9 +84,9 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Tags		record
 // @Accept		json
 // @Produce		json
-// @param		person_id		path	int							true	"Want to update personID"
-// @param		music_id		path	int							true	"Want to update musicID"
-// @param		record			body	inputdata.UpdateRecord		true	"update Record"
+// @param		person_id	path	int						true	"Want to update personID"
+// @param		music_id	path	int						true	"Want to update musicID"
+// @param		data		body	inputdata.UpdateRecord	true	"update Record"
 // @Success		200
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
