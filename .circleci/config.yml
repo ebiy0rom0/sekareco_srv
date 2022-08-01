@@ -4,9 +4,17 @@ jobs:
   build:
     docker:
       - image: cimg/go:1.17
+        auth:
+          username: ebiy0rom0
+          password: $DOCKERHUB_PASS
     working_directory: /go/src/github.com/ebiy0rom0/sekareco_srv
     steps:
       - checkout
+      - restore_cache:
+        keys:
+          - go-mod-v4-{{ checksum "go.sum" }}
       - run:
           name: unit test
           command: go test -v ./...
+
+workflows:
