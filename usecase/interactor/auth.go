@@ -2,8 +2,7 @@ package interactor
 
 import (
 	"context"
-	"encoding/base64"
-	"sekareco_srv/infra"
+	infra_ "sekareco_srv/domain/infra"
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/inputport"
 
@@ -11,12 +10,14 @@ import (
 )
 
 type authInteractor struct {
+	token       infra_.TokenManager
 	login       database.LoginRepository
 	transaction database.SqlTransaction
 }
 
-func NewAuthInteractor(l database.LoginRepository, tx database.SqlTransaction) inputport.AuthInputport {
+func NewAuthInteractor(t infra_.TokenManager, l database.LoginRepository, tx database.SqlTransaction) inputport.AuthInputport {
 	return &authInteractor{
+		token:       t,
 		login:       l,
 		transaction: tx,
 	}
@@ -38,7 +39,15 @@ func (i *authInteractor) CheckAuth(ctx context.Context, loginID string, password
 }
 
 func (i *authInteractor) GenerateNewToken() string {
-	return base64.StdEncoding.EncodeToString([]byte(infra.Timer.NowDatetime()))
+	return i.token.GenerateNewToken()
+}
+
+func (i *authInteractor) AddToken(id int, token string) {
+	i.token.AddToken(id, token)
+}
+
+func (i *authInteractor) RevokeToken(id int) {
+	i.token.RevokeToken(id)
 }
 
 // interface implemention checks

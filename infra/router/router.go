@@ -8,7 +8,7 @@ import (
 	"sekareco_srv/infra/web"
 	"sekareco_srv/interface/database"
 	"sekareco_srv/interface/handler"
-	_infra "sekareco_srv/interface/infra"
+	infra_ "sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/interactor"
 
 	"github.com/gorilla/mux"
@@ -16,45 +16,41 @@ import (
 )
 
 // @BasePath /api/v1
-func InitRouter(sh _infra.SqlHandler, th _infra.TxHandler) *mux.Router {
+func InitRouter(sh infra_.SqlHandler, th infra_.TxHandler) *mux.Router {
 	// create handler rooting
 	router := mux.NewRouter()
 
+	// middleware setup
+	am := middleware.NewAuthMiddleware()
+	fp, _ := os.OpenFile(os.Getenv("LOG_PATH")+os.Getenv("INFO_LOG_FILE_NAME"), os.O_RDWR|os.O_CREATE, os.ModePerm)
+	logger := zerolog.New(fp)
+
+	tx := database.NewTransaction(th)
+
 	healthHandler := handler.NewHealthHandler()
-	authHandler := handler.NewAuthHandler(
-		interactor.NewAuthInteractor(
-			database.NewLoginRepository(sh),
-			database.NewTransaction(th),
-		),
-	)
-	musicHandler := handler.NewMusicHandler(
-		interactor.NewMusicInteractor(
-			database.NewMusicRepository(sh),
-			database.NewTransaction(th),
-		),
-	)
-	personHandler := handler.NewPersonHandler(
-		interactor.NewPersonInteractor(
-			database.NewPersonRepository(sh),
-			database.NewLoginRepository(sh),
-			database.NewTransaction(th),
-		),
-	)
-	recordHandler := handler.NewRecordHandler(
-		interactor.NewRecordInteractor(
-			database.NewRecordRepository(sh),
-			database.NewTransaction(th),
-		),
-	)
+
+	tm := middleware.NewTokenManager(am)
+	lr := database.NewLoginRepository(sh)
+	ai := interactor.NewAuthInteractor(tm, lr, tx)
+	authHandler := handler.NewAuthHandler(ai)
+
+	mr := database.NewMusicRepository(sh)
+	mi := interactor.NewMusicInteractor(mr, tx)
+	musicHandler := handler.NewMusicHandler(mi)
+
+	pr := database.NewPersonRepository(sh)
+	pi := interactor.NewPersonInteractor(pr, lr, tx)
+	personHandler := handler.NewPersonHandler(pi)
+
+	rr := database.NewRecordRepository(sh)
+	ri := interactor.NewRecordInteractor(rr, tx)
+	recordHandler := handler.NewRecordHandler(ri)
 
 	// @debug: swagger-UI end point
 	router.PathPrefix("/swagger").Handler(infra.SwaggerUI())
 	// health check end point
 	router.HandleFunc("/health", web.HttpHandler(healthHandler.Get).Exec).Methods(http.MethodGet)
 
-	// middleware setup
-	fp, _ := os.OpenFile(os.Getenv("LOG_PATH")+os.Getenv("INFO_LOG_FILE_NAME"), os.O_RDWR|os.O_CREATE, os.ModePerm)
-	logger := zerolog.New(fp)
 	router.Use(middleware.WithLogger(logger))
 
 	// rest api root path prefix
@@ -66,8 +62,6 @@ func InitRouter(sh _infra.SqlHandler, th _infra.TxHandler) *mux.Router {
 
 	// api needs authentication
 	authRouter := appRouter.PathPrefix("").Subrouter()
-
-	am := middleware.NewAuthMiddleware()
 	authRouter.Use(am.CheckAuth)
 
 	// account api
@@ -84,6 +78,8 @@ func InitRouter(sh _infra.SqlHandler, th _infra.TxHandler) *mux.Router {
 	authRouter.HandleFunc("/records/{person_id:[0-9]+}", web.HttpHandler(recordHandler.Get).Exec).Methods(http.MethodGet)
 	authRouter.HandleFunc("/records/{person_id:[0-9]+}", web.HttpHandler(recordHandler.Post).Exec).Methods(http.MethodPost)
 	authRouter.HandleFunc("/records/{person_id:[0-9]+}/{music_id:[0-9]+}", web.HttpHandler(recordHandler.Put).Exec).Methods(http.MethodPut)
+
+	go am.DeleteExpiredToken()
 
 	return router
 }

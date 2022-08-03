@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"sekareco_srv/infra/middleware"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
@@ -50,13 +49,8 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	}
 
 	token := h.auth.GenerateNewToken()
-	// TODO: functionality is provided from infra.AuthMiddleware
-	mid, ok := middleware.GetAuth(ctx)
-	if !ok {
-		fmt.Println("failed to get auth middleware")
-	}
+	h.auth.AddToken(personID, token)
 
-	mid.AddToken(personID, token)
 	fmt.Printf("add token: personID->%d, token->%s", personID, token)
 }
 
@@ -79,14 +73,8 @@ func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
 	}
 
 	personID, _ := strconv.Atoi(req.PersonID)
-	// TODO: functionality is provided from infra.AuthMiddleware
-	mid, ok := middleware.GetAuth(ctx)
-	if !ok {
-		fmt.Println("failed to get auth middleware")
-	}
+	h.auth.RevokeToken(personID)
 
-	mid.RevokeToken(personID)
 	fmt.Printf("revoke token: personID->%d", personID)
-
 	hc.Response(http.StatusOK, nil)
 }

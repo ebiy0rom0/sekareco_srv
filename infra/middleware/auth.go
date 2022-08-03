@@ -1,7 +1,10 @@
 package middleware
 
 import (
+	"context"
+	"encoding/base64"
 	"net/http"
+	infra_ "sekareco_srv/domain/infra"
 	"sekareco_srv/infra"
 	"strings"
 	"time"
@@ -26,6 +29,8 @@ var MAX_TOKENS = 100
 
 var EXPIRED_TOKEN_DELETE_SPAN = 15 * time.Minute
 
+var authKey = struct{}{}
+
 type personToken struct {
 	token     string
 	expiredIn time.Time
@@ -37,9 +42,19 @@ type authMiddleware struct {
 	tokens map[int]*personToken
 }
 
+type tokenManager struct {
+	auth *authMiddleware
+}
+
 func NewAuthMiddleware() *authMiddleware {
 	return &authMiddleware{
 		tokens: make(map[int]*personToken, MAX_TOKENS),
+	}
+}
+
+func NewTokenManager(a *authMiddleware) infra_.TokenManager {
+	return &tokenManager{
+		auth: a,
 	}
 }
 
@@ -53,7 +68,11 @@ func (m *authMiddleware) CheckAuth(next http.Handler) http.Handler {
 			return
 		}
 
-		// TODO: person ID getting from request parameter
+		// context add to
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, &authKey, m)
+		r = r.WithContext(ctx)
+
 		pid := 1
 		if !m.isEnabledToken(pid, token) {
 			w.Header().Set(RESPONSE_HEADER, HEADER_INVALID_TOKEN)
@@ -107,4 +126,16 @@ func (l *authMiddleware) deleteExpiredToken() {
 			l.RevokeToken(k)
 		}
 	}
+}
+
+func (m *tokenManager) AddToken(id int, token string) {
+	m.auth.AddToken(id, token)
+}
+
+func (m *tokenManager) RevokeToken(id int) {
+	m.auth.RevokeToken(id)
+}
+
+func (m *tokenManager) GenerateNewToken() string {
+	return base64.StdEncoding.EncodeToString([]byte(infra.Timer.NowDatetime()))
 }
