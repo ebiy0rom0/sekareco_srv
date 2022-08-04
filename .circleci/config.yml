@@ -7,7 +7,7 @@ jobs:
         auth:
           username: ebiy0rom0
           password: $DOCKERHUB_PASS
-    working_directory: /go/src/github.com/ebiy0rom0/sekareco_srv
+    working_directory: ~/go/src/github.com/ebiy0rom0/sekareco_srv
     steps:
       - checkout
       - restore_cache:
