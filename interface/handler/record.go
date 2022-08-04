@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputdata"
@@ -28,11 +29,12 @@ func NewRecordHandler(r inputport.RecordInputport) *recordHandler {
 // @param		person_id	path	int		true	"Want to get personID"
 // @Success		200	{object}	[]model.Record
 // @Failure		503	{object}	infra.HttpError
-// @Security	Authentication
+// @Security	Bearer Authentication
 // @Router		/records/{person_id}	[get]
 func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
-	personID, _ := strconv.Atoi(vars["personID"])
+	fmt.Printf("%+v\n", vars)
+	personID, _ := strconv.Atoi(vars["person_id"])
 
 	records, err := h.record.GetByPersonID(ctx, personID)
 	if err != nil {
@@ -54,7 +56,7 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 // @Success		201	{object}	model.Record
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
-// @Security	Authentication
+// @Security	Bearer Authentication
 // @Router		/records/{person_id}	[post]
 func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
@@ -90,7 +92,7 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Success		200
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
-// @Security	Authentication
+// @Security	Bearer Authentication
 // @Router		/records/{person_id}/{music_id}	[put]
 func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()

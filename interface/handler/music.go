@@ -25,7 +25,7 @@ func NewMusicHandler(m inputport.MusicInputport) *musicHandler {
 // @Produce		json
 // @Success		200	{object}	[]model.Music
 // @Failure		503	{object}	infra.HttpError
-// @Security	Authentication
+// @Security	Bearer Authentication
 // @Router		/musics	[get]
 func (h *musicHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	musics, err := h.music.Fetch(ctx)

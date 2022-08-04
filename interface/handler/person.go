@@ -28,7 +28,7 @@ func NewPersonHandler(p inputport.PersonInputport) *personHandler {
 // @param		person_id	path	int		true	"Want to get person ID"
 // @Success		200 {object}	model.Person
 // @Failure		503	{object}	infra.HttpError
-// @Security	Authentication
+// @Security	Bearer Authentication
 // @Router		/persons/{person_id}	[get]
 func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
@@ -93,7 +93,7 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Success		200
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
-// @Security	Authentication
+// @Security	Bearer Authentication
 // @Router		/persons/{person_id}	[put]
 func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	vars := hc.Vars()
