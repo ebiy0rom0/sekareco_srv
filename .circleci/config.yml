@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build:
+  testing:
     docker:
       - image: cimg/go:1.17
         auth:
@@ -11,10 +11,16 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys:
-          - go-mod-v4-{{ checksum "go.sum" }}
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
+      - run: make
       - run:
           name: unit test
-          command: go test -v ./...
+          command: make test
 
 workflows:
+  build-workflow:
+    jobs:
+      - testing:
+          context:
+            - secret
