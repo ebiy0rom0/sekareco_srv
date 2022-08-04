@@ -22,8 +22,8 @@ func NewTransaction(h infra.TxHandler) database.SqlTransaction {
 }
 
 func (t *tx) Do(ctx context.Context, fn database.ExecFunc) (interface{}, error) {
-	err := t.Begin(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
-	if err != nil {
+	opt := &sql.TxOptions{Isolation: sql.LevelReadCommitted}
+	if err := t.Begin(ctx, opt); err != nil {
 		return nil, err
 	}
 

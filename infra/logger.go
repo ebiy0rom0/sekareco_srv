@@ -3,6 +3,7 @@ package infra
 import (
 	"fmt"
 	"os"
+	"sekareco_srv/domain/infra"
 )
 
 // log level
@@ -14,14 +15,8 @@ const (
 	INFO
 )
 
-type ILogger interface {
-	Error(error)
-	Warn(error)
-	Info(error)
-}
-
 // logger instance
-var Logger ILogger
+var Logger infra.Logger
 
 type LogManager struct {
 	e *os.File
@@ -89,3 +84,5 @@ func warnLogFilePath() string {
 func infoLogFilePath() string {
 	return os.Getenv("LOG_PATH") + os.Getenv("INFO_LOG_FILE_NAME")
 }
+
+var _ infra.Logger = &LogManager{}

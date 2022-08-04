@@ -10,7 +10,7 @@ type timeManager struct {
 	timer *time.Location
 }
 
-func InitTimer() {
+func init() {
 	jst, _ := time.LoadLocation("Asia/Tokyo")
 	Timer = &timeManager{
 		timer: jst,
