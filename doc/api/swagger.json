@@ -21,7 +21,7 @@
             "get": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "get all music master records",
@@ -58,7 +58,7 @@
             "get": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "get one person by ID",
@@ -99,7 +99,7 @@
             "put": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "update person register status",
@@ -147,7 +147,7 @@
             "get": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "get all records data by person",
@@ -191,7 +191,7 @@
             "post": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "create new record",
@@ -249,7 +249,7 @@
             "put": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "update record clear status",
@@ -357,7 +357,7 @@
             "delete": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "delete a stored token",

@@ -24,7 +24,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "get all music master records",
@@ -61,7 +61,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "get one person by ID",
@@ -102,7 +102,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "update person register status",
@@ -150,7 +150,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "get all records data by person",
@@ -194,7 +194,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "create new record",
@@ -252,7 +252,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "update record clear status",
@@ -360,7 +360,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "Authentication": []
+                        "Bearer Authentication": []
                     }
                 ],
                 "description": "delete a stored token",

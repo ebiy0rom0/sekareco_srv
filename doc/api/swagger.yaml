@@ -142,7 +142,7 @@ paths:
           schema:
             $ref: '#/definitions/infra.HttpError'
       security:
-      - Authentication: []
+      - Bearer Authentication: []
       summary: get list | get all music master records
       tags:
       - music
@@ -169,7 +169,7 @@ paths:
           schema:
             $ref: '#/definitions/infra.HttpError'
       security:
-      - Authentication: []
+      - Bearer Authentication: []
       summary: get one | get one person by ID
       tags:
       - person
@@ -198,7 +198,7 @@ paths:
           schema:
             $ref: '#/definitions/infra.HttpError'
       security:
-      - Authentication: []
+      - Bearer Authentication: []
       summary: update status | update person register status
       tags:
       - person
@@ -227,7 +227,7 @@ paths:
           schema:
             $ref: '#/definitions/infra.HttpError'
       security:
-      - Authentication: []
+      - Bearer Authentication: []
       summary: get list | get all records data by person
       tags:
       - record
@@ -263,7 +263,7 @@ paths:
           schema:
             $ref: '#/definitions/infra.HttpError'
       security:
-      - Authentication: []
+      - Bearer Authentication: []
       summary: new record | create new record
       tags:
       - record
@@ -303,7 +303,7 @@ paths:
           schema:
             $ref: '#/definitions/infra.HttpError'
       security:
-      - Authentication: []
+      - Bearer Authentication: []
       summary: update status | update record clear status
       tags:
       - record
@@ -359,7 +359,7 @@ paths:
           schema:
             $ref: '#/definitions/infra.HttpError'
       security:
-      - Authentication: []
+      - Bearer Authentication: []
       summary: delete token | delete a stored token
       tags:
       - account
