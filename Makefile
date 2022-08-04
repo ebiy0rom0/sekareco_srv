@@ -15,9 +15,15 @@ ifdef RELEASE
 	BUILD_STATIC:=-a
 endif
 
-BUILD_OPTIONS:=-tags $(BUILD_TAGS) $(BUILD_RACE) $(BUILD_STATIC)
+BUILD_OPTIONS:=-ldflags '-s -w' -tags $(BUILD_TAGS) $(BUILD_RACE) $(BUILD_STATIC)
 
-.PHONY: build clean
+SWAG_INIT:=
+ifdef CI
+	SWAG_INIT:=swag_init
+endif
+
+
+.PHONY: build clean test lint swag swag_init
 
 build: $(BIN_PATH)
 
@@ -25,5 +31,16 @@ $(BIN_PATH):
 	$(GOBUILD) -o $@ $(BUILD_OPTIONS) ./cmd/main.go
 
 clean:
-	@echo $(shell go env GOOS)
-#	rm -rf ./bin
+	rm -rf ./bin/*
+
+test:
+	go test -v ./...
+
+lint:
+	go vet ./...
+
+swag: $(SWAG_INIT)
+	swag init -o ./doc/api/ -d ./cmd/,./interface/handler/ --pd .\domain\ --generatedTime
+
+swag_init:
+	go install github.com/swaggo/swag/cmd/swag@latest
