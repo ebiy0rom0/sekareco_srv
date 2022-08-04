@@ -6,5 +6,5 @@ type AuthInputport interface {
 	CheckAuth(context.Context, string, string) (int, error)
 	GenerateNewToken() string
 	AddToken(int, string)
-	RevokeToken(int)
+	RevokeToken(string)
 }

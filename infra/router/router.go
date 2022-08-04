@@ -2,7 +2,6 @@ package router
 
 import (
 	"net/http"
-	"os"
 	"sekareco_srv/infra"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/web"
@@ -16,14 +15,9 @@ import (
 )
 
 // @BasePath /api/v1
-func InitRouter(sh infra_.SqlHandler, th infra_.TxHandler) *mux.Router {
+func InitRouter(sh infra_.SqlHandler, th infra_.TxHandler, am *middleware.AuthMiddleware, l zerolog.Logger) *mux.Router {
 	// create handler rooting
 	router := mux.NewRouter()
-
-	// middleware setup
-	am := middleware.NewAuthMiddleware()
-	fp, _ := os.OpenFile(os.Getenv("LOG_PATH")+os.Getenv("INFO_LOG_FILE_NAME"), os.O_RDWR|os.O_CREATE, os.ModePerm)
-	logger := zerolog.New(fp)
 
 	tx := database.NewTransaction(th)
 
@@ -51,7 +45,7 @@ func InitRouter(sh infra_.SqlHandler, th infra_.TxHandler) *mux.Router {
 	// health check end point
 	router.HandleFunc("/health", web.HttpHandler(healthHandler.Get).Exec).Methods(http.MethodGet)
 
-	router.Use(middleware.WithLogger(logger))
+	router.Use(middleware.WithLogger(l))
 
 	// rest api root path prefix
 	appRouter := router.PathPrefix("/api/v1").Subrouter()
@@ -62,7 +56,7 @@ func InitRouter(sh infra_.SqlHandler, th infra_.TxHandler) *mux.Router {
 
 	// api needs authentication
 	authRouter := appRouter.PathPrefix("").Subrouter()
-	authRouter.Use(am.CheckAuth)
+	authRouter.Use(middleware.WithCheckAuth(am))
 
 	// account api
 	authRouter.HandleFunc("/signout", web.HttpHandler(authHandler.Delete).Exec).Methods(http.MethodDelete)
@@ -78,8 +72,6 @@ func InitRouter(sh infra_.SqlHandler, th infra_.TxHandler) *mux.Router {
 	authRouter.HandleFunc("/records/{person_id:[0-9]+}", web.HttpHandler(recordHandler.Get).Exec).Methods(http.MethodGet)
 	authRouter.HandleFunc("/records/{person_id:[0-9]+}", web.HttpHandler(recordHandler.Post).Exec).Methods(http.MethodPost)
 	authRouter.HandleFunc("/records/{person_id:[0-9]+}/{music_id:[0-9]+}", web.HttpHandler(recordHandler.Put).Exec).Methods(http.MethodPut)
-
-	go am.DeleteExpiredToken()
 
 	return router
 }

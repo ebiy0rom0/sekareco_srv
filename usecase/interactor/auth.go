@@ -46,8 +46,8 @@ func (i *authInteractor) AddToken(id int, token string) {
 	i.token.AddToken(id, token)
 }
 
-func (i *authInteractor) RevokeToken(id int) {
-	i.token.RevokeToken(id)
+func (i *authInteractor) RevokeToken(token string) {
+	i.token.RevokeToken(token)
 }
 
 // interface implemention checks

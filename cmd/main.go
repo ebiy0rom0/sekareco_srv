@@ -13,6 +13,8 @@ import (
 	"sekareco_srv/infra/sql"
 
 	_ "sekareco_srv/doc/api"
+
+	"github.com/rs/zerolog"
 )
 
 // @title        sekareco_srv
@@ -35,9 +37,6 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// timer setup
-	infra.InitTimer()
-
 	// logger setup
 	infra.InitLogger()
 	defer infra.DropLogFile()
@@ -49,8 +48,14 @@ func main() {
 		fmt.Println(err)
 	}
 
+	// middleware setup
+	am := middleware.NewAuthMiddleware()
+
+	fp, _ := os.OpenFile(os.Getenv("LOG_PATH")+os.Getenv("INFO_LOG_FILE_NAME"), os.O_RDWR|os.O_CREATE, os.ModePerm)
+	l := zerolog.New(fp)
+
 	// router setup
-	r := router.InitRouter(sh, th)
+	r := router.InitRouter(sh, th, am, l)
 
 	// cors setup
 	c := middleware.InitCors()
@@ -68,6 +73,11 @@ func main() {
 			fmt.Println(err)
 		}
 	}()
+
+	// automatically token revoke
+	t := time.NewTicker(1 * time.Second)
+	defer t.Stop()
+	am.DeleteExpiredToken(t)
 
 	// wait http request
 	log.Fatal(srv.ListenAndServe())

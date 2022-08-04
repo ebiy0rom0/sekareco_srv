@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	infra_ "sekareco_srv/domain/infra"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
-	"strconv"
 )
 
 type authHandler struct {
@@ -51,7 +51,7 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 	token := h.auth.GenerateNewToken()
 	h.auth.AddToken(personID, token)
 
-	fmt.Printf("add token: personID->%d, token->%s", personID, token)
+	fmt.Printf("add token: personID->%d, token->%s\n", personID, token)
 }
 
 // synonymous with 'sign out'
@@ -63,18 +63,12 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @param		data	body	inputdata.DeleteAuth	true	"personID whose token is to be deleted"
 // @Success		200
 // @Failure		400	{object}	infra.HttpError
-// @Security	Authentication
+// @Security	Bearer Authentication
 // @Router		/signout	[delete]
 func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
-	var req inputdata.DeleteAuth
-	if err := hc.Decode(&req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err))
-		return
-	}
+	token := infra_.GetToken(ctx)
+	h.auth.RevokeToken(token)
 
-	personID, _ := strconv.Atoi(req.PersonID)
-	h.auth.RevokeToken(personID)
-
-	fmt.Printf("revoke token: personID->%d", personID)
+	// fmt.Printf("revoke token: personID->%d")
 	hc.Response(http.StatusOK, nil)
 }
