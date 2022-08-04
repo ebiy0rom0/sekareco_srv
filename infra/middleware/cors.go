@@ -9,10 +9,12 @@ import (
 func InitCors() *cors.Cors {
 	return cors.New(cors.Options{
 		AllowedOrigins: []string{
-			"http://localhost:8080",
+			"*",
 		},
 		AllowedHeaders: []string{
+			"Access-Control-Allow-Headers",
 			"Content-Type",
+			"Authorization",
 		},
 		AllowedMethods: []string{
 			http.MethodHead,
@@ -22,6 +24,7 @@ func InitCors() *cors.Cors {
 			http.MethodDelete,
 			http.MethodOptions,
 		},
-		AllowCredentials: true,
+		AllowCredentials: false,
+		Debug:            true,
 	})
 }
