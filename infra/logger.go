@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"sekareco_srv/domain/infra"
+	"sekareco_srv/util"
 )
 
 // log level
@@ -25,29 +26,29 @@ type LogManager struct {
 }
 
 func InitLogger() {
-	m := new(LogManager)
-	fp, err := os.OpenFile(errorLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
+	efp, err := os.OpenFile(errorLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	m.e = fp
 
-	fp, err = os.OpenFile(warnLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
+	wfp, err := os.OpenFile(warnLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	m.w = fp
 
-	fp, err = os.OpenFile(infoLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
+	ifp, err := os.OpenFile(infoLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	m.i = fp
 
-	Logger = m
+	Logger = &LogManager{
+		e: efp,
+		w: wfp,
+		i: ifp,
+	}
 }
 
 // for debug
@@ -74,15 +75,15 @@ func logFormat(err error) string {
 }
 
 func errorLogFilePath() string {
-	return os.Getenv("LOG_PATH") + os.Getenv("ERROR_LOG_FILE_NAME")
+	return util.RootDir() + os.Getenv("LOG_PATH") + os.Getenv("ERROR_LOG_FILE_NAME")
 }
 
 func warnLogFilePath() string {
-	return os.Getenv("LOG_PATH") + os.Getenv("WARN_LOG_FILE_NAME")
+	return util.RootDir() + os.Getenv("LOG_PATH") + os.Getenv("WARN_LOG_FILE_NAME")
 }
 
 func infoLogFilePath() string {
-	return os.Getenv("LOG_PATH") + os.Getenv("INFO_LOG_FILE_NAME")
+	return util.RootDir() + os.Getenv("LOG_PATH") + os.Getenv("INFO_LOG_FILE_NAME")
 }
 
 var _ infra.Logger = &LogManager{}

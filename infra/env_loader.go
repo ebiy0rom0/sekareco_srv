@@ -6,8 +6,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const ENV_FILE_PATH = "/config/"
+const ENV_PATH = "/config/"
 
 func LoadEnv(target string) error {
-	return godotenv.Load(util.RootDir() + ENV_FILE_PATH + target)
+	return godotenv.Load(util.RootDir() + ENV_PATH + target)
 }

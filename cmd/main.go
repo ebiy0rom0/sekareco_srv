@@ -42,7 +42,7 @@ func main() {
 	defer infra.DropLogFile()
 
 	// sql & tx handler setup
-	dbPath := os.Getenv("DATABASE_SETUP_PATH")
+	dbPath := os.Getenv("DB_PATH") + os.Getenv("DB_NAME")
 	sh, th, err := sql.NewSqlHandler(dbPath)
 	if err != nil {
 		fmt.Println(err)
@@ -50,9 +50,7 @@ func main() {
 
 	// middleware setup
 	am := middleware.NewAuthMiddleware()
-
-	fp, _ := os.OpenFile(os.Getenv("LOG_PATH")+os.Getenv("INFO_LOG_FILE_NAME"), os.O_RDWR|os.O_CREATE, os.ModePerm)
-	l := zerolog.New(fp)
+	l := zerolog.New(os.Stdout)
 
 	// router setup
 	r := router.InitRouter(sh, th, am, l)
