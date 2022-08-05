@@ -15,7 +15,12 @@ import (
 )
 
 // @BasePath /api/v1
-func InitRouter(sh infra_.SqlHandler, th infra_.TxHandler, am *middleware.AuthMiddleware, l zerolog.Logger) *mux.Router {
+func InitRouter(
+	sh infra_.SqlHandler,
+	th infra_.TxHandler,
+	am *middleware.AuthMiddleware,
+	l zerolog.Logger,
+) *mux.Router {
 	// create handler rooting
 	router := mux.NewRouter()
 
@@ -23,9 +28,8 @@ func InitRouter(sh infra_.SqlHandler, th infra_.TxHandler, am *middleware.AuthMi
 
 	healthHandler := handler.NewHealthHandler()
 
-	tm := middleware.NewTokenManager(am)
 	lr := database.NewLoginRepository(sh)
-	ai := interactor.NewAuthInteractor(tm, lr, tx)
+	ai := interactor.NewAuthInteractor(am, lr, tx)
 	authHandler := handler.NewAuthHandler(ai)
 
 	mr := database.NewMusicRepository(sh)

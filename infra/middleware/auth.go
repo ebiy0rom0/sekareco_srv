@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"encoding/base64"
-	"fmt"
 	"net/http"
 	infra_ "sekareco_srv/domain/infra"
 	"sekareco_srv/infra"
@@ -40,26 +39,15 @@ type AuthMiddleware struct {
 	tokens map[string]*tokenStatus
 }
 
-type tokenManager struct {
-	auth *AuthMiddleware
-}
-
 func NewAuthMiddleware() *AuthMiddleware {
 	return &AuthMiddleware{
 		tokens: make(map[string]*tokenStatus, MAX_TOKENS),
 	}
 }
 
-func NewTokenManager(a *AuthMiddleware) infra_.TokenManager {
-	return &tokenManager{
-		auth: a,
-	}
-}
-
 // using middleware
 func WithCheckAuth(m *AuthMiddleware) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
-		fmt.Printf("%+v\n", m)
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			token := m.getHeaderToken(r)
 			if len(token) == 0 {
@@ -74,7 +62,7 @@ func WithCheckAuth(m *AuthMiddleware) func(next http.Handler) http.Handler {
 				return
 			}
 
-			// token add to context
+			// make available for each usecase
 			ctx := r.Context()
 			ctx = infra_.SetToken(ctx, token)
 			r = r.WithContext(ctx)
@@ -85,14 +73,18 @@ func WithCheckAuth(m *AuthMiddleware) func(next http.Handler) http.Handler {
 	}
 }
 
-func (m *AuthMiddleware) addToken(pid int, token string) {
+func (m *AuthMiddleware) GenerateNewToken() string {
+	return base64.StdEncoding.EncodeToString([]byte(infra.Timer.NowDatetime()))
+}
+
+func (m *AuthMiddleware) AddToken(pid int, token string) {
 	m.tokens[token] = &tokenStatus{
 		personID:  pid,
 		expiredIn: infra.Timer.Add(EXPIRED_IN),
 	}
 }
 
-func (m *AuthMiddleware) revokeToken(token string) {
+func (m *AuthMiddleware) RevokeToken(token string) {
 	delete(m.tokens, token)
 }
 
@@ -100,8 +92,14 @@ func (m *AuthMiddleware) revokeToken(token string) {
 func (m *AuthMiddleware) DeleteExpiredToken(t *time.Ticker) {
 	go func() {
 		for {
+			// ticker wait
 			<-t.C
-			m.deleteExpiredToken()
+
+			for token, status := range m.tokens {
+				if !infra.Timer.Before(status.expiredIn) {
+					m.RevokeToken(token)
+				}
+			}
 		}
 	}()
 }
@@ -113,30 +111,6 @@ func (m *AuthMiddleware) getHeaderToken(r *http.Request) string {
 
 func (m *AuthMiddleware) isEnabledToken(token string) bool {
 	access, ok := m.tokens[token]
-
-	if ok {
-		fmt.Printf("ok: %t, expired: %s, before: %t", ok, access.expiredIn, infra.Timer.Before(access.expiredIn))
-	}
-	// not exist token or token unmatch or token expired
+	// not exist token or token expired
 	return ok && infra.Timer.Before(access.expiredIn)
-}
-
-func (m *AuthMiddleware) deleteExpiredToken() {
-	for token, status := range m.tokens {
-		if !infra.Timer.Before(status.expiredIn) {
-			m.revokeToken(token)
-		}
-	}
-}
-
-func (m *tokenManager) AddToken(id int, token string) {
-	m.auth.addToken(id, token)
-}
-
-func (m *tokenManager) RevokeToken(token string) {
-	m.auth.revokeToken(token)
-}
-
-func (m *tokenManager) GenerateNewToken() string {
-	return base64.StdEncoding.EncodeToString([]byte(infra.Timer.NowDatetime()))
 }
