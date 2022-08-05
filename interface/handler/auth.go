@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	infra_ "sekareco_srv/domain/infra"
 	"sekareco_srv/interface/infra"
@@ -48,10 +47,9 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	token := h.auth.GenerateNewToken()
-	h.auth.AddToken(personID, token)
+	token := h.auth.AddToken(personID)
 
-	fmt.Printf("add token: personID->%d, token->%s\n", personID, token)
+	hc.Response(http.StatusOK, token)
 }
 
 // synonymous with 'sign out'
@@ -69,6 +67,5 @@ func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
 	token := infra_.GetToken(ctx)
 	h.auth.RevokeToken(token)
 
-	// fmt.Printf("revoke token: personID->%d")
 	hc.Response(http.StatusOK, nil)
 }

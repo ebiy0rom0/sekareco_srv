@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"sekareco_srv/interface/infra"
@@ -42,8 +41,7 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	output, _ := json.Marshal(records)
-	hc.Response(http.StatusOK, output)
+	hc.Response(http.StatusOK, records)
 }
 
 // @Summary		new record | create new record
@@ -77,8 +75,7 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	output, _ := json.Marshal(newRecord)
-	hc.Response(http.StatusCreated, output)
+	hc.Response(http.StatusCreated, newRecord)
 }
 
 // @Summary		update status | update record clear status
@@ -110,5 +107,6 @@ func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) {
 		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
+
 	hc.Response(http.StatusOK, nil)
 }

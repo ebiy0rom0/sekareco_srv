@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputport"
@@ -34,6 +33,5 @@ func (h *musicHandler) Get(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	output, _ := json.Marshal(musics)
-	hc.Response(http.StatusOK, output)
+	hc.Response(http.StatusOK, musics)
 }
