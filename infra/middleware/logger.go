@@ -29,6 +29,7 @@ func WithLogger(logger zerolog.Logger) func(next http.Handler) http.Handler {
 	}
 }
 
+// TODO: logger into context is anti pattern
 func GetLogger(ctx context.Context) zerolog.Logger {
 	return ctx.Value(logKey).(zerolog.Logger)
 }
