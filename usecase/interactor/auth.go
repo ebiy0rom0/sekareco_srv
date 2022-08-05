@@ -38,12 +38,10 @@ func (i *authInteractor) CheckAuth(ctx context.Context, loginID string, password
 	return
 }
 
-func (i *authInteractor) GenerateNewToken() string {
-	return i.token.GenerateNewToken()
-}
-
-func (i *authInteractor) AddToken(id int, token string) {
+func (i *authInteractor) AddToken(id int) string {
+	token := i.token.GenerateNewToken()
 	i.token.AddToken(id, token)
+	return token
 }
 
 func (i *authInteractor) RevokeToken(token string) {

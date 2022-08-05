@@ -4,7 +4,6 @@ import "context"
 
 type AuthInputport interface {
 	CheckAuth(context.Context, string, string) (int, error)
-	GenerateNewToken() string
-	AddToken(int, string)
+	AddToken(int) string
 	RevokeToken(string)
 }
