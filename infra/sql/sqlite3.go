@@ -3,6 +3,7 @@ package sql
 import (
 	"database/sql"
 	"os"
+	"sekareco_srv/util"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/tanimutomo/sqlfile"
@@ -30,7 +31,7 @@ func createDB(dbPath string) error {
 func createTable(db *sql.DB) error {
 	s := sqlfile.New()
 
-	err := s.Directory("./../doc/db")
+	err := s.Directory(util.RootDir() + "/doc/db")
 	if err != nil {
 		return err
 	}
