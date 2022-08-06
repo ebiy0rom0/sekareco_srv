@@ -5,6 +5,7 @@ import (
 	"net/http"
 	infra_ "sekareco_srv/domain/infra"
 	"sekareco_srv/infra"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -74,7 +75,7 @@ func WithCheckAuth(m *AuthMiddleware) func(next http.Handler) http.Handler {
 }
 
 func (m *AuthMiddleware) GenerateNewToken() string {
-	return base64.StdEncoding.EncodeToString([]byte(infra.Timer.NowDatetime()))
+	return base64.StdEncoding.EncodeToString([]byte(strconv.FormatInt(infra.Timer.NowTime().UnixMilli(), 10)))
 }
 
 func (m *AuthMiddleware) AddToken(pid int, token string) {
