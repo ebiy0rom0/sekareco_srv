@@ -55,7 +55,7 @@ clean:
 
 test:
 	$(GORUN) ./test/setup
-	$(GOTEST) -v ./...
+	$(GOTEST) -v -count=1 ./...
 	$(GORUN) ./test/clean
 
 lint:
