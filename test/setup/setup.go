@@ -36,8 +36,14 @@ func main() {
 		log.Fatalf("%s", err.Error())
 	}
 
-	// insert test data
+	// create base table and insert test data
 	s := sqlfile.New()
+	err = s.Directory(util.RootDir() + "/doc/db/")
+	if err != nil {
+		log.Fatalf("%s", err.Error())
+	}
+	s.Exec(db)
+
 	err = s.Directory(util.RootDir() + "/test/data/")
 	if err != nil {
 		log.Fatalf("%s", err.Error())
