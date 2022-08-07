@@ -91,9 +91,12 @@ func (i *personInteractor) IsDuplicateLoginID(ctx context.Context, loginID strin
 func (i *personInteractor) generateFriendCode(loginID string) (code int, err error) {
 	// Failed generate is not problem now.
 	// This parameter usage in future content.
-	if code, err = fnv.New32().Write([]byte(loginID)); err != nil {
+	h := fnv.New32()
+	if _, err := h.Write([]byte(loginID)); err != nil {
 		infra.Logger.Warn(errors.Wrapf(err, "failed to generate friend code: login_id=%s", loginID))
 	}
+
+	code = int(h.Sum32())
 	return
 }
 
