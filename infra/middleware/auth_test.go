@@ -50,7 +50,7 @@ func TestAuthMiddleware_TokenSequence(t *testing.T) {
 		authMid.AddToken(1, newToken)
 		// first token is already updated by new token
 		if authMid.isEnabledToken(firstToken) {
-			t.Error("un delete old token")
+			t.Error("not deleted old token")
 		}
 		if !authMid.isEnabledToken(newToken) {
 			t.Error("not added new token")
