@@ -1,9 +1,12 @@
 package inputport
 
-import "context"
+import (
+	"context"
+	"sekareco_srv/domain/infra"
+)
 
 type AuthInputport interface {
 	CheckAuth(context.Context, string, string) (int, error)
-	AddToken(int) string
-	RevokeToken(string)
+	AddToken(int) infra.Token
+	RevokeToken(infra.Token)
 }

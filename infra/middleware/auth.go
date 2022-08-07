@@ -25,7 +25,7 @@ const (
 )
 
 var EXPIRED_IN = 1 * time.Hour
-var MAX_TOKENS = 100
+var MAX_TOKENS = 30
 
 var EXPIRED_TOKEN_DELETE_SPAN = 15 * time.Minute
 
@@ -37,12 +37,15 @@ type tokenStatus struct {
 type AuthMiddleware struct {
 	// access token mapping
 	// key: token, value: status
-	tokens map[string]*tokenStatus
+	tokens map[infra_.Token]tokenStatus
+	// 1 personID has only 1 token
+	personToToken map[int]infra_.Token
 }
 
 func NewAuthMiddleware() *AuthMiddleware {
 	return &AuthMiddleware{
-		tokens: make(map[string]*tokenStatus, MAX_TOKENS),
+		tokens:        make(map[infra_.Token]tokenStatus, MAX_TOKENS),
+		personToToken: make(map[int]infra_.Token, MAX_TOKENS),
 	}
 }
 
@@ -74,18 +77,27 @@ func WithCheckAuth(m *AuthMiddleware) func(next http.Handler) http.Handler {
 	}
 }
 
-func (m *AuthMiddleware) GenerateNewToken() string {
-	return base64.StdEncoding.EncodeToString([]byte(strconv.FormatInt(infra.Timer.NowTime().UnixMilli(), 10)))
+func (m *AuthMiddleware) GenerateNewToken() infra_.Token {
+	return infra_.Token(base64.StdEncoding.EncodeToString([]byte(strconv.FormatInt(infra.Timer.NowTime().UnixMilli(), 10))))
 }
 
-func (m *AuthMiddleware) AddToken(pid int, token string) {
-	m.tokens[token] = &tokenStatus{
+func (m *AuthMiddleware) AddToken(pid int, new infra_.Token) {
+	// delete old token
+	old, ok := m.personToToken[pid]
+	if ok {
+		m.RevokeToken(old)
+	}
+
+	m.tokens[new] = tokenStatus{
 		personID:  pid,
 		expiredIn: infra.Timer.Add(EXPIRED_IN),
 	}
+	m.personToToken[pid] = new
 }
 
-func (m *AuthMiddleware) RevokeToken(token string) {
+func (m *AuthMiddleware) RevokeToken(token infra_.Token) {
+	pid := m.tokens[token].personID
+	delete(m.personToToken, pid)
 	delete(m.tokens, token)
 }
 
@@ -105,12 +117,12 @@ func (m *AuthMiddleware) DeleteExpiredToken(t *time.Ticker) {
 	}()
 }
 
-func (m *AuthMiddleware) getHeaderToken(r *http.Request) string {
+func (m *AuthMiddleware) getHeaderToken(r *http.Request) infra_.Token {
 	token := r.Header.Get(REQUEST_HEADER)
-	return strings.Trim(strings.Replace(token, "Bearer", "", -1), " ")
+	return infra_.Token(strings.Trim(strings.Replace(token, "Bearer", "", -1), " "))
 }
 
-func (m *AuthMiddleware) isEnabledToken(token string) bool {
+func (m *AuthMiddleware) isEnabledToken(token infra_.Token) bool {
 	access, ok := m.tokens[token]
 	// not exist token or token expired
 	return ok && infra.Timer.Before(access.expiredIn)

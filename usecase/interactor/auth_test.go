@@ -2,6 +2,7 @@ package interactor_test
 
 import (
 	"context"
+	"sekareco_srv/domain/infra"
 	"sekareco_srv/interface/database"
 	"sekareco_srv/test"
 	"sekareco_srv/usecase/inputport"
@@ -68,7 +69,7 @@ func TestAuthInteractor_AddToken(t *testing.T) {
 
 func TestAuthInteractor_RevokeToken(t *testing.T) {
 	type args struct {
-		token string
+		token infra.Token
 	}
 	tests := []struct {
 		name string

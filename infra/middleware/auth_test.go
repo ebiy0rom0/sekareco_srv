@@ -18,7 +18,7 @@ func TestMain(m *testing.M) {
 func TestAuthMiddleware_GenerateNewToken(t *testing.T) {
 	r := regexp.MustCompile(`^[a-zA-Z0-9]*=+$`)
 	// test 10 count
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 3; i++ {
 		t.Run("base64 format check", func(t *testing.T) {
 			token := authMid.GenerateNewToken()
 			if !r.Match([]byte(token)) {
@@ -49,8 +49,11 @@ func TestAuthMiddleware_TokenSequence(t *testing.T) {
 
 		authMid.AddToken(1, newToken)
 		// first token is already updated by new token
-		if authMid.isEnabledToken(firstToken) || !authMid.isEnabledToken(newToken) {
-			t.Error("not updated by new token")
+		if authMid.isEnabledToken(firstToken) {
+			t.Error("un delete old token")
+		}
+		if !authMid.isEnabledToken(newToken) {
+			t.Error("not added new token")
 		}
 
 		// new token has been registered in the current thread
@@ -68,11 +71,11 @@ func TestAuthMiddleware_getHeaderToken(t *testing.T) {
 			"Authorization": {},
 		},
 	}
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 3; i++ {
 		t.Run("header token parse check", func(t *testing.T) {
 			// set to bearer token
 			token := authMid.GenerateNewToken()
-			r.Header["Authorization"] = []string{"Bearer " + token}
+			r.Header["Authorization"] = []string{"Bearer " + string(token)}
 
 			if headerToken := authMid.getHeaderToken(r); headerToken != token {
 				t.Errorf("failed to header in bearer token. want: %s, got: %s", token, headerToken)
