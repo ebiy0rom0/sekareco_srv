@@ -19,5 +19,5 @@ CREATE TABLE IF NOT EXISTS master_artist (
     artist_name TEXT NOT NULL,
     logo_url TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
-    updated_at TEXT NOT NULL  DEFAULT (DATETIME('now', 'localtime'))
+    updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );

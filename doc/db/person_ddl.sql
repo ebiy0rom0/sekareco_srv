@@ -18,3 +18,6 @@ CREATE TABLE IF NOT EXISTS person_login (
     created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
     updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );
+CREATE UNIQUE INDEX unq_login_1 ON person_login (
+    person_id
+);
