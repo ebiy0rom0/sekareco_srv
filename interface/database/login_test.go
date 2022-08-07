@@ -5,21 +5,11 @@ import (
 	"database/sql"
 	"reflect"
 	"sekareco_srv/domain/model"
-	database_ "sekareco_srv/interface/database"
-	"sekareco_srv/test"
 	"sekareco_srv/usecase/database"
 	"testing"
 )
 
 var loginRepo database.LoginRepository
-
-func TestMain(m *testing.M) {
-	test.Setup()
-
-	loginRepo = database_.NewLoginRepository(test.InjectSqlHandler())
-
-	m.Run()
-}
 
 // this database check is unused transaction
 func TestLoginRepository_Store(t *testing.T) {
@@ -83,7 +73,7 @@ func TestLoginRepository_GetByID(t *testing.T) {
 				t.Errorf("loginRepository.GetByID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if err == sql.ErrNoRows {
+			if tt.wantErr && err == sql.ErrNoRows {
 				return
 			}
 			if !reflect.DeepEqual(gotLogin.PersonID, 1) {
