@@ -31,7 +31,7 @@ func (r *musicRepository) Fetch(ctx context.Context) (musics []model.Music, err 
 		var music model.Music
 		err = rows.Scan(
 			&music.MusicID,
-			&music.MusicName,
+			&music.ArtistID,
 			&music.MusicName,
 			&music.JacketURL,
 			&music.LevelEasy,
