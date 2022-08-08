@@ -12,6 +12,7 @@ func TestMain(m *testing.M) {
 	loginRepo = database.NewLoginRepository(test.InjectSqlHandler())
 	musicRepo = database.NewMusicRepository(test.InjectSqlHandler())
 	personRepo = database.NewPersonRepository(test.InjectSqlHandler())
+	recordRepo = database.NewRecordRepository(test.InjectSqlHandler())
 
 	m.Run()
 }

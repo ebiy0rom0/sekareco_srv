@@ -8,6 +8,8 @@ import (
 	"testing"
 )
 
+var personRepo database.PersonRepository
+
 func TestPersonRepository_Store(t *testing.T) {
 	ctx := context.Background()
 	type args struct {
