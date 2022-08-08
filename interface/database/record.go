@@ -16,7 +16,7 @@ func NewRecordRepository(h infra.SqlHandler) database.RecordRepository {
 }
 
 func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordID int, err error) {
-	query := "INSERT INTO record (person_id, music_id, record_easy, record_nomarl, record_hard, record_expert, record_master)"
+	query := "INSERT INTO record (person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master)"
 	query += " VALUES (?, ?, ?, ?, ?, ?, ?);"
 
 	dao, ok := GetTx(ctx)
@@ -57,7 +57,7 @@ func (r *recordRepository) Update(ctx context.Context, personID int, musicID int
 	_, err = dao.Execute(ctx, query,
 		rec.RecordEasy,
 		rec.RecordNormal,
-		rec.RecordNormal,
+		rec.RecordHard,
 		rec.RecordExpert,
 		rec.RecordMaster,
 		personID,
