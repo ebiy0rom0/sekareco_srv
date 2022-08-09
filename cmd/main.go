@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -34,18 +33,20 @@ import (
 func main() {
 	// load env
 	if err := infra.LoadEnv(".env.development"); err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
 	// logger setup
-	infra.InitLogger()
+	if err := infra.InitLogger(); err != nil {
+		log.Fatal(err)
+	}
 	defer infra.DropLogFile()
 
 	// sql & tx handler setup
 	dbPath := os.Getenv("DB_PATH") + os.Getenv("DB_NAME")
 	sh, th, err := sql.NewSqlHandler(dbPath)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
 	// middleware setup
@@ -56,7 +57,7 @@ func main() {
 	r := router.InitRouter(sh, th, am, l)
 
 	// cors setup
-	c := middleware.InitCors()
+	c := middleware.NewCorsConfig()
 
 	srv := &http.Server{
 		Handler:      c.Handler(r),
@@ -68,7 +69,7 @@ func main() {
 	// for debug: drop sqlite3 database file
 	defer func() {
 		if err := sql.DropDB(dbPath); err != nil {
-			fmt.Println(err)
+			log.Fatal(err)
 		}
 	}()
 

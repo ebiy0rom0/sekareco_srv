@@ -6,7 +6,7 @@ import (
 	"github.com/rs/cors"
 )
 
-func InitCors() *cors.Cors {
+func NewCorsConfig() *cors.Cors {
 	return cors.New(cors.Options{
 		AllowedOrigins: []string{
 			"*",

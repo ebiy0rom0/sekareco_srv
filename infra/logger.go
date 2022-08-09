@@ -25,23 +25,20 @@ type LogManager struct {
 	i *os.File
 }
 
-func InitLogger() {
+func InitLogger() error {
 	efp, err := os.OpenFile(errorLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	wfp, err := os.OpenFile(warnLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	ifp, err := os.OpenFile(infoLogFilePath(), os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	Logger = &LogManager{
@@ -49,6 +46,7 @@ func InitLogger() {
 		w: wfp,
 		i: ifp,
 	}
+	return nil
 }
 
 // for debug
