@@ -1,7 +1,7 @@
 INSERT INTO person(person_name, friend_code)
-VALUES  ("name01", "2593519733"),
-        ("name02", "2593519734"),
-        ("name03", "2593519735")
+VALUES  ("name01", 2593519733),
+        ("name02", 2593519734),
+        ("name03", 2593519735)
 ;
 
 
