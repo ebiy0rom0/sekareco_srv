@@ -2,9 +2,9 @@ package inputport
 
 import (
 	"context"
-	"sekareco_srv/domain/model"
+	"sekareco_srv/usecase/outputdata"
 )
 
 type MusicInputport interface {
-	Fetch(context.Context) ([]model.Music, error)
+	Fetch(context.Context) ([]outputdata.Music, error)
 }

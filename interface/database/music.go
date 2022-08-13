@@ -6,6 +6,7 @@ import (
 	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/database"
+	"sekareco_srv/usecase/outputdata"
 
 	"github.com/pkg/errors"
 )
@@ -18,7 +19,7 @@ func NewMusicRepository(h infra.SqlHandler) database.MusicRepository {
 	return &musicRepository{h}
 }
 
-func (r *musicRepository) Fetch(ctx context.Context) (musics []model.Music, err error) {
+func (r *musicRepository) Fetch(ctx context.Context) (musics []outputdata.Music, err error) {
 	query := "SELECT music_id, artist_id, music_name, jacket_url, level_easy, level_normal, level_hard, level_expert, level_master FROM master_music"
 	rows, err := r.Query(ctx, query)
 	if err != nil {
@@ -45,7 +46,15 @@ func (r *musicRepository) Fetch(ctx context.Context) (musics []model.Music, err 
 			return
 		}
 
-		musics = append(musics, music)
+		//convert to response data struct
+		ret := outputdata.Music{
+			MusicID:   music.MusicID,
+			ArtistID:  music.ArtistID,
+			MusicName: music.MusicName,
+			JacketURL: music.JacketURL,
+		}
+		ret.Level = append(ret.Level, music.LevelEasy, music.LevelNormal, music.LevelHard, music.LevelExpert, music.LevelMaster)
+		musics = append(musics, ret)
 	}
 
 	if len(musics) == 0 {

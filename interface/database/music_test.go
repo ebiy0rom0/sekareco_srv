@@ -2,8 +2,8 @@ package database_test
 
 import (
 	"context"
-	"sekareco_srv/domain/model"
 	"sekareco_srv/usecase/database"
+	"sekareco_srv/usecase/outputdata"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,39 +14,27 @@ var musicRepo database.MusicRepository
 
 func TestMusicRepository_Fetch(t *testing.T) {
 	ctx := context.Background()
-	want := []model.Music{
+	want := []outputdata.Music{
 		{
-			MusicID:     1,
-			ArtistID:    1,
-			MusicName:   "test_music001",
-			JacketURL:   "jacket/m_001.png",
-			LevelEasy:   1,
-			LevelNormal: 2,
-			LevelHard:   3,
-			LevelExpert: 4,
-			LevelMaster: 5,
+			MusicID:   1,
+			ArtistID:  1,
+			MusicName: "test_music001",
+			JacketURL: "jacket/m_001.png",
+			Level:     []int{1, 2, 3, 4, 5},
 		},
 		{
-			MusicID:     2,
-			ArtistID:    2,
-			MusicName:   "test_music002",
-			JacketURL:   "jacket/m_002.png",
-			LevelEasy:   2,
-			LevelNormal: 3,
-			LevelHard:   4,
-			LevelExpert: 5,
-			LevelMaster: 6,
+			MusicID:   2,
+			ArtistID:  2,
+			MusicName: "test_music002",
+			JacketURL: "jacket/m_002.png",
+			Level:     []int{2, 3, 4, 5, 6},
 		},
 		{
-			MusicID:     3,
-			ArtistID:    1,
-			MusicName:   "test_music003",
-			JacketURL:   "jacket/m_003.png",
-			LevelEasy:   3,
-			LevelNormal: 4,
-			LevelHard:   5,
-			LevelExpert: 6,
-			LevelMaster: 7,
+			MusicID:   3,
+			ArtistID:  1,
+			MusicName: "test_music003",
+			JacketURL: "jacket/m_003.png",
+			Level:     []int{3, 4, 5, 6, 7},
 		},
 	}
 	t.Run("master music all fetch", func(t *testing.T) {
