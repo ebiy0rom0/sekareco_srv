@@ -1,9 +1,9 @@
 package outputdata
 
 type Music struct {
-	MusicID   int    `json:"music_id"`
-	ArtistID  int    `json:"artist_id"`
-	MusicName string `json:"music_name"`
-	JacketURL string `json:"jacket_url"`
+	MusicID   int    `json:"musicID"`
+	ArtistID  int    `json:"artistID"`
+	MusicName string `json:"musicName"`
+	JacketURL string `json:"jacketUrl"`
 	Level     []int  `json:"level"`
 }
