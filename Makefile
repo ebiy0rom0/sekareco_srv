@@ -65,7 +65,7 @@ swag: $(SWAG_INIT)
 	swag init \
 		-o ./doc/api/ \
 		-d ./cmd/,./interface/handler/ \
-		--pd .\domain\ \
+		--pd ./domain/ ./usecase/inputdata/ \
 		--generatedTime
 
 swag_clean:
