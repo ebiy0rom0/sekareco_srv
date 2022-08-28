@@ -1,0 +1,23 @@
+# build contents directory
+bin/
+
+# debug log directory
+log/
+
+# various setup file directory
+# example: .github/ .vscode/
+.*/
+
+# various test only file and directory
+mock/
+test/
+
+# various ignore file
+# example: .gitignore .dockerignore
+.*ignore
+
+# Dockerfile not required
+Dockerfile
+
+README.md
+LICENSE
