@@ -74,4 +74,4 @@ swag_clean:
 	git checkout ./doc/api/
 
 swag_init:
-	$(GOINSTALL) github.com/swaggo/swag/cmd/swag@latest
+	$(GOINSTALL) github.com/swaggo/swag/cmd/swag@1.8.4
