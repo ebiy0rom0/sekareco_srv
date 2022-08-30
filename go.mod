@@ -11,7 +11,7 @@ require (
 	github.com/rs/zerolog v1.27.0
 	github.com/stretchr/testify v1.8.0
 	github.com/swaggo/http-swagger v1.3.0
-	github.com/swaggo/swag v1.8.4
+	github.com/swaggo/swag v1.8.1
 	github.com/tanimutomo/sqlfile v1.0.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 )
@@ -38,3 +38,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/swaggo/swag => github.com/swaggo/swag v1.8.4
