@@ -56,9 +56,9 @@ clean:
 
 test:
 	$(GORUN) ./test/setup
-	$(GOTEST) -v -cover -count=1 ./... -coverprofile=cover.out
+	$(GOTEST) -v -cover -count=1 ./... -coverprofile=cover.txt
 	$(GORUN) ./test/clean
-	$(GOTOOL) cover -html cover.out -o cover.html
+	$(GOTOOL) cover -html cover.txt -o cover.html
 
 lint:
 	$(GOLINT) ./...
