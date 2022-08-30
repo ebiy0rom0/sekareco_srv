@@ -3,6 +3,7 @@ GORUN:=$(GOCMD) run
 GOBUILD:=$(GOCMD) build
 GOTEST:=$(GOCMD) test
 GOLINT:=$(GOCMD) vet
+GOTOOL:=$(GOCMD) tool
 GOINSTALL:=$(GOCMD) install
 
 BIN_DIR:=bin
@@ -38,7 +39,7 @@ help:
 	@echo   build [RELEASE=1]   program build
 	@echo                       [RELEASE=1] release build
 	@echo   clean               cleaning bin/ directory
-	@echo   test                unit testing
+	@echo   test                unit testing and generate test coverage html
 	@echo   lint                lint
 	@echo   swag [CI=1]         generate swagger api document
 	@echo                       [CI=1]exec swag_init task before generate
@@ -55,8 +56,9 @@ clean:
 
 test:
 	$(GORUN) ./test/setup
-	$(GOTEST) -v -count=1 ./...
+	$(GOTEST) -v -cover -count=1 ./... -coverprofile=cover.out
 	$(GORUN) ./test/clean
+	$(GOTOOL) cover -html cover.out -o cover.html
 
 lint:
 	$(GOLINT) ./...
