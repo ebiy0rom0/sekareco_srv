@@ -1,13 +1,12 @@
 package infra
 
 import (
+	"fmt"
 	"sekareco_srv/util"
 
 	"github.com/joho/godotenv"
 )
 
-const ENV_PATH = "/config/"
-
-func LoadEnv(target string) error {
-	return godotenv.Load(util.RootDir() + ENV_PATH + target)
+func LoadEnv(env string) error {
+	return godotenv.Load(fmt.Sprintf("%s/env/%s.env", util.RootDir(), env))
 }

@@ -8,8 +8,8 @@ func TestLoadEnv(t *testing.T) {
 		target  string
 		wantErr bool
 	}{
-		{name: "load failure", target: ".env.nothing", wantErr: true},
-		{name: "load successfully", target: ".env.testing", wantErr: false},
+		{name: "load failure", target: "not", wantErr: true},
+		{name: "load successfully", target: "test", wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

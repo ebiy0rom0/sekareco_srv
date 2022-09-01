@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -31,8 +32,11 @@ import (
 // @in                          header
 // @name                        Authorization
 func main() {
+	env := flag.String("env", "dev", "")
+	flag.Parse()
+
 	// load env
-	if err := infra.LoadEnv(".env.development"); err != nil {
+	if err := infra.LoadEnv(*env); err != nil {
 		log.Fatal(err)
 	}
 
