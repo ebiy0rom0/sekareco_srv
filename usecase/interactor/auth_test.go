@@ -1,3 +1,6 @@
+//go:build unit
+// +build unit
+
 package interactor_test
 
 import (
@@ -23,8 +26,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestAuthInteractor_CheckAuth(t *testing.T) {
+	ctx := context.Background()
 	type args struct {
-		ctx      context.Context
 		loginID  string
 		password string
 	}
@@ -38,7 +41,7 @@ func TestAuthInteractor_CheckAuth(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotPersonID, err := i.CheckAuth(tt.args.ctx, tt.args.loginID, tt.args.password)
+			gotPersonID, err := i.CheckAuth(ctx, tt.args.loginID, tt.args.password)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("authInteractor.CheckAuth() error = %v, wantErr %v", err, tt.wantErr)
 				return
