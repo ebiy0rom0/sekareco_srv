@@ -27,6 +27,13 @@ ifdef CI
 	SWAG_INIT:=swag_init
 endif
 
+TEST_TYPE:=local
+ifdef INTEGRATION
+	TEST_TYPE:=integration
+endif
+ifdef UNIT
+	TEST_TYPE:=unit
+endif
 
 .PHONY: help build clean test
 
@@ -35,16 +42,19 @@ help:
 	@echo Usage:
 	@echo   make [TASK] [OPTION]...
 	@echo Task:
-	@echo   help                print this view
-	@echo   build [RELEASE=1]   program build
-	@echo                       [RELEASE=1] release build
-	@echo   clean               cleaning bin/ directory
-	@echo   test                unit testing and generate test coverage html
-	@echo   lint                lint
-	@echo   swag [CI=1]         generate swagger api document
-	@echo                       [CI=1]exec swag_init task before generate
-	@echo   swag_clean          cleaning doc/api/ directory using git command
-	@echo   swag_init           for CI - install swag command at latest version
+	@echo   help                        print this view
+	@echo   build [RELEASE=1]           program build
+	@echo                               [RELEASE=1] release build
+	@echo   clean                       cleaning bin/ directory
+	@echo   test [INTEGRATION=1|UNIT=1] testing and generate test coverage html
+	@echo                               no option mode local
+	@echo                               [INTEGRATION=1] run to integration test only
+	@echo                               [UNIT=1] run to unit test only
+	@echo   lint                        lint
+	@echo   swag [CI=1]                 generate swagger api document
+	@echo                               [CI=1]exec swag_init task before generate
+	@echo   swag_clean                  cleaning doc/api/ directory using git command
+	@echo   swag_init                   for CI - install swag command at latest version
 
 build: $(BIN_PATH)
 
@@ -54,11 +64,23 @@ $(BIN_PATH):
 clean:
 	rm -rf ./bin/*
 
-test:
+test: test_setup $(TEST_TYPE) test_clean
+
+test_setup:
 	$(GORUN) ./test/setup
-	$(GOTEST) -v -cover -count=1 ./... -coverprofile=cover.txt
+
+test_clean:
 	$(GORUN) ./test/clean
-	$(GOTOOL) cover -html cover.txt -o cover.html
+
+local:
+	$(GOTEST) -v -cover ./... -coverprofile=cover.out
+	$(GOTOOL) cover -html cover.out -o cover.html
+
+unit:
+	$(GOTEST) -v -cover -tags=$@ ./... -coverprofile=cover.txt
+
+integration:
+	$(GOTEST) -v -cover -tags=$@ ./...
 
 lint:
 	$(GOLINT) ./...
