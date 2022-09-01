@@ -1,6 +1,6 @@
 FROM golang:1.17 as builder
 
-WORKDIR /app
+WORKDIR /
 
 COPY go.* ./
 RUN go mod download
@@ -12,6 +12,9 @@ RUN go build -ldflags '-s -w' -tags release -a -o server ./cmd/main.go
 # multi stage build
 FROM debian:buster-slim
 
-COPY --from=builder /app/server /app/server
+ARG ENV=dev
 
-CMD [ "/app/server" ]
+COPY --from=builder /server /app/server
+COPY --from=builder /env/${ENV}.env /app/env/${ENV}.env
+
+CMD [ "./app/server", "-env=$ENV" ]
