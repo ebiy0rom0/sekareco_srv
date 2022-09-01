@@ -16,7 +16,7 @@ import (
 func main() {
 	fmt.Println("---------- start testing setup. ----------")
 
-	if err := infra.LoadEnv(".env.testing"); err != nil {
+	if err := infra.LoadEnv("test"); err != nil {
 		log.Fatalf("env load error: %s\n", err.Error())
 	}
 
