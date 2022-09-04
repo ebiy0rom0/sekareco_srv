@@ -6,18 +6,18 @@ CREATE TABLE IF NOT EXISTS person (
     created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
     updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );
-CREATE INDEX idx_person_1 ON person (
+CREATE UNIQUE INDEX unq_person_1 ON person (
     friend_code
 );
 
 DROP TABLE IF EXISTS person_login;
 CREATE TABLE IF NOT EXISTS person_login (
-    login_id TEXT NOT NULL PRIMARY KEY,
-    person_id INTEGER NOT NULL,
+    person_id INTEGER NOT NULL PRIMARY KEY,
+    login_id TEXT NOT NULL,
     password_hash TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
     updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );
 CREATE UNIQUE INDEX unq_login_1 ON person_login (
-    person_id
+    login_id
 );
