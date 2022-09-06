@@ -42,13 +42,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("%s", err.Error())
 	}
-	s.Exec(db)
+	_, err = s.Exec(db)
+	if err != nil {
+		log.Fatalf("%s", err.Error())
+	}
 
 	err = s.Directory(util.RootDir() + "/test/data/")
 	if err != nil {
 		log.Fatalf("%s", err.Error())
 	}
-	s.Exec(db)
+	_, err = s.Exec(db)
+	if err != nil {
+		log.Fatalf("%s", err.Error())
+	}
 
 	fmt.Println("---------- complete testing setup. ----------")
 }
