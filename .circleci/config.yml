@@ -15,8 +15,8 @@ jobs:
             - go-mod-v4-{{ checksum "go.sum" }}
       - run: make
       - run:
-          name: unit test
-          command: make test
+          name: integration test
+          command: make test INTEGRATE=1
 
 workflows:
   build-workflow:

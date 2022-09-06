@@ -46,10 +46,10 @@ help:
 	@echo   build [RELEASE=1]           program build
 	@echo                               [RELEASE=1] release build
 	@echo   clean                       cleaning bin/ directory
-	@echo   test [INTEGRATION=1|UNIT=1] testing and generate test coverage html
+	@echo   test [INTEGRATION=1^|UNIT=1] testing and generate test coverage html
 	@echo                               no option mode local
-	@echo                               [INTEGRATION=1] run to integration test only
-	@echo                               [UNIT=1] run to unit test only
+	@echo                               [INTEGRATION=1] run to integration test
+	@echo                               [UNIT=1] run to unit test and output coverage
 	@echo   lint                        lint
 	@echo   swag [CI=1]                 generate swagger api document
 	@echo                               [CI=1]exec swag_init task before generate
