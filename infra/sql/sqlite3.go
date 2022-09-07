@@ -31,7 +31,7 @@ func createDB(dbPath string) error {
 func createTable(db *sql.DB) error {
 	s := sqlfile.New()
 
-	err := s.Directory(util.RootDir() + "/doc/db")
+	err := s.Directory(util.RootDir() + "/docs/db")
 	if err != nil {
 		return err
 	}
