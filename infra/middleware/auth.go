@@ -78,7 +78,10 @@ func WithCheckAuth(m *AuthMiddleware) func(next http.Handler) http.Handler {
 }
 
 func (m *AuthMiddleware) GenerateNewToken() infra_.Token {
-	return infra_.Token(base64.StdEncoding.EncodeToString([]byte(strconv.FormatInt(infra.Timer.NowTime().UnixMilli(), 10))))
+	nano := infra.Timer.NowTime().UnixNano() / 1e6
+	seed := []byte(strconv.FormatInt(nano, 10))
+	token := base64.StdEncoding.EncodeToString(seed)
+	return infra_.Token(token)
 }
 
 func (m *AuthMiddleware) AddToken(pid int, new infra_.Token) {
