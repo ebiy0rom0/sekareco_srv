@@ -2,6 +2,7 @@ package interactor
 
 import (
 	"context"
+	"errors"
 	infra_ "sekareco_srv/domain/infra"
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/inputport"
@@ -23,19 +24,18 @@ func NewAuthInteractor(t infra_.TokenManager, l database.LoginRepository, tx dat
 	}
 }
 
-func (i *authInteractor) CheckAuth(ctx context.Context, loginID string, password string) (personID int, err error) {
+func (i *authInteractor) CheckAuth(ctx context.Context, loginID string, password string) (int, error) {
 	login, err := i.login.GetByID(ctx, loginID)
 	if err != nil {
-		return
+		return 0, errors.New("unregistered loginID")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(login.PasswordHash), []byte(password))
 	if err != nil {
-		return
+		return 0, errors.New("password unmatch")
 	}
 
-	personID = login.PersonID
-	return
+	return login.PersonID, nil
 }
 
 func (i *authInteractor) AddToken(id int) infra_.Token {
