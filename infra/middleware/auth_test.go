@@ -21,7 +21,7 @@ func TestAuthMiddleware_GenerateNewToken(t *testing.T) {
 			}
 
 			// next generate token ensure changes
-			time.Sleep(100 * time.Millisecond)
+			time.Sleep(1 * time.Nanosecond)
 		})
 	}
 }
@@ -39,7 +39,7 @@ func TestAuthMiddleware_TokenSequence(t *testing.T) {
 		}
 
 		// next generate token ensure changes
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(1 * time.Nanosecond)
 		newToken := authMid.GenerateNewToken()
 
 		authMid.AddToken(1, newToken)
@@ -77,6 +77,6 @@ func TestAuthMiddleware_getHeaderToken(t *testing.T) {
 			}
 		})
 		// next generate token ensure changes
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(1 * time.Nanosecond)
 	}
 }
