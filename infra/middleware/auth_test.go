@@ -9,11 +9,6 @@ import (
 
 var authMid *AuthMiddleware
 
-func TestMain(m *testing.M) {
-	authMid = NewAuthMiddleware()
-	m.Run()
-}
-
 // generate token format check (base64)
 func TestAuthMiddleware_GenerateNewToken(t *testing.T) {
 	r := regexp.MustCompile(`^[a-zA-Z0-9]*=+$`)
