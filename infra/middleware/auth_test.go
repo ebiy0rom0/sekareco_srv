@@ -39,7 +39,7 @@ func TestAuthMiddleware_TokenSequence(t *testing.T) {
 		}
 
 		// next generate token ensure changes
-		time.Sleep(10 * time.Nanosecond)
+		time.Sleep(100 * time.Nanosecond)
 		newToken := authMid.GenerateNewToken()
 
 		authMid.AddToken(1, newToken)
