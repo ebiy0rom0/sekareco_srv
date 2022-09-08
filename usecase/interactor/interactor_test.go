@@ -11,8 +11,11 @@ func TestMain(m *testing.M) {
 	test.Setup()
 
 	tx := database.NewTransaction(test.InjectTxHandler())
-	l := database.NewLoginRepository(test.InjectSqlHandler())
-	i = interactor.NewAuthInteractor(test.InjectTokenManager(), l, tx)
+	lr := database.NewLoginRepository(test.InjectSqlHandler())
+	ai = interactor.NewAuthInteractor(test.InjectTokenManager(), lr, tx)
+
+	mr := database.NewMusicRepository(test.InjectSqlHandler())
+	mi = interactor.NewMusicInteractor(mr, tx)
 
 	m.Run()
 }
