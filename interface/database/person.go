@@ -28,7 +28,7 @@ func (r *personRepository) Store(ctx context.Context, p model.Person) (personID 
 
 	result, err := dao.Execute(ctx, query, p.PersonName, p.FriendCode)
 	if err != nil {
-		err = errors.Wrap(err, "failed to exectute store person")
+		err = errors.Wrap(err, "failed to execute store person")
 		return
 	}
 
