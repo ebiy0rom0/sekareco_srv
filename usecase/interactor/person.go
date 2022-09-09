@@ -35,7 +35,7 @@ func (i *personInteractor) Store(ctx context.Context, p inputdata.AddPerson) (mo
 		FriendCode: code,
 	}
 
-	_, err := i.transaction.Do(ctx, func(ctx context.Context) (interface{}, error) {
+	if _, err := i.transaction.Do(ctx, func(ctx context.Context) (interface{}, error) {
 		personID, err := i.person.Store(ctx, person)
 		if err != nil {
 			return nil, err
@@ -56,12 +56,11 @@ func (i *personInteractor) Store(ctx context.Context, p inputdata.AddPerson) (mo
 			return nil, err
 		}
 		return nil, nil
-	})
 
-	if err != nil {
+	}); err != nil {
 		return model.Person{}, err
 	}
-	return person, err
+	return person, nil
 }
 
 func (i *personInteractor) Update(ctx context.Context, pid int, p inputdata.UpdatePerson) error {
@@ -71,7 +70,7 @@ func (i *personInteractor) Update(ctx context.Context, pid int, p inputdata.Upda
 
 func (i *personInteractor) GetByID(ctx context.Context, personID int) (person model.Person, err error) {
 	if person, err = i.person.GetByID(ctx, personID); err != nil {
-		infra.Logger.Error(errors.Wrapf(err, "failed to select person: person_id=%d", personID))
+		return model.Person{}, errors.Wrapf(err, "failed to select person: person_id=%d", personID)
 	}
 	return
 }
@@ -80,9 +79,9 @@ func (i *personInteractor) IsDuplicateLoginID(ctx context.Context, loginID strin
 	_, err := i.login.GetByID(ctx, loginID)
 	if err == sql.ErrNoRows {
 		return true, nil
+
 	} else if err != nil {
-		infra.Logger.Error(errors.Wrapf(err, "failed to select login: login_id=%s", loginID))
-		return false, err
+		return false, errors.Wrapf(err, "failed to select login: login_id=%s", loginID)
 	}
 
 	return false, nil
@@ -111,5 +110,5 @@ func (i *personInteractor) toHashPassword(password string) (hash string, err err
 	return
 }
 
-// interface implemention checks
+// interface implementation checks
 var _ inputport.PersonInputport = &personInteractor{}
