@@ -20,7 +20,7 @@ jobs:
         go-version: 1.x
 
     - name: Genarate swagger API document
-      run: make swag CI=1
+      run: make swag INSTALL=1
 
     - name: Commit
       uses: stefanzweifel/git-auto-commit-action@v4

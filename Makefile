@@ -1,3 +1,9 @@
+# Enforce powershell to unify execution commands
+GOOS:=$(shell go env GOOS)
+ifeq ($(GOOS), windows)
+	SHELL:=powershell.exe
+endif
+
 GOCMD:=go
 GORUN:=$(GOCMD) run
 GOBUILD:=$(GOCMD) build
@@ -6,7 +12,7 @@ GOLINT:=$(GOCMD) vet
 GOTOOL:=$(GOCMD) tool
 GOINSTALL:=$(GOCMD) install
 
-BIN_DIR:=bin
+BIN_DIR:=./bin
 BIN_NAME:=server
 BIN_PATH:=$(BIN_DIR)/$(BIN_NAME)
 
@@ -22,17 +28,15 @@ endif
 
 BUILD_OPTIONS:=-ldflags '-s -w' -tags $(BUILD_TAGS) $(BUILD_RACE) $(BUILD_STATIC)
 
-SWAG_INIT:=
-ifdef CI
-	SWAG_INIT:=swag_init
-endif
-
-TEST_TYPE:=local
+# `local` task is convert the output coverage file to html
+# Skipping `local` task by makeing TEST_LOCATE = TEST_MODE
+TEST_MODE:=unit
+TEST_LOCATE:=local
 ifdef INTEGRATION
-	TEST_TYPE:=integration
+	TEST_MODE:=integration
 endif
-ifdef UNIT
-	TEST_TYPE:=unit
+ifndef LOCAL
+	TEST_LOCATE:=$(TEST_MODE)
 endif
 
 .PHONY: help build clean test
@@ -41,20 +45,19 @@ help:
 	@echo Makefile Command Reference
 	@echo Usage:
 	@echo   make [TASK] [OPTION]...
-	@echo Task:
-	@echo   help                        print this view
-	@echo   build [RELEASE=1]           program build
-	@echo                               [RELEASE=1] release build
-	@echo   clean                       cleaning bin/ directory
-	@echo   test [INTEGRATION=1^|UNIT=1] testing and generate test coverage html
-	@echo                               no option mode local
-	@echo                               [INTEGRATION=1] run to integration test
-	@echo                               [UNIT=1] run to unit test and output coverage
-	@echo   lint                        lint
-	@echo   swag [CI=1]                 generate swagger api document
-	@echo                               [CI=1]exec swag_init task before generate
-	@echo   swag_clean                  cleaning doc/api/ directory using git command
-	@echo   swag_init                   for CI - install swag command at latest version
+	@echo Task List:
+	@echo   help                           Print this view
+	@echo   build [RELEASE=1]              Build a program for ./cmd/main.go
+	@echo                                  [RELEASE=1] Release build
+	@echo   clean                          Cleaning bin/ directory
+	@echo   test [INTEGRATION=1] [LOCAL=1] Run unit test and generate coverage file
+	@echo                                  [INTEGRATION=1] Simultaneous run the integration test
+	@echo                                  [LOCAL=1] Convert the coverage file to html
+	@echo   lint                           Linting all code
+	@echo   swag [INSTALL=1]               Generate swagger api document
+	@echo                                  [INSTALL=1] Exec `swag_install` task before generate
+	@echo   swag_clean                     Run `git checkout` to cleaning doc/api/ directory
+	@echo   swag_install                   Install swag command at version 1.8.4
 
 build: $(BIN_PATH)
 
@@ -62,9 +65,13 @@ $(BIN_PATH):
 	$(GOBUILD) -o $@ $(BUILD_OPTIONS) ./cmd/main.go
 
 clean:
-	rm -rf ./bin/*
+ifeq ($(shell go env GOOS), windows)
+	Remove-Item -Path $(BIN_DIR)/*
+else
+	rm -rf $(BIN_DIR)/*
+endif
 
-test: test_setup $(TEST_TYPE) test_clean
+test: test_setup $(TEST_LOCATE) test_clean
 
 test_setup:
 	$(GORUN) ./test/setup
@@ -72,28 +79,29 @@ test_setup:
 test_clean:
 	$(GORUN) ./test/clean
 
-local:
-	$(GOTEST) -v -cover ./... -coverprofile=cover.out
-	$(GOTOOL) cover -html cover.out -o cover.html
+local: $(TEST_MODE)
+	$(GOTOOL) cover -html $^.txt -o $^.html
 
-unit:
-	$(GOTEST) -v -cover -tags=$@ ./... -coverprofile=cover.txt
-
-integration:
-	$(GOTEST) -v -cover -tags=$@ ./...
+$(TEST_MODE):
+	$(GOTEST) -v -cover -tags=$@ ./... -coverprofile=$@.txt
 
 lint:
 	$(GOLINT) ./...
 
-swag: $(SWAG_INIT)
+swag:
+ifdef INSTALL
+	@$(MAKE) swag_install
+endif
 	swag init \
-		-o ./doc/api/ \
+		-o ./docs/api/ \
 		-d ./cmd/,./interface/handler/ \
 		--pd ./domain/ ./usecase/inputdata/ \
 		--generatedTime
 
 swag_clean:
-	git checkout ./doc/api/
+	git checkout ./docs/api/
 
-swag_init:
+swag_install:
+# Install version at 1.8.4 
+#   because it doesn't work properly with >= 1.8.5
 	$(GOINSTALL) github.com/swaggo/swag/cmd/swag@v1.8.4
