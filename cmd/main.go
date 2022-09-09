@@ -12,8 +12,6 @@ import (
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
 
-	_ "sekareco_srv/doc/api"
-
 	"github.com/rs/zerolog"
 )
 

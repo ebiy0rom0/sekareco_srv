@@ -2,7 +2,6 @@ package router
 
 import (
 	"net/http"
-	"sekareco_srv/infra"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/web"
 	"sekareco_srv/interface/database"
@@ -44,8 +43,6 @@ func InitRouter(
 	ri := interactor.NewRecordInteractor(rr, tx)
 	recordHandler := handler.NewRecordHandler(ri)
 
-	// @debug: swagger-UI end point
-	router.PathPrefix("/swagger").Handler(infra.SwaggerUI())
 	// health check end point
 	router.HandleFunc("/health", web.HttpHandler(healthHandler.Get).Exec).Methods(http.MethodGet)
 
