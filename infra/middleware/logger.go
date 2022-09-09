@@ -35,4 +35,4 @@ func GetLogger(ctx context.Context) zerolog.Logger {
 }
 
 // interface implementation check
-var _ zerolog.LogObjectMarshaler = &web.ResponseWriterWrapper{}
+var _ zerolog.LogObjectMarshaler = (*web.ResponseWriterWrapper)(nil)

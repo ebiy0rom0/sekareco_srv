@@ -16,7 +16,7 @@ type authInteractor struct {
 	transaction database.SqlTransaction
 }
 
-func NewAuthInteractor(t infra_.TokenManager, l database.LoginRepository, tx database.SqlTransaction) inputport.AuthInputport {
+func NewAuthInteractor(t infra_.TokenManager, l database.LoginRepository, tx database.SqlTransaction) *authInteractor {
 	return &authInteractor{
 		token:       t,
 		login:       l,
@@ -48,5 +48,5 @@ func (i *authInteractor) RevokeToken(token infra_.Token) {
 	i.token.RevokeToken(token)
 }
 
-// interface implemention checks
-var _ inputport.AuthInputport = &authInteractor{}
+// interface implementation checks
+var _ inputport.AuthInputport = (*authInteractor)(nil)

@@ -11,7 +11,7 @@ type recordRepository struct {
 	infra.SqlHandler
 }
 
-func NewRecordRepository(h infra.SqlHandler) database.RecordRepository {
+func NewRecordRepository(h infra.SqlHandler) *recordRepository {
 	return &recordRepository{h}
 }
 
@@ -94,5 +94,5 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (rec
 	return
 }
 
-// interface implemention checks
-var _ database.RecordRepository = &recordRepository{}
+// interface implementation checks
+var _ database.RecordRepository = (*recordRepository)(nil)

@@ -17,7 +17,7 @@ type Dao interface {
 	Execute(context.Context, string, ...interface{}) (sql.Result, error)
 }
 
-func NewTransaction(h infra.TxHandler) database.SqlTransaction {
+func NewTransaction(h infra.TxHandler) *tx {
 	return &tx{h}
 }
 
@@ -45,3 +45,6 @@ func GetTx(ctx context.Context) (Dao, bool) {
 	dao, ok := ctx.Value(&txKey).(infra.TxHandler)
 	return dao, ok
 }
+
+// interface implementation checks
+var _ database.SqlTransaction = (*tx)(nil)

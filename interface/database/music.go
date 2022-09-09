@@ -15,7 +15,7 @@ type musicRepository struct {
 	infra.SqlHandler
 }
 
-func NewMusicRepository(h infra.SqlHandler) database.MusicRepository {
+func NewMusicRepository(h infra.SqlHandler) *musicRepository {
 	return &musicRepository{h}
 }
 
@@ -63,5 +63,5 @@ func (r *musicRepository) Fetch(ctx context.Context) (musics []outputdata.Music,
 	return
 }
 
-// interface implemention checks
-var _ database.MusicRepository = &musicRepository{}
+// interface implementation checks
+var _ database.MusicRepository = (*musicRepository)(nil)

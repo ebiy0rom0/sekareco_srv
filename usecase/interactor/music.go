@@ -29,5 +29,5 @@ func (l *musicInteractor) Fetch(ctx context.Context) (musics []outputdata.Music,
 	return
 }
 
-// interface implemention checks
-var _ inputport.MusicInputport = &musicInteractor{}
+// interface implementation checks
+var _ inputport.MusicInputport = (*musicInteractor)(nil)

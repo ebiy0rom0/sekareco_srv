@@ -65,4 +65,4 @@ func (r *ResponseWriterWrapper) MarshalZerologObject(e *zerolog.Event) {
 }
 
 // interface implementation check
-var _ http.ResponseWriter = &ResponseWriterWrapper{}
+var _ http.ResponseWriter = (*ResponseWriterWrapper)(nil)

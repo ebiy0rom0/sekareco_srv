@@ -13,7 +13,7 @@ type personRepository struct {
 	infra.SqlHandler
 }
 
-func NewPersonRepository(h infra.SqlHandler) database.PersonRepository {
+func NewPersonRepository(h infra.SqlHandler) *personRepository {
 	return &personRepository{h}
 }
 
@@ -60,5 +60,5 @@ func (r *personRepository) GetByID(ctx context.Context, personID int) (user mode
 	return
 }
 
-// interface implemention checks
-var _ database.PersonRepository = &personRepository{}
+// interface implementation checks
+var _ database.PersonRepository = (*personRepository)(nil)

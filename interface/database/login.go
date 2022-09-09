@@ -11,7 +11,7 @@ type loginRepository struct {
 	infra.SqlHandler
 }
 
-func NewLoginRepository(h infra.SqlHandler) database.LoginRepository {
+func NewLoginRepository(h infra.SqlHandler) *loginRepository {
 	return &loginRepository{h}
 }
 
@@ -46,5 +46,5 @@ func (r *loginRepository) GetByID(ctx context.Context, loginID string) (login mo
 	return
 }
 
-// interface implemention checks
-var _ database.LoginRepository = &loginRepository{}
+// interface implementation checks
+var _ database.LoginRepository = (*loginRepository)(nil)
