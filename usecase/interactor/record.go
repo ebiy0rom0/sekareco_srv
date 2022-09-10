@@ -74,10 +74,10 @@ func (l *recordInteractor) Update(ctx context.Context, personID int, musicID int
 
 func (l *recordInteractor) GetByPersonID(ctx context.Context, personID int) (records []model.Record, err error) {
 	if records, err = l.record.GetByPersonID(ctx, personID); err != nil {
-		infra.Logger.Error(errors.Wrapf(err, "failed to select record: person_id=%d", personID))
+		err = errors.Wrapf(err, "failed to select record: person_id=%d", personID)
 	}
 	return
 }
 
-// interface implemention checks
-var _ inputport.RecordInputport = &recordInteractor{}
+// interface implementation checks
+var _ inputport.RecordInputport = (*recordInteractor)(nil)
