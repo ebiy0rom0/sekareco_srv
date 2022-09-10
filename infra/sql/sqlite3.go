@@ -43,8 +43,3 @@ func createTable(db *sql.DB) error {
 
 	return nil
 }
-
-// for debug
-func DropDB(dbPath string) error {
-	return os.Remove(dbPath)
-}

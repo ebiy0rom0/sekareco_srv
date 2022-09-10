@@ -68,13 +68,6 @@ func main() {
 		ReadTimeout:  5 * time.Second,
 	}
 
-	// for debug: drop sqlite3 database file
-	defer func() {
-		if err := sql.DropDB(dbPath); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
 	// automatically token revoke
 	t := time.NewTicker(1 * time.Second)
 	defer t.Stop()
