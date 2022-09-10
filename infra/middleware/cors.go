@@ -6,6 +6,7 @@ import (
 	"github.com/rs/cors"
 )
 
+// NewCorsConfig returns a new Cors handler.
 func NewCorsConfig() *cors.Cors {
 	return cors.New(cors.Options{
 		AllowedOrigins: []string{

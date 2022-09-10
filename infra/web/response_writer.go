@@ -8,6 +8,8 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// A ResponseWriterWrapper is http.ResponseWriter wrapper.
+// Some expanded features are available.
 type ResponseWriterWrapper struct {
 	status       int
 	responseSize int
@@ -16,6 +18,8 @@ type ResponseWriterWrapper struct {
 	start        time.Time
 }
 
+// NewResponseWriterWrapper returns new ResponseWriterWrapper
+// wrapped the argument w and r and have the start time of the process.
 func NewResponseWriterWrapper(w http.ResponseWriter, r *http.Request) *ResponseWriterWrapper {
 	return &ResponseWriterWrapper{
 		writer:  w,
@@ -24,16 +28,20 @@ func NewResponseWriterWrapper(w http.ResponseWriter, r *http.Request) *ResponseW
 	}
 }
 
+// Flush
 func (r *ResponseWriterWrapper) Flush() {
 	flusher := r.writer.(http.Flusher)
 	flusher.Flush()
 	r.status = http.StatusOK
 }
 
+// Header returns request header map.
+// Equivalent to http.ResponseWriter.Header().
 func (r *ResponseWriterWrapper) Header() http.Header {
 	return r.writer.Header()
 }
 
+// Write returns
 func (r *ResponseWriterWrapper) Write(content []byte) (int, error) {
 	r.responseSize = len(content)
 	if r.status == 0 {
@@ -42,6 +50,7 @@ func (r *ResponseWriterWrapper) Write(content []byte) (int, error) {
 	return r.writer.Write(content)
 }
 
+// WriterHeader writes status code in response header.
 func (r *ResponseWriterWrapper) WriteHeader(code int) {
 	r.status = code
 	r.writer.WriteHeader(code)

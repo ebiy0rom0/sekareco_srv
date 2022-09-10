@@ -13,7 +13,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// @BasePath /api/v1
+// InitRouter returns gorilla/mux Router pointer setup all routing.
 func InitRouter(
 	sh infra_.SqlHandler,
 	th infra_.TxHandler,

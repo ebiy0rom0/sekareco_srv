@@ -6,10 +6,17 @@ import (
 	"os"
 )
 
+// A sqlHandler is database handler wrapper.
+// [feature]
+// Allow switching between different DBMS.
+// Only sqlite3 is supported now.
 type sqlHandler struct {
 	con *sql.DB
 }
 
+// NewSqlHandler returns sqlHandler and txHandler pointer.
+// If not exists sqliteDB, create database and migrate require tables
+// before connection opener.
 func NewSqlHandler(dbPath string) (h *sqlHandler, th *txHandler, err error) {
 	var db *sql.DB
 
@@ -52,13 +59,13 @@ func (h *sqlHandler) Execute(ctx context.Context, query string, args ...interfac
 }
 
 func (h *sqlHandler) QueryRow(ctx context.Context, query string, args ...interface{}) *sql.Row {
-	// lint:ignore SA5007 too many argments
+	// lint:ignore SA5007 too many arguments
 	row := h.con.QueryRowContext(ctx, query, args...)
 	return row
 }
 
 func (h *sqlHandler) Query(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error) {
-	// lint:ignore SA5007 too many argments
+	// lint:ignore SA5007 too many arguments
 	rows, err := h.con.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err

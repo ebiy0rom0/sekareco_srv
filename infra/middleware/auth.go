@@ -16,6 +16,7 @@ const (
 	RESPONSE_HEADER = "WWW-Authenticate"
 )
 
+// RFC 2617 Authentication header field pattern
 const (
 	HEADER_DONE          = "Bearer realm=\"\""
 	HEADER_UNAUTHORIZED  = "Bearer realm=\"token_required\""
@@ -24,16 +25,23 @@ const (
 	HEADER_FORBIDDEN     = "Bearer error=\"insufficient_scope\""
 )
 
+// Token lifetime: 1 hour after generate
 var EXPIRED_IN = 1 * time.Hour
+
 var MAX_TOKENS = 30
 
-var EXPIRED_TOKEN_DELETE_SPAN = 15 * time.Minute
+// Automatically token delete span: Every 1 minutes
+// = max token life is 1hour and 1 minute,
+// but it doesn't no have to be strictly 1 hour.
+var EXPIRED_TOKEN_DELETE_SPAN = 1 * time.Minute
 
+// A tokenStatus is stored token expiration at single person.
 type tokenStatus struct {
 	personID  int
 	expiredIn time.Time
 }
 
+// A AuthMiddleware is manages all tokens in this service.
 type AuthMiddleware struct {
 	// access token mapping
 	// key: token, value: status
