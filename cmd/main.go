@@ -30,11 +30,11 @@ import (
 // @in                          header
 // @name                        Authorization
 func main() {
-	env := flag.String("env", "dev", "")
+	stage := flag.String("stage", "dev", "")
 	flag.Parse()
 
 	// load env
-	if err := infra.LoadEnv(*env); err != nil {
+	if err := infra.LoadEnv(*stage); err != nil {
 		log.Fatal(err)
 	}
 
@@ -42,7 +42,6 @@ func main() {
 	if err := infra.InitLogger(); err != nil {
 		log.Fatal(err)
 	}
-	defer infra.DropLogFile()
 
 	// sql & tx handler setup
 	dbPath := os.Getenv("DB_PATH") + os.Getenv("DB_NAME")

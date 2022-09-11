@@ -49,13 +49,6 @@ func InitLogger() error {
 	return nil
 }
 
-// for debug
-func DropLogFile() {
-	os.Remove(errorLogFilePath())
-	os.Remove(warnLogFilePath())
-	os.Remove(infoLogFilePath())
-}
-
 func (l *LogManager) Error(err error) {
 	l.e.WriteString(logFormat(err))
 }
