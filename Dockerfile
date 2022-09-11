@@ -13,8 +13,9 @@ RUN go build -ldflags '-s -w' -tags release -a -o server ./cmd/main.go
 FROM debian:buster-slim
 
 ARG ENV=dev
+ENV STAGE $ENV
 
 COPY --from=builder /server /app/server
-COPY --from=builder /env/${ENV}.env /app/env/${ENV}.env
+COPY --from=builder /env/${ENV}.env /env/${ENV}.env
 
-CMD [ "./app/server", "-env=$ENV" ]
+CMD ./app/server -stage=${STAGE}
