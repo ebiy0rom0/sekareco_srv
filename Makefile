@@ -71,6 +71,22 @@ else
 	rm -rf $(BIN_DIR)/*
 endif
 
+docker_build:
+	docker build --tag sekareco_srv:latest --build-arg ENV="prod" .
+
+docker_run: docker_build
+	docker run --rm \
+		-p 8000:8000 \
+		-v ${CURDIR}/tmp:/log \
+		-v ${CURDIR}/tmp:/db \
+		-v ${CURDIR}/docs/db:/docs/db \
+		-e TZ=Asia/Tokyo \
+		--name sekareco_srv \
+		sekareco_srv:latest
+
+docker_clean:
+	docker image rm sekareco_srv:latest
+
 test: test_setup $(TEST_LOCATE) test_clean
 
 test_setup:
@@ -83,7 +99,7 @@ local: $(TEST_MODE)
 	$(GOTOOL) cover -html $^.txt -o $^.html
 
 $(TEST_MODE):
-	$(GOTEST) -v -cover -tags=$@ ./... -coverprofile=$@.txt
+	$(GOTEST) -v -p 12 -cover -tags=$@ ./... -coverprofile=$@.txt
 
 lint:
 	$(GOLINT) ./...
@@ -102,6 +118,6 @@ swag_clean:
 	git checkout ./docs/api/
 
 swag_install:
-# Install version at 1.8.4 
+# Install version at 1.8.4
 #   because it doesn't work properly with >= 1.8.5
 	$(GOINSTALL) github.com/swaggo/swag/cmd/swag@v1.8.4
