@@ -6,9 +6,8 @@ import (
 	infra__ "sekareco_srv/domain/infra"
 	"sekareco_srv/infra"
 	"sekareco_srv/infra/middleware"
-	sql_ "sekareco_srv/infra/sql"
+	"sekareco_srv/infra/sql"
 	infra_ "sekareco_srv/interface/infra"
-	"sekareco_srv/util"
 )
 
 var sqlHandler infra_.SqlHandler
@@ -21,14 +20,13 @@ func Setup() {
 		log.Fatalf("env load error: %s\n", err.Error())
 	}
 
-	dbPath := util.RootDir() + os.Getenv("DB_PATH") + os.Getenv("DB_NAME")
-	sh, th, err := sql_.NewSqlHandler(dbPath)
+	con, err := sql.NewConnection("", "", "", os.Getenv("DB_NAME"))
 	if err != nil {
-		log.Fatalf("db connection error: %s\n", err.Error())
+		log.Fatalf("Failed connect db: %+v\n", err)
 	}
 
-	sqlHandler = sh
-	txHandler = th
+	sqlHandler = sql.NewSqlHandler(con)
+	txHandler = sql.NewTxHandler(con)
 
 	am := middleware.NewAuthMiddleware()
 	authMiddleware = am

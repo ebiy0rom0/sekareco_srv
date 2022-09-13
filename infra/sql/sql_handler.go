@@ -3,7 +3,6 @@ package sql
 import (
 	"context"
 	"database/sql"
-	"os"
 )
 
 // A sqlHandler is database handler wrapper.
@@ -15,34 +14,21 @@ type sqlHandler struct {
 	con *sql.DB
 }
 
-// NewSqlHandler returns sqlHandler and txHandler pointer.
-// If not exists sqliteDB, create database and
-// migrate require tables before connection opener.
-func NewSqlHandler(dbPath string) (h *sqlHandler, th *txHandler, err error) {
-	var db *sql.DB
-
-	if _, err = os.Stat(dbPath); err != nil {
-		if err = createDB(dbPath); err != nil {
-			return
-		}
-
-		if db, err = openSqlite3(dbPath); err != nil {
-			return
-		}
-
-		if err = createTable(db); err != nil {
-			return
-		}
-
-	} else {
-		if db, err = openSqlite3(dbPath); err != nil {
-			return
-		}
+// NewConnection returns new DB connection.
+// First try to connect to MySQL, and if that failure
+// switch to a connection to sqlite3.
+func NewConnection(user, pass, host, schema string) (*sql.DB, error) {
+	db, err := openMysql(user, pass, host, schema)
+	if err == nil {
+		return db, nil
 	}
 
-	h = &sqlHandler{con: db}
-	th = &txHandler{con: db}
-	return
+	return initSqlite3(schema)
+}
+
+// NewSqlHandler returns sqlHandler and txHandler pointer.
+func NewSqlHandler(con *sql.DB) *sqlHandler {
+	return &sqlHandler{con: con}
 }
 
 // Execute returns result at execute argument query.

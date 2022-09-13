@@ -20,18 +20,18 @@ func main() {
 		log.Fatalf("env load error: %s\n", err.Error())
 	}
 
-	dbPath := util.RootDir() + os.Getenv("DB_PATH") + os.Getenv("DB_NAME")
+	source := fmt.Sprintf("%s/%s/%s", util.RootDir(), os.Getenv("DB_PATH"), os.Getenv("DB_NAME"))
 
 	// Cleaning DB file if left before testing DB
-	if _, err := os.Stat(dbPath); err == nil {
-		if err := os.Remove(dbPath); err != nil {
+	if _, err := os.Stat(source); err == nil {
+		if err := os.Remove(source); err != nil {
 			log.Fatalf("db cleaning error: %s", err.Error())
 		}
 
 	}
 
 	// DB file automatically create
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("sqlite3", source)
 	if err != nil {
 		log.Fatalf("%s", err.Error())
 	}

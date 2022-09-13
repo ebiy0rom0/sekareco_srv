@@ -10,6 +10,10 @@ type txHandler struct {
 	tx  *sql.Tx
 }
 
+func NewTxHandler (con *sql.DB) *txHandler {
+	return &txHandler{con: con}
+}
+
 func (h *txHandler) Begin(ctx context.Context, opt *sql.TxOptions) error {
 	tx, err := h.con.BeginTx(ctx, opt)
 	if err != nil {

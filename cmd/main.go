@@ -33,36 +33,38 @@ import (
 // @in                          header
 // @name                        Authorization
 func main() {
+	// TODO: Move flag setup to infra package.
 	stage := flag.String("stage", "dev", "")
+	dbUser := flag.String("dbUser", "", "MySQL user name")
+	dbPass := flag.String("dbPass", "", "MySQL password")
+	dbHost := flag.String("dbHost", "", "MySQL host address")
 	flag.Parse()
 
-	// load env
 	if err := infra.LoadEnv(*stage); err != nil {
-		log.Fatal(err)
+		log.Fatalf("Fail to loading dotenv: %+v", err)
 	}
 
-	// logger setup
 	if err := infra.InitLogger(); err != nil {
-		log.Fatal(err)
+		log.Fatalf("Fail to initialize logger: %+v", err)
+	}
+
+	// No MySQL setup until performance impact in production,
+	// so sqlite3 connections can be obtained for a while.
+	con, err := sql.NewConnection(*dbUser, *dbPass, *dbHost, os.Getenv("DB_NAME"))
+	if err != nil {
+		log.Fatalf("Fail connect database: %+v", err)
 	}
 
 	// sql & tx handler setup
-	dbPath := os.Getenv("DB_PATH") + os.Getenv("DB_NAME")
-	sh, th, err := sql.NewSqlHandler(dbPath)
-	if err != nil {
-		log.Fatal(err)
-	}
+	sh := sql.NewSqlHandler(con)
+	th := sql.NewTxHandler(con)
 
 	// middleware setup
 	am := middleware.NewAuthMiddleware()
 	l := zerolog.New(os.Stdout)
-
-	// router setup
 	r := router.InitRouter(sh, th, am, l)
 
-	// cors setup
 	cors := middleware.NewCorsConfig()
-
 	srv := &http.Server{
 		Handler:      cors.Handler(r),
 		Addr:         "0.0.0.0:8000",
@@ -77,9 +79,8 @@ func main() {
 		}
 	}()
 
-	ctx, stop := context.WithCancel(context.Background())
-
 	// automatically token revoke
+	ctx, stop := context.WithCancel(context.Background())
 	go am.DeleteExpiredToken(ctx)
 
 	// server graceful shutdown
