@@ -8,16 +8,15 @@
 # Test binary, built with `go test -c`
 *.test
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
-
-# database file for sqlite3
+# database file for sqlite3 created during test execution
 *.db
 
 # for local
-# bin/ Output destination for built binary files
-# db/  Directory where database file(.db) are create
+# db/ Directory where database file(.db) are create
 # log/ Directory where log file(.log) are output
-bin/
+# bin/ Build binary files output destination
+# coverage/ Test coverage files output destination
 db/
 log/
+bin/
+coverage/
