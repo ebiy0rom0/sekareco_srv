@@ -41,6 +41,15 @@ $ curl -v http://localhost:8000/health
 * Connection #0 to host localhost left intact
 ```
 
+## Setup development
+If you want to run in a local environment, some preparation is required.
+1. The following directories are required.  
+The output and creation destination for the required files.
+    - db/
+    - log/
+    - bin/
+    - coverage/
+
 ## API documentation
 API documentation is published on GitHub Pages.  
 - [https://ebiy0rom0.github.io/sekareco_srv/page/index.html](https://ebiy0rom0.github.io/sekareco_srv/page/index.html)
