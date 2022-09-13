@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"sekareco_srv/infra"
@@ -58,20 +61,38 @@ func main() {
 	r := router.InitRouter(sh, th, am, l)
 
 	// cors setup
-	c := middleware.NewCorsConfig()
+	cors := middleware.NewCorsConfig()
 
 	srv := &http.Server{
-		Handler:      c.Handler(r),
+		Handler:      cors.Handler(r),
 		Addr:         "0.0.0.0:8000",
 		WriteTimeout: 5 * time.Second,
 		ReadTimeout:  5 * time.Second,
 	}
 
-	// automatically token revoke
-	t := time.NewTicker(1 * time.Second)
-	defer t.Stop()
-	am.DeleteExpiredToken(t)
-
 	// wait http request
-	log.Fatal(srv.ListenAndServe())
+	go func () {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Println(err)
+		}
+	}()
+
+	ctx, stop := context.WithCancel(context.Background())
+
+	// automatically token revoke
+	go am.DeleteExpiredToken(ctx)
+
+	// server graceful shutdown
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+
+	<-c
+	stop()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("Shutdown request error: %+v", err)
+	}
 }
