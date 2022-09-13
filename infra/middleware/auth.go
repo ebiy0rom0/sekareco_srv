@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"encoding/base64"
 	"net/http"
 	infra_ "sekareco_srv/domain/infra"
@@ -50,6 +51,14 @@ type AuthMiddleware struct {
 	personToToken map[int]infra_.Token
 }
 
+// NewAuthMiddleware returns AuthMiddleware pointer.
+//
+// [feature]
+// Fixed upper limit of holding 30 tokens,
+// because max cost in the process is memory allocate.
+// (= max number of connections)
+// Use sync.Pool to make changes that minimize memory allocation
+// while making the number of tokens holding valiable.
 func NewAuthMiddleware() *AuthMiddleware {
 	return &AuthMiddleware{
 		tokens:        make(map[infra_.Token]tokenStatus, MAX_TOKENS),
@@ -57,8 +66,10 @@ func NewAuthMiddleware() *AuthMiddleware {
 	}
 }
 
-// using middleware
-func WithCheckAuth(m *AuthMiddleware) func(next http.Handler) http.Handler {
+// WithCheckAuth checks if the user with access is an already authenticated user.
+// Register with router middleware for endpoints requiring authentication
+// to block access by unauthenticated users.
+func (m *AuthMiddleware) WithCheckAuth() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			token := m.getHeaderToken(r)
@@ -68,7 +79,7 @@ func WithCheckAuth(m *AuthMiddleware) func(next http.Handler) http.Handler {
 				return
 			}
 
-			if !m.isEnabledToken(token) {
+			if !m.isEffectiveToken(token) {
 				w.Header().Set(RESPONSE_HEADER, HEADER_INVALID_TOKEN)
 				w.WriteHeader(http.StatusUnauthorized)
 				return
@@ -85,6 +96,11 @@ func WithCheckAuth(m *AuthMiddleware) func(next http.Handler) http.Handler {
 	}
 }
 
+// GenerateNewToken returns new access token.
+//
+// [investigation]
+// Since access times are used to generate tokens, is there a possibility
+// of token conflict when concurrent accesses occur?
 func (m *AuthMiddleware) GenerateNewToken() infra_.Token {
 	nano := infra.Timer.NowTime().UnixNano() / 1e6
 	seed := []byte(strconv.FormatInt(nano, 10))
@@ -92,6 +108,9 @@ func (m *AuthMiddleware) GenerateNewToken() infra_.Token {
 	return infra_.Token(token)
 }
 
+// AddToken is add the new token into process cache.
+// If for some reason the authenticated person adds the token again,
+// it will be overwritten with the new token.
 func (m *AuthMiddleware) AddToken(pid int, new infra_.Token) {
 	// delete old token
 	old, ok := m.personToToken[pid]
@@ -106,34 +125,45 @@ func (m *AuthMiddleware) AddToken(pid int, new infra_.Token) {
 	m.personToToken[pid] = new
 }
 
+// RevokeToken is delete the specified token from middleware.
 func (m *AuthMiddleware) RevokeToken(token infra_.Token) {
 	pid := m.tokens[token].personID
 	delete(m.personToToken, pid)
 	delete(m.tokens, token)
 }
 
-// automatically delete the expired token at over time
-func (m *AuthMiddleware) DeleteExpiredToken(t *time.Ticker) {
-	go func() {
-		for {
-			// ticker wait
-			<-t.C
+// DeleteExpiredToken is automatically delete the expired token at over time.
+func (m *AuthMiddleware) DeleteExpiredToken(ctx context.Context) {
+	t := time.NewTicker(1 * EXPIRED_TOKEN_DELETE_SPAN)
+	defer t.Stop()
 
+	for {
+		select {
+		case <-ctx.Done():
+			return
+
+		// ticker wait
+		case _, ok := <-t.C:
+			if !ok {
+				return
+			}
 			for token, status := range m.tokens {
 				if !infra.Timer.Before(status.expiredIn) {
 					m.RevokeToken(token)
 				}
 			}
 		}
-	}()
+	}
 }
 
+// getHeaderToken returns the Bearer token in the request header.
 func (m *AuthMiddleware) getHeaderToken(r *http.Request) infra_.Token {
 	token := r.Header.Get(REQUEST_HEADER)
 	return infra_.Token(strings.Trim(strings.Replace(token, "Bearer", "", -1), " "))
 }
 
-func (m *AuthMiddleware) isEnabledToken(token infra_.Token) bool {
+// isEffectiveToken reports weather request token is effective.
+func (m *AuthMiddleware) isEffectiveToken(token infra_.Token) bool {
 	access, ok := m.tokens[token]
 	// not exist token or token expired
 	return ok && infra.Timer.Before(access.expiredIn)
