@@ -57,7 +57,7 @@ func InitRouter(
 
 	// api needs authentication
 	authRouter := appRouter.PathPrefix("").Subrouter()
-	authRouter.Use(middleware.WithCheckAuth(am))
+	authRouter.Use(am.WithCheckAuth())
 
 	// account api
 	authRouter.HandleFunc("/signout", web.HttpHandler(authHandler.Delete).Exec).Methods(http.MethodDelete)
