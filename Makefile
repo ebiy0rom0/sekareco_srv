@@ -65,7 +65,7 @@ $(BIN_PATH):
 	$(GOBUILD) -o $@ $(BUILD_OPTIONS) ./cmd/main.go
 
 clean:
-ifeq ($(shell go env GOOS), windows)
+ifeq ($(GOOS), windows)
 	Remove-Item -Path $(BIN_DIR)/*
 else
 	rm -rf $(BIN_DIR)/*
