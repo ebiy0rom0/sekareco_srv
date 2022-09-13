@@ -31,13 +31,20 @@ BUILD_OPTIONS:=-ldflags '-s -w' -tags $(BUILD_TAGS) $(BUILD_RACE) $(BUILD_STATIC
 # `local` task is convert the output coverage file to html
 # Skipping `local` task by makeing TEST_LOCATE = TEST_MODE
 TEST_MODE:=unit
-TEST_LOCATE:=local
+TEST_LOCATE:=$(TEST_MODE)
+
+COVERAGE_OUTPUT:=./coverage
+COVERAGE_EXTENTION:=txt
+
 ifdef INTEGRATION
 	TEST_MODE:=integration
 endif
-ifndef LOCAL
-	TEST_LOCATE:=$(TEST_MODE)
+
+ifdef LOCAL
+	TEST_MODE:=$(COVERAGE_OUTPUT)/$(TEST_MODE)
+	TEST_LOCATE:=local
 endif
+
 
 .PHONY: help build clean test
 
@@ -96,10 +103,10 @@ test_clean:
 	$(GORUN) ./test/clean
 
 local: $(TEST_MODE)
-	$(GOTOOL) cover -html $^.txt -o $^.html
+	$(GOTOOL) cover -html $^.$(COVERAGE_EXTENTION) -o $^.html
 
 $(TEST_MODE):
-	$(GOTEST) -v -p 12 -cover -tags=$@ ./... -coverprofile=$@.txt
+	$(GOTEST) -v -p 12 -cover -tags=$@ ./... -coverprofile=$@.$(COVERAGE_EXTENTION)
 
 lint:
 	$(GOLINT) ./...
