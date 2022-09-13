@@ -34,7 +34,7 @@ func TestAuthMiddleware_TokenSequence(t *testing.T) {
 		firstToken := authMid.GenerateNewToken()
 
 		authMid.AddToken(1, firstToken)
-		if !authMid.isEnabledToken(firstToken) {
+		if !authMid.isEffectiveToken(firstToken) {
 			t.Error("not added token")
 		}
 
@@ -44,16 +44,16 @@ func TestAuthMiddleware_TokenSequence(t *testing.T) {
 
 		authMid.AddToken(1, newToken)
 		// first token is already updated by new token
-		if authMid.isEnabledToken(firstToken) {
+		if authMid.isEffectiveToken(firstToken) {
 			t.Error("not deleted old token")
 		}
-		if !authMid.isEnabledToken(newToken) {
+		if !authMid.isEffectiveToken(newToken) {
 			t.Error("not added new token")
 		}
 
 		// new token has been registered in the current thread
 		authMid.RevokeToken(newToken)
-		if authMid.isEnabledToken(newToken) {
+		if authMid.isEffectiveToken(newToken) {
 			t.Error("not revoked token")
 		}
 	})
