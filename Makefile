@@ -77,8 +77,8 @@ docker_build:
 docker_run: docker_build
 	docker run --rm \
 		-p 8000:8000 \
-		-v ${CURDIR}/tmp:/log \
-		-v ${CURDIR}/tmp:/db \
+		-v ${CURDIR}/log:/log \
+		-v ${CURDIR}/db:/db \
 		-v ${CURDIR}/docs/db:/docs/db \
 		-e TZ=Asia/Tokyo \
 		--name sekareco_srv \
