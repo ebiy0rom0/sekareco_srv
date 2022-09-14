@@ -35,11 +35,15 @@ func (c *HttpContext) Vars() map[string]string {
 
 }
 
-// Decode reads the request body and stores it in the value pointed to by i.
-func (c *HttpContext) Decode(i interface{}) error {
-	err := json.NewDecoder(c.Request.Body).Decode(&i)
-	if err != nil {
-		return fmt.Errorf("bad request: %s", err)
+// Decode reads the request body and stores it in the value pointed to by ii.
+// Multiple structures can passed to ii for split assignments.
+func (c *HttpContext) Decode(ii ...interface{}) error {
+	decoder := json.NewDecoder(c.Request.Body)
+	for _, i := range ii {
+		err := decoder.Decode(&i)
+		if err != nil {
+			return fmt.Errorf("bad request: %s", err)
+		}
 	}
 	return nil
 }
