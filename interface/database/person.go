@@ -18,15 +18,15 @@ func NewPersonRepository(h infra.SqlHandler) *personRepository {
 }
 
 func (r *personRepository) Store(ctx context.Context, p model.Person) (personID int, err error) {
-	query := "INSERT INTO person (person_name, friend_code)"
-	query += " VALUES (?, ?);"
+	query := "INSERT INTO person (person_name, friend_code, is_compare)"
+	query += " VALUES (?, ?, ?);"
 
 	dao, ok := GetTx(ctx)
 	if !ok {
 		dao = r
 	}
 
-	result, err := dao.Execute(ctx, query, p.PersonName, p.FriendCode)
+	result, err := dao.Execute(ctx, query, p.PersonName, p.FriendCode, p.IsCompare)
 	if err != nil {
 		err = errors.Wrap(err, "failed to execute store person")
 		return
