@@ -489,6 +489,21 @@ const docTemplate = `{
                 },
                 "recordNormal": {
                     "type": "integer"
+                },
+                "scoreEasy": {
+                    "type": "integer"
+                },
+                "scoreExpert": {
+                    "type": "integer"
+                },
+                "scoreHard": {
+                    "type": "integer"
+                },
+                "scoreMaster": {
+                    "type": "integer"
+                },
+                "scoreNormal": {
+                    "type": "integer"
                 }
             }
         },
@@ -542,6 +557,21 @@ const docTemplate = `{
                 },
                 "recordNormal": {
                     "type": "integer"
+                },
+                "scoreEasy": {
+                    "type": "integer"
+                },
+                "scoreExpert": {
+                    "type": "integer"
+                },
+                "scoreHard": {
+                    "type": "integer"
+                },
+                "scoreMaster": {
+                    "type": "integer"
+                },
+                "scoreNormal": {
+                    "type": "integer"
                 }
             }
         },
@@ -574,6 +604,21 @@ const docTemplate = `{
                 },
                 "music_name": {
                     "type": "string"
+                },
+                "notes_easy": {
+                    "type": "integer"
+                },
+                "notes_expert": {
+                    "type": "integer"
+                },
+                "notes_hard": {
+                    "type": "integer"
+                },
+                "notes_master": {
+                    "type": "integer"
+                },
+                "notes_normal": {
+                    "type": "integer"
                 }
             }
         },
@@ -582,6 +627,9 @@ const docTemplate = `{
             "properties": {
                 "friend_code": {
                     "type": "integer"
+                },
+                "is_compare": {
+                    "type": "boolean"
                 },
                 "person_id": {
                     "type": "integer"
@@ -616,6 +664,21 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "record_normal": {
+                    "type": "integer"
+                },
+                "score_easy": {
+                    "type": "integer"
+                },
+                "score_expert": {
+                    "type": "integer"
+                },
+                "score_hard": {
+                    "type": "integer"
+                },
+                "score_master": {
+                    "type": "integer"
+                },
+                "score_normal": {
                     "type": "integer"
                 }
             }

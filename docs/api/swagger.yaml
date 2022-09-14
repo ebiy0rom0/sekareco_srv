@@ -29,6 +29,16 @@ definitions:
         type: integer
       recordNormal:
         type: integer
+      scoreEasy:
+        type: integer
+      scoreExpert:
+        type: integer
+      scoreHard:
+        type: integer
+      scoreMaster:
+        type: integer
+      scoreNormal:
+        type: integer
     type: object
   inputdata.DeleteAuth:
     properties:
@@ -63,6 +73,16 @@ definitions:
         type: integer
       recordNormal:
         type: integer
+      scoreEasy:
+        type: integer
+      scoreExpert:
+        type: integer
+      scoreHard:
+        type: integer
+      scoreMaster:
+        type: integer
+      scoreNormal:
+        type: integer
     type: object
   model.Music:
     properties:
@@ -84,11 +104,23 @@ definitions:
         type: integer
       music_name:
         type: string
+      notes_easy:
+        type: integer
+      notes_expert:
+        type: integer
+      notes_hard:
+        type: integer
+      notes_master:
+        type: integer
+      notes_normal:
+        type: integer
     type: object
   model.Person:
     properties:
       friend_code:
         type: integer
+      is_compare:
+        type: boolean
       person_id:
         type: integer
       person_name:
@@ -111,6 +143,16 @@ definitions:
       record_master:
         type: integer
       record_normal:
+        type: integer
+      score_easy:
+        type: integer
+      score_expert:
+        type: integer
+      score_hard:
+        type: integer
+      score_master:
+        type: integer
+      score_normal:
         type: integer
     type: object
 host: localhost:8000
