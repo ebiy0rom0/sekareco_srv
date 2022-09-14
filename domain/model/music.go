@@ -6,10 +6,15 @@ type Music struct {
 	MusicName   string `json:"music_name"`
 	JacketURL   string `json:"jacket_url"`
 	LevelEasy   int    `json:"level_easy"`
+	NotesEasy   int    `json:"notes_easy"`
 	LevelNormal int    `json:"level_normal"`
+	NotesNormal int    `json:"notes_normal"`
 	LevelHard   int    `json:"level_hard"`
+	NotesHard   int    `json:"notes_hard"`
 	LevelExpert int    `json:"level_expert"`
+	NotesExpert int    `json:"notes_expert"`
 	LevelMaster int    `json:"level_master"`
+	NotesMaster int    `json:"notes_master"`
 }
 
 type Artist struct {

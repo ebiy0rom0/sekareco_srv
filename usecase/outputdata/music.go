@@ -6,4 +6,5 @@ type Music struct {
 	MusicName string `json:"musicName"`
 	JacketURL string `json:"jacketUrl"`
 	Level     []int  `json:"level"`
+	Notes     []int  `json:"notes"`
 }

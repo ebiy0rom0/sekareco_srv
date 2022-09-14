@@ -36,10 +36,15 @@ func (r *musicRepository) Fetch(ctx context.Context) (musics []outputdata.Music,
 			&music.MusicName,
 			&music.JacketURL,
 			&music.LevelEasy,
+			&music.NotesEasy,
 			&music.LevelNormal,
+			&music.NotesNormal,
 			&music.LevelHard,
+			&music.NotesHard,
 			&music.LevelExpert,
+			&music.NotesExpert,
 			&music.LevelMaster,
+			&music.NotesMaster,
 		)
 		if err != nil {
 			err = errors.Wrap(err, "failed")
@@ -53,7 +58,8 @@ func (r *musicRepository) Fetch(ctx context.Context) (musics []outputdata.Music,
 			MusicName: music.MusicName,
 			JacketURL: music.JacketURL,
 		}
-		ret.Level = append(ret.Level, music.LevelEasy, music.LevelNormal, music.LevelHard, music.LevelExpert, music.LevelMaster)
+		ret.Level = append([]int{}, music.LevelEasy, music.LevelNormal, music.LevelHard, music.LevelExpert, music.LevelMaster)
+		ret.Notes = append([]int{}, music.NotesEasy, music.NotesNormal, music.NotesHard, music.NotesExpert, music.NotesMaster)
 		musics = append(musics, ret)
 	}
 
