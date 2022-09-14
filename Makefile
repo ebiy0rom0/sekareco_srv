@@ -4,6 +4,8 @@ ifeq ($(GOOS), windows)
 	SHELL:=powershell.exe
 endif
 
+#####
+# go cmd list
 GOCMD:=go
 GORUN:=$(GOCMD) run
 GOBUILD:=$(GOCMD) build
@@ -12,6 +14,8 @@ GOLINT:=$(GOCMD) vet
 GOTOOL:=$(GOCMD) tool
 GOINSTALL:=$(GOCMD) install
 
+#####
+# build
 BIN_DIR:=./bin
 BIN_NAME:=server
 BIN_PATH:=$(BIN_DIR)/$(BIN_NAME)
@@ -28,21 +32,26 @@ endif
 
 BUILD_OPTIONS:=-ldflags '-s -w' -tags $(BUILD_TAGS) $(BUILD_RACE) $(BUILD_STATIC)
 
-# `local` task is convert the output coverage file to html
-# Skipping `local` task by makeing TEST_LOCATE = TEST_MODE
-TEST_MODE:=unit
-TEST_LOCATE:=$(TEST_MODE)
+#####
+# test
+MODE_UNIT:=unit
+MODE_INTEGRATION:=integration
 
 COVERAGE_OUTPUT:=./coverage
 COVERAGE_EXTENTION:=txt
 
+TEST_MODE:=$(COVERAGE_OUTPUT)/$(MODE_UNIT)
+TEST_LOCATE:=local
+
 ifdef INTEGRATION
-	TEST_MODE:=integration
+	TEST_MODE:=$(subst $(MODE_UNIT),$(MODE_INTEGRATION),$(TEST_MODE))
 endif
 
-ifdef LOCAL
-	TEST_MODE:=$(COVERAGE_OUTPUT)/$(TEST_MODE)
-	TEST_LOCATE:=local
+# `local` task is convert the output coverage file to html
+# Skipping `local` task by makeing TEST_LOCATE = TEST_MODE
+ifdef CI
+	TEST_MODE:=$(subst $(COVERAGE_OUTPUT),.,$(TEST_MODE))
+	TEST_LOCATE:=$(TEST_MODE)
 endif
 
 
@@ -53,18 +62,19 @@ help:
 	@echo Usage:
 	@echo   make [TASK] [OPTION]...
 	@echo Task List:
-	@echo   help                           Print this view
-	@echo   build [RELEASE=1]              Build a program for ./cmd/main.go
-	@echo                                  [RELEASE=1] Release build
-	@echo   clean                          Cleaning bin/ directory
-	@echo   test [INTEGRATION=1] [LOCAL=1] Run unit test and generate coverage file
-	@echo                                  [INTEGRATION=1] Simultaneous run the integration test
-	@echo                                  [LOCAL=1] Convert the coverage file to html
-	@echo   lint                           Linting all code
-	@echo   swag [INSTALL=1]               Generate swagger api document
-	@echo                                  [INSTALL=1] Exec `swag_install` task before generate
-	@echo   swag_clean                     Run `git checkout` to cleaning doc/api/ directory
-	@echo   swag_install                   Install swag command at version 1.8.4
+	@echo   help                        Print this view
+	@echo   build [RELEASE=1]           Build a program for ./cmd/main.go
+	@echo                               [RELEASE=1] Release build
+	@echo   clean                       Cleaning bin/ directory
+	@echo   test [INTEGRATION=1] [CI=1] Run unit test and generate coverage file
+	@echo                               The default locate `local` converts coverage file to html
+	@echo                               [INTEGRATION=1] Simultaneous run the integration test
+	@echo                               [CI=1] Change the locate and cancel conversion to html
+	@echo   lint                        Linting all code
+	@echo   swag [INSTALL=1]            Generate swagger api document
+	@echo                               [INSTALL=1] Exec `swag_install` task before generate
+	@echo   swag_clean                  Run `git checkout` to cleaning doc/api/ directory
+	@echo   swag_install                Install swag command at version 1.8.4
 
 build: $(BIN_PATH)
 
@@ -84,9 +94,9 @@ docker_build:
 docker_run: docker_build
 	docker run --rm \
 		-p 8000:8000 \
-		-v ${CURDIR}/log:/log \
-		-v ${CURDIR}/db:/db \
-		-v ${CURDIR}/docs/db:/docs/db \
+		-v $(CURDIR)/log:/log \
+		-v $(CURDIR)/db:/db \
+		-v $(CURDIR)/docs/db:/docs/db \
 		-e TZ=Asia/Tokyo \
 		--name sekareco_srv \
 		sekareco_srv:latest
