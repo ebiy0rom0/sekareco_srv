@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/usecase/database"
+	"sekareco_srv/usecase/outputdata"
 	"testing"
 )
 
@@ -25,10 +26,15 @@ func TestRecordRepository_Store(t *testing.T) {
 				PersonID:     1,
 				MusicID:      1,
 				RecordEasy:   model.RECORD_NO_PLAY,
+				ScoreEasy:    0,
 				RecordNormal: model.RECORD_CLEAR,
+				ScoreNormal:  500,
 				RecordHard:   model.RECORD_FULL_COMBO,
+				ScoreHard:    800,
 				RecordExpert: model.RECORD_ALL_PERFECT,
+				ScoreExpert:  1200,
 				RecordMaster: model.RECORD_ALL_PERFECT,
+				ScoreMaster:  1500,
 			},
 			wantRecordID: 3,
 			wantErr:      false,
@@ -39,10 +45,15 @@ func TestRecordRepository_Store(t *testing.T) {
 				PersonID:     2,
 				MusicID:      3,
 				RecordEasy:   model.RECORD_CLEAR,
+				ScoreEasy:    850,
 				RecordNormal: model.RECORD_CLEAR,
+				ScoreNormal:  1150,
 				RecordHard:   model.RECORD_CLEAR,
+				ScoreHard:    1420,
 				RecordExpert: model.RECORD_FULL_COMBO,
+				ScoreExpert:  1790,
 				RecordMaster: model.RECORD_ALL_PERFECT,
+				ScoreMaster:  2100,
 			},
 			wantRecordID: 4,
 			wantErr:      false,
@@ -53,10 +64,15 @@ func TestRecordRepository_Store(t *testing.T) {
 				PersonID:     1,
 				MusicID:      1,
 				RecordEasy:   model.RECORD_NO_PLAY,
+				ScoreEasy:    0,
 				RecordNormal: model.RECORD_NO_PLAY,
+				ScoreNormal:  0,
 				RecordHard:   model.RECORD_NO_PLAY,
+				ScoreHard:    0,
 				RecordExpert: model.RECORD_NO_PLAY,
+				ScoreExpert:  0,
 				RecordMaster: model.RECORD_NO_PLAY,
+				ScoreMaster:  0,
 			},
 			wantErr: true,
 		},
@@ -95,10 +111,15 @@ func TestRecordRepository_Update(t *testing.T) {
 				musicID:  1,
 				rec: model.Record{
 					RecordEasy:   model.RECORD_CLEAR,
+					ScoreEasy:    220,
 					RecordNormal: model.RECORD_FULL_COMBO,
+					ScoreNormal:  590,
 					RecordHard:   model.RECORD_ALL_PERFECT,
+					ScoreHard:    900,
 					RecordExpert: model.RECORD_ALL_PERFECT,
+					ScoreExpert:  1200,
 					RecordMaster: model.RECORD_NO_PLAY,
+					ScoreMaster:  0,
 				},
 			},
 			wantErr: false,
@@ -110,10 +131,15 @@ func TestRecordRepository_Update(t *testing.T) {
 				musicID:  2,
 				rec: model.Record{
 					RecordEasy:   model.RECORD_NO_PLAY,
+					ScoreEasy:    0,
 					RecordNormal: model.RECORD_NO_PLAY,
+					ScoreNormal:  0,
 					RecordHard:   model.RECORD_NO_PLAY,
+					ScoreHard:    0,
 					RecordExpert: model.RECORD_NO_PLAY,
+					ScoreExpert:  0,
 					RecordMaster: model.RECORD_NO_PLAY,
+					ScoreMaster:  0,
 				},
 			},
 			wantErr: false,
@@ -125,10 +151,15 @@ func TestRecordRepository_Update(t *testing.T) {
 				musicID:  2,
 				rec: model.Record{
 					RecordEasy:   model.RECORD_NO_PLAY,
+					ScoreEasy:    0,
 					RecordNormal: model.RECORD_NO_PLAY,
+					ScoreNormal:  0,
 					RecordHard:   model.RECORD_NO_PLAY,
+					ScoreHard:    0,
 					RecordExpert: model.RECORD_NO_PLAY,
+					ScoreExpert:  0,
 					RecordMaster: model.RECORD_NO_PLAY,
+					ScoreMaster:  0,
 				},
 			},
 			wantErr: false,
@@ -151,7 +182,7 @@ func TestRecordRepository_GetByPersonID(t *testing.T) {
 	tests := []struct {
 		name        string
 		args        args
-		wantRecords []model.Record
+		wantRecords []outputdata.Record
 		wantErr     bool
 	}{
 		{
@@ -159,15 +190,17 @@ func TestRecordRepository_GetByPersonID(t *testing.T) {
 			args: args{
 				personID: 1,
 			},
-			wantRecords: []model.Record{
+			wantRecords: []outputdata.Record{
 				{
-					PersonID:     1,
-					MusicID:      1,
-					RecordEasy:   model.RECORD_CLEAR,
-					RecordNormal: model.RECORD_FULL_COMBO,
-					RecordHard:   model.RECORD_ALL_PERFECT,
-					RecordExpert: model.RECORD_ALL_PERFECT,
-					RecordMaster: model.RECORD_NO_PLAY,
+					MusicID: 1,
+					Records: []int{
+						model.RECORD_CLEAR,
+						model.RECORD_FULL_COMBO,
+						model.RECORD_ALL_PERFECT,
+						model.RECORD_ALL_PERFECT,
+						model.RECORD_NO_PLAY,
+					},
+					Scores: []int{220, 590, 900, 1200, 0},
 				}, // inserted after updated item in test
 			},
 			wantErr: false,
@@ -177,33 +210,39 @@ func TestRecordRepository_GetByPersonID(t *testing.T) {
 			args: args{
 				personID: 2,
 			},
-			wantRecords: []model.Record{
+			wantRecords: []outputdata.Record{
 				{
-					PersonID:     2,
-					MusicID:      1,
-					RecordEasy:   model.RECORD_ALL_PERFECT,
-					RecordNormal: model.RECORD_ALL_PERFECT,
-					RecordHard:   model.RECORD_ALL_PERFECT,
-					RecordExpert: model.RECORD_FULL_COMBO,
-					RecordMaster: model.RECORD_FULL_COMBO,
+					MusicID: 1,
+					Records: []int{
+						model.RECORD_ALL_PERFECT,
+						model.RECORD_ALL_PERFECT,
+						model.RECORD_ALL_PERFECT,
+						model.RECORD_FULL_COMBO,
+						model.RECORD_FULL_COMBO,
+					},
+					Scores: []int{300, 600, 900, 1195, 1480},
 				}, // item not operated
 				{
-					PersonID:     2,
-					MusicID:      2,
-					RecordEasy:   model.RECORD_NO_PLAY,
-					RecordNormal: model.RECORD_NO_PLAY,
-					RecordHard:   model.RECORD_NO_PLAY,
-					RecordExpert: model.RECORD_NO_PLAY,
-					RecordMaster: model.RECORD_NO_PLAY,
+					MusicID: 2,
+					Records: []int{
+						model.RECORD_NO_PLAY,
+						model.RECORD_NO_PLAY,
+						model.RECORD_NO_PLAY,
+						model.RECORD_NO_PLAY,
+						model.RECORD_NO_PLAY,
+					},
+					Scores: []int{0, 0, 0, 0, 0},
 				}, // updated item in test
 				{
-					PersonID:     2,
-					MusicID:      3,
-					RecordEasy:   model.RECORD_CLEAR,
-					RecordNormal: model.RECORD_CLEAR,
-					RecordHard:   model.RECORD_CLEAR,
-					RecordExpert: model.RECORD_FULL_COMBO,
-					RecordMaster: model.RECORD_ALL_PERFECT,
+					MusicID: 3,
+					Records: []int{
+						model.RECORD_CLEAR,
+						model.RECORD_CLEAR,
+						model.RECORD_CLEAR,
+						model.RECORD_FULL_COMBO,
+						model.RECORD_ALL_PERFECT,
+					},
+					Scores: []int{850, 1150, 1420, 1790, 2100},
 				}, // inserted item in test
 			},
 			wantErr: false,

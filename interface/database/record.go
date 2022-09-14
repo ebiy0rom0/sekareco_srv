@@ -5,6 +5,7 @@ import (
 	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/database"
+	"sekareco_srv/usecase/outputdata"
 )
 
 type recordRepository struct {
@@ -16,8 +17,15 @@ func NewRecordRepository(h infra.SqlHandler) *recordRepository {
 }
 
 func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordID int, err error) {
-	query := "INSERT INTO record (person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master)"
-	query += " VALUES (?, ?, ?, ?, ?, ?, ?);"
+	query := "INSERT INTO record ("
+	query += "  person_id, "
+	query += "  music_id, "
+	query += "  record_easy,   score_easy,   "
+	query += "  record_normal, score_normal, "
+	query += "  record_hard,   score_hard,   "
+	query += "  record_expert, score_expert, "
+	query += "  record_master, score_master  "
+	query += ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
 	dao, ok := GetTx(ctx)
 	if !ok {
@@ -28,10 +36,15 @@ func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordI
 		rec.PersonID,
 		rec.MusicID,
 		rec.RecordEasy,
+		rec.ScoreEasy,
 		rec.RecordNormal,
+		rec.ScoreNormal,
 		rec.RecordHard,
+		rec.ScoreHard,
 		rec.RecordExpert,
+		rec.ScoreExpert,
 		rec.RecordMaster,
+		rec.ScoreMaster,
 	)
 	if err != nil {
 		return
@@ -47,7 +60,15 @@ func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordI
 }
 
 func (r *recordRepository) Update(ctx context.Context, personID int, musicID int, rec model.Record) (err error) {
-	query := "UPDATE record SET record_easy = ?, record_normal = ?, record_hard = ?, record_expert = ?, record_master = ? WHERE person_id = ? AND music_id = ?;"
+	query := "UPDATE record "
+	query += "SET "
+	query += "  record_easy   = ?, score_easy =   ?, "
+	query += "  record_normal = ?, score_normal = ?, "
+	query += "  record_hard   = ?, score_hard   = ?, "
+	query += "  record_expert = ?, score_expert = ?, "
+	query += "  record_master = ?, score_master = ?  "
+	query += "WHERE "
+	query += "  person_id = ? AND music_id = ?;"
 
 	dao, ok := GetTx(ctx)
 	if !ok {
@@ -56,18 +77,34 @@ func (r *recordRepository) Update(ctx context.Context, personID int, musicID int
 
 	_, err = dao.Execute(ctx, query,
 		rec.RecordEasy,
+		rec.ScoreEasy,
 		rec.RecordNormal,
+		rec.ScoreNormal,
 		rec.RecordHard,
+		rec.ScoreHard,
 		rec.RecordExpert,
+		rec.ScoreExpert,
 		rec.RecordMaster,
+		rec.ScoreMaster,
 		personID,
 		musicID,
 	)
 	return
 }
 
-func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (records []model.Record, err error) {
-	query := "SELECT person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master FROM record WHERE person_id = ?;"
+func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (records []outputdata.Record, err error) {
+	query := "SELECT "
+	query += "  music_id, "
+	query += "  record_easy,   score_easy,   "
+	query += "  record_normal, score_normal, "
+	query += "  record_hard,   score_hard,   "
+	query += "  record_expert, score_expert, "
+	query += "  record_master, score_master  "
+	query += "FROM "
+	query += "  record "
+	query += "WHERE "
+	query += "  person_id = ?;"
+
 	rows, err := r.Query(ctx, query, personID)
 	if err != nil {
 		return
@@ -77,19 +114,31 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (rec
 	for rows.Next() {
 		var record model.Record
 		err = rows.Scan(
-			&record.PersonID,
 			&record.MusicID,
 			&record.RecordEasy,
+			&record.ScoreEasy,
 			&record.RecordNormal,
+			&record.ScoreNormal,
 			&record.RecordHard,
+			&record.ScoreHard,
 			&record.RecordExpert,
+			&record.ScoreExpert,
 			&record.RecordMaster,
+			&record.ScoreMaster,
 		)
 
 		if err != nil {
 			return
 		}
-		records = append(records, record)
+
+		//convert to response data struct
+		ret := outputdata.Record{
+			MusicID: record.MusicID,
+		}
+
+		ret.Records = append([]int{}, record.RecordEasy, record.RecordNormal, record.RecordHard, record.RecordExpert, record.RecordMaster)
+		ret.Scores = append([]int{}, record.ScoreEasy, record.ScoreNormal, record.ScoreHard, record.ScoreExpert, record.ScoreMaster)
+		records = append(records, ret)
 	}
 	return
 }

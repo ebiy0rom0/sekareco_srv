@@ -4,10 +4,15 @@ CREATE TABLE IF NOT EXISTS record (
     person_id INTEGER NOT NULL,
     music_id INTEGER NOT NULL,
     record_easy INTEGER,
+    score_easy INTEGER,
     record_normal INTEGER,
+    score_normal INTEGER,
     record_hard INTEGER,
+    score_hard INTEGER,
     record_expert INTEGER,
+    score_expert INTEGER,
     record_master INTEGER,
+    score_master INTEGER,
     created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
     updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );

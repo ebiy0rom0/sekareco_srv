@@ -20,6 +20,7 @@ func Test_musicInteractor_Fetch(t *testing.T) {
 			MusicName: "test_music001",
 			JacketURL: "jacket/m_001.png",
 			Level:     []int{1, 2, 3, 4, 5},
+			Notes:     []int{100, 200, 300, 400, 500},
 		},
 		{
 			MusicID:   2,
@@ -27,6 +28,7 @@ func Test_musicInteractor_Fetch(t *testing.T) {
 			MusicName: "test_music002",
 			JacketURL: "jacket/m_002.png",
 			Level:     []int{2, 3, 4, 5, 6},
+			Notes:     []int{200, 300, 400, 500, 600},
 		},
 		{
 			MusicID:   3,
@@ -34,6 +36,7 @@ func Test_musicInteractor_Fetch(t *testing.T) {
 			MusicName: "test_music003",
 			JacketURL: "jacket/m_003.png",
 			Level:     []int{3, 4, 5, 6, 7},
+			Notes:     []int{300, 400, 500, 600, 700},
 		},
 	}
 	t.Run("master music all fetch", func(t *testing.T) {

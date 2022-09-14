@@ -36,7 +36,20 @@ VALUES  (1, "test_music001", "jacket/m_001.png", 1, 100, 2, 200, 3, 300, 4, 400,
 
 
 -- person_id: 3 is not registered record person
-INSERT INTO record(person_id, music_id, record_easy, record_normal, record_hard, record_expert, record_master)
-VALUES  (2, 1, 3, 3, 3, 2, 2),
-        (2, 2, 3, 3, 2, 1, 2)
+INSERT INTO record(
+    person_id,
+    music_id,
+    record_easy,
+    score_easy,
+    record_normal,
+    score_normal,
+    record_hard,
+    score_hard,
+    record_expert,
+    score_expert,
+    record_master,
+    score_master
+)
+VALUES  (2, 1, 3, 300, 3, 600, 3, 900,  2, 1195, 2, 1480),
+        (2, 2, 3, 600, 3, 900, 2, 1180, 1, 1460, 2, 1700)
 ;

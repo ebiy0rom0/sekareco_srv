@@ -20,7 +20,18 @@ func NewMusicRepository(h infra.SqlHandler) *musicRepository {
 }
 
 func (r *musicRepository) Fetch(ctx context.Context) (musics []outputdata.Music, err error) {
-	query := "SELECT music_id, artist_id, music_name, jacket_url, level_easy, level_normal, level_hard, level_expert, level_master FROM master_music"
+	query := "SELECT "
+	query += "  music_id,   "
+	query += "  artist_id,  "
+	query += "  music_name, "
+	query += "  jacket_url, "
+	query += "  level_easy,   notes_easy,   "
+	query += "  level_normal, notes_normal, "
+	query += "  level_hard,   notes_hard,   "
+	query += "  level_expert, notes_expert, "
+	query += "  level_master, notes_master  "
+	query += "FROM "
+	query += "  master_music;"
 	rows, err := r.Query(ctx, query)
 	if err != nil {
 		err = errors.Wrap(err, "failed")
