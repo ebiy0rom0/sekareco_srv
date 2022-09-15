@@ -143,5 +143,4 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (rec
 	return
 }
 
-// interface implementation checks
 var _ database.RecordRepository = (*recordRepository)(nil)

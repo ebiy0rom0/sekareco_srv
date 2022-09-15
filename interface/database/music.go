@@ -80,5 +80,4 @@ func (r *musicRepository) Fetch(ctx context.Context) (musics []outputdata.Music,
 	return
 }
 
-// interface implementation checks
 var _ database.MusicRepository = (*musicRepository)(nil)

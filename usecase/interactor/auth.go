@@ -3,7 +3,7 @@ package interactor
 import (
 	"context"
 	"errors"
-	infra_ "sekareco_srv/domain/infra"
+	"sekareco_srv/domain/infra"
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/inputport"
 
@@ -11,12 +11,12 @@ import (
 )
 
 type authInteractor struct {
-	token       infra_.TokenManager
+	token       infra.TokenManager
 	login       database.LoginRepository
 	transaction database.SqlTransaction
 }
 
-func NewAuthInteractor(t infra_.TokenManager, l database.LoginRepository, tx database.SqlTransaction) *authInteractor {
+func NewAuthInteractor(t infra.TokenManager, l database.LoginRepository, tx database.SqlTransaction) *authInteractor {
 	return &authInteractor{
 		token:       t,
 		login:       l,
@@ -38,15 +38,14 @@ func (i *authInteractor) CheckAuth(ctx context.Context, loginID string, password
 	return login.PersonID, nil
 }
 
-func (i *authInteractor) AddToken(id int) infra_.Token {
+func (i *authInteractor) AddToken(id int) infra.Token {
 	token := i.token.GenerateNewToken()
 	i.token.AddToken(id, token)
 	return token
 }
 
-func (i *authInteractor) RevokeToken(token infra_.Token) {
+func (i *authInteractor) RevokeToken(token infra.Token) {
 	i.token.RevokeToken(token)
 }
 
-// interface implementation checks
 var _ inputport.AuthInputport = (*authInteractor)(nil)

@@ -60,5 +60,4 @@ func (r *personRepository) GetByID(ctx context.Context, personID int) (user mode
 	return
 }
 
-// interface implementation checks
 var _ database.PersonRepository = (*personRepository)(nil)

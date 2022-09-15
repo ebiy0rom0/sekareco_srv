@@ -3,15 +3,15 @@ package test
 import (
 	"log"
 	"os"
-	infra__ "sekareco_srv/domain/infra"
+	infraDoamin "sekareco_srv/domain/infra"
 	"sekareco_srv/infra"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/sql"
-	infra_ "sekareco_srv/interface/infra"
+	infraIf "sekareco_srv/interface/infra"
 )
 
-var sqlHandler infra_.SqlHandler
-var txHandler infra_.TxHandler
+var sqlHandler infraIf.SqlHandler
+var txHandler infraIf.TxHandler
 
 var authMiddleware *middleware.AuthMiddleware
 
@@ -32,11 +32,11 @@ func Setup() {
 	authMiddleware = am
 }
 
-func InjectSqlHandler() infra_.SqlHandler {
+func InjectSqlHandler() infraIf.SqlHandler {
 	return sqlHandler
 }
 
-func InjectTxHandler() infra_.TxHandler {
+func InjectTxHandler() infraIf.TxHandler {
 	return txHandler
 }
 
@@ -44,6 +44,6 @@ func InjectAuthMiddleware() *middleware.AuthMiddleware {
 	return authMiddleware
 }
 
-func InjectTokenManager() infra__.TokenManager {
+func InjectTokenManager() infraDoamin.TokenManager {
 	return authMiddleware
 }

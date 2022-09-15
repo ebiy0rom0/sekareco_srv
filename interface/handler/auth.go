@@ -3,7 +3,7 @@ package handler
 import (
 	"context"
 	"net/http"
-	infra_ "sekareco_srv/domain/infra"
+	infraDomain "sekareco_srv/domain/infra"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
@@ -64,7 +64,7 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Security	Bearer Authentication
 // @Router		/signout	[delete]
 func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
-	token := infra_.GetToken(ctx)
+	token := infraDomain.GetToken(ctx)
 	h.auth.RevokeToken(token)
 
 	hc.Response(http.StatusOK, nil)

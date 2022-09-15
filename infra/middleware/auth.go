@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"net/http"
-	infra_ "sekareco_srv/domain/infra"
+	infraDoamin "sekareco_srv/domain/infra"
 	"sekareco_srv/infra"
 	"strconv"
 	"strings"
@@ -46,9 +46,9 @@ type tokenStatus struct {
 type AuthMiddleware struct {
 	// access token mapping
 	// key: token, value: status
-	tokens map[infra_.Token]tokenStatus
+	tokens map[infraDoamin.Token]tokenStatus
 	// 1 personID has only 1 token
-	personToToken map[int]infra_.Token
+	personToToken map[int]infraDoamin.Token
 }
 
 // NewAuthMiddleware returns AuthMiddleware pointer.
@@ -61,8 +61,8 @@ type AuthMiddleware struct {
 // while making the number of tokens holding valiable.
 func NewAuthMiddleware() *AuthMiddleware {
 	return &AuthMiddleware{
-		tokens:        make(map[infra_.Token]tokenStatus, MAX_TOKENS),
-		personToToken: make(map[int]infra_.Token, MAX_TOKENS),
+		tokens:        make(map[infraDoamin.Token]tokenStatus, MAX_TOKENS),
+		personToToken: make(map[int]infraDoamin.Token, MAX_TOKENS),
 	}
 }
 
@@ -87,7 +87,7 @@ func (m *AuthMiddleware) WithCheckAuth() func(next http.Handler) http.Handler {
 
 			// make available for each usecase
 			ctx := r.Context()
-			ctx = infra_.SetToken(ctx, token)
+			ctx = infraDoamin.SetToken(ctx, token)
 			r = r.WithContext(ctx)
 
 			w.Header().Set(RESPONSE_HEADER, HEADER_DONE)
@@ -101,17 +101,17 @@ func (m *AuthMiddleware) WithCheckAuth() func(next http.Handler) http.Handler {
 // [investigation]
 // Since access times are used to generate tokens, is there a possibility
 // of token conflict when concurrent accesses occur?
-func (m *AuthMiddleware) GenerateNewToken() infra_.Token {
+func (m *AuthMiddleware) GenerateNewToken() infraDoamin.Token {
 	nano := infra.Timer.NowTime().UnixNano() / 1e6
 	seed := []byte(strconv.FormatInt(nano, 10))
 	token := base64.StdEncoding.EncodeToString(seed)
-	return infra_.Token(token)
+	return infraDoamin.Token(token)
 }
 
 // AddToken is add the new token into process cache.
 // If for some reason the authenticated person adds the token again,
 // it will be overwritten with the new token.
-func (m *AuthMiddleware) AddToken(pid int, new infra_.Token) {
+func (m *AuthMiddleware) AddToken(pid int, new infraDoamin.Token) {
 	// delete old token
 	old, ok := m.personToToken[pid]
 	if ok {
@@ -126,7 +126,7 @@ func (m *AuthMiddleware) AddToken(pid int, new infra_.Token) {
 }
 
 // RevokeToken is delete the specified token from middleware.
-func (m *AuthMiddleware) RevokeToken(token infra_.Token) {
+func (m *AuthMiddleware) RevokeToken(token infraDoamin.Token) {
 	pid := m.tokens[token].personID
 	delete(m.personToToken, pid)
 	delete(m.tokens, token)
@@ -157,13 +157,13 @@ func (m *AuthMiddleware) DeleteExpiredToken(ctx context.Context) {
 }
 
 // getHeaderToken returns the Bearer token in the request header.
-func (m *AuthMiddleware) getHeaderToken(r *http.Request) infra_.Token {
+func (m *AuthMiddleware) getHeaderToken(r *http.Request) infraDoamin.Token {
 	token := r.Header.Get(REQUEST_HEADER)
-	return infra_.Token(strings.Trim(strings.Replace(token, "Bearer", "", -1), " "))
+	return infraDoamin.Token(strings.Trim(strings.Replace(token, "Bearer", "", -1), " "))
 }
 
 // isEffectiveToken reports weather request token is effective.
-func (m *AuthMiddleware) isEffectiveToken(token infra_.Token) bool {
+func (m *AuthMiddleware) isEffectiveToken(token infraDoamin.Token) bool {
 	access, ok := m.tokens[token]
 	// not exist token or token expired
 	return ok && infra.Timer.Before(access.expiredIn)
