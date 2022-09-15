@@ -19,7 +19,7 @@ func (r *loginRepository) Store(ctx context.Context, l model.Login) (err error) 
 	query := "INSERT INTO person_login (login_id, person_id, password_hash)"
 	query += " VALUES (?, ?, ?);"
 
-	dao, ok := GetTx(ctx)
+	dao, ok := getTx(ctx)
 	if !ok {
 		dao = r
 	}

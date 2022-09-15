@@ -21,7 +21,7 @@ func (r *personRepository) Store(ctx context.Context, p model.Person) (personID 
 	query := "INSERT INTO person (person_name, friend_code, is_compare)"
 	query += " VALUES (?, ?, ?);"
 
-	dao, ok := GetTx(ctx)
+	dao, ok := getTx(ctx)
 	if !ok {
 		dao = r
 	}

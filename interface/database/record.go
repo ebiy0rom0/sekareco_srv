@@ -27,7 +27,7 @@ func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordI
 	query += "  record_master, score_master  "
 	query += ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
-	dao, ok := GetTx(ctx)
+	dao, ok := getTx(ctx)
 	if !ok {
 		dao = r
 	}
@@ -70,7 +70,7 @@ func (r *recordRepository) Update(ctx context.Context, personID int, musicID int
 	query += "WHERE "
 	query += "  person_id = ? AND music_id = ?;"
 
-	dao, ok := GetTx(ctx)
+	dao, ok := getTx(ctx)
 	if !ok {
 		dao = r
 	}
