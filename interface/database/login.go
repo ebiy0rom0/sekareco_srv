@@ -46,5 +46,4 @@ func (r *loginRepository) GetByID(ctx context.Context, loginID string) (login mo
 	return
 }
 
-// interface implementation checks
 var _ database.LoginRepository = (*loginRepository)(nil)
