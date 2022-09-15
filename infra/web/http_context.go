@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"sekareco_srv/domain/infra"
-	infra_ "sekareco_srv/interface/infra"
+	infraIf "sekareco_srv/interface/infra"
 
 	"github.com/gorilla/mux"
 )
@@ -78,5 +78,4 @@ func (c *HttpContext) MakeError(err error) *infra.HttpError {
 	}
 }
 
-// interface implementation checks
-var _ infra_.HttpContext = (*HttpContext)(nil)
+var _ infraIf.HttpContext = (*HttpContext)(nil)

@@ -43,6 +43,8 @@ func openSqlite3(source string) (*sql.DB, error) {
 	return sql.Open("sqlite3", source)
 }
 
+// createDB creates a sqlite3 database file.
+// Specify the create location in source.
 func createDB(source string) error {
 	file, err := os.Create(source)
 	if err != nil {
@@ -53,7 +55,9 @@ func createDB(source string) error {
 	return nil
 }
 
-// createTable
+// createTable creates a required tables.
+// Create a docs/db directory in the root directory and
+// stores the queries file for table creation.
 func createTable(db *sql.DB) error {
 	s := sqlfile.New()
 

@@ -73,5 +73,4 @@ func (r *ResponseWriterWrapper) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("protocol", r.request.Proto)
 }
 
-// interface implementation check
 var _ http.ResponseWriter = (*ResponseWriterWrapper)(nil)

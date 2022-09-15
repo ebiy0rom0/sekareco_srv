@@ -3,6 +3,7 @@ package sql
 import (
 	"context"
 	"database/sql"
+	"sekareco_srv/interface/infra"
 )
 
 // A sqlHandler is database handler wrapper.
@@ -26,7 +27,7 @@ func NewConnection(user, pass, host, schema string) (*sql.DB, error) {
 	return initSqlite3(schema)
 }
 
-// NewSqlHandler returns sqlHandler and txHandler pointer.
+// NewSqlHandler returns sqlHandler pointer.
 func NewSqlHandler(con *sql.DB) *sqlHandler {
 	return &sqlHandler{con: con}
 }
@@ -64,3 +65,5 @@ func (h *sqlHandler) Query(ctx context.Context, query string, args ...interface{
 	}
 	return rows, nil
 }
+
+var _ infra.SqlHandler = (*sqlHandler)(nil)
