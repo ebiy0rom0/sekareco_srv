@@ -41,7 +41,7 @@ func (r *ResponseWriterWrapper) Header() http.Header {
 	return r.writer.Header()
 }
 
-// Write returns
+// Write
 func (r *ResponseWriterWrapper) Write(content []byte) (int, error) {
 	r.responseSize = len(content)
 	if r.status == 0 {
@@ -56,6 +56,7 @@ func (r *ResponseWriterWrapper) WriteHeader(code int) {
 	r.writer.WriteHeader(code)
 }
 
+// MarshalZerologObject saves structured logs.
 func (r *ResponseWriterWrapper) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("requestMethod", r.request.Method)
 	e.Str("requestUrl", r.request.URL.String())
@@ -74,3 +75,5 @@ func (r *ResponseWriterWrapper) MarshalZerologObject(e *zerolog.Event) {
 }
 
 var _ http.ResponseWriter = (*ResponseWriterWrapper)(nil)
+var _ zerolog.LogObjectMarshaler = (*ResponseWriterWrapper)(nil)
+
