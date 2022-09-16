@@ -15,10 +15,13 @@ func TestMain(m *testing.M) {
 	lr := database.NewLoginRepository(test.InjectSqlHandler())
 	mr := database.NewMusicRepository(test.InjectSqlHandler())
 	pr := database.NewPersonRepository(test.InjectSqlHandler())
+	rr := database.NewRecordRepository(test.InjectSqlHandler())
 
 	ai = interactor.NewAuthInteractor(test.InjectTokenManager(), lr, tx)
 	mi = interactor.NewMusicInteractor(mr, tx)
 	pi = interactor.NewPersonInteractor(pr, lr, tx)
+
+	ri = interactor.NewRecordInteractor(rr, tx)
 
 	m.Run()
 }
