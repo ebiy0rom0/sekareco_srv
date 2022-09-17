@@ -52,9 +52,7 @@ func (l *recordInteractor) Store(ctx context.Context, personID int, r inputdata.
 		return model.Record{}, err
 	}
 
-	recordID := v.(int)
-	record.RecordID = recordID
-
+	record.RecordID = v.(int)
 	return record, nil
 }
 
