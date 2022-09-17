@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputdata"
@@ -12,11 +11,16 @@ import (
 
 type personHandler struct {
 	person inputport.PersonInputport
+	valid  inputport.PersonValidator
 }
 
-func NewPersonHandler(p inputport.PersonInputport) *personHandler {
+func NewPersonHandler(
+	p inputport.PersonInputport,
+	v inputport.PersonValidator,
+) *personHandler {
 	return &personHandler{
 		person: p,
+		valid:  v,
 	}
 }
 
@@ -60,18 +64,8 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	if err := req.Valiation(); err != nil {
+	if err := h.valid.ValidationAdd(req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError(err))
-		return
-	}
-
-	ok, err := h.person.IsDuplicateLoginID(ctx, req.LoginID)
-	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
-		return
-	} else if !ok {
-		err = errors.New("loginID is duplicate: " + req.LoginID)
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
 		return
 	}
 
@@ -101,6 +95,11 @@ func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 
 	var req inputdata.UpdatePerson
 	if err := hc.Decode(&req); err != nil {
+		hc.Response(http.StatusBadRequest, hc.MakeError(err))
+		return
+	}
+
+	if err := h.valid.ValidationUpdate(req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}

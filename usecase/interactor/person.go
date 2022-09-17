@@ -2,10 +2,9 @@ package interactor
 
 import (
 	"context"
-	"database/sql"
 	"hash/fnv"
+	"sekareco_srv/domain/infra"
 	"sekareco_srv/domain/model"
-	"sekareco_srv/infra"
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
@@ -73,18 +72,6 @@ func (i *personInteractor) GetByID(ctx context.Context, personID int) (person mo
 		return model.Person{}, errors.Wrapf(err, "failed to select person: person_id=%d", personID)
 	}
 	return
-}
-
-func (i *personInteractor) IsDuplicateLoginID(ctx context.Context, loginID string) (bool, error) {
-	_, err := i.login.GetByID(ctx, loginID)
-	if err == sql.ErrNoRows {
-		return true, nil
-
-	} else if err != nil {
-		return false, errors.Wrapf(err, "failed to select login: login_id=%s", loginID)
-	}
-
-	return false, nil
 }
 
 func (i *personInteractor) generateFriendCode(loginID string) (code int, err error) {

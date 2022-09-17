@@ -37,7 +37,8 @@ func InitRouter(
 
 	pr := database.NewPersonRepository(sh)
 	pi := interactor.NewPersonInteractor(pr, lr, tx)
-	personHandler := handler.NewPersonHandler(pi)
+	pv := interactor.NewPersonValidator(lr)
+	personHandler := handler.NewPersonHandler(pi, pv)
 
 	rr := database.NewRecordRepository(sh)
 	ri := interactor.NewRecordInteractor(rr, tx)
