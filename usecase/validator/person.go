@@ -1,4 +1,4 @@
-package interactor
+package validator
 
 import (
 	"context"
@@ -54,11 +54,11 @@ func (v *personValidator) tooShortLoginID(loginID string) bool {
 // Returns true if a duplicate loginID exists.
 func (v *personValidator) duplicateLoginID(ctx context.Context, loginID string) (bool, error) {
 	if _, err := v.login.GetByID(ctx, loginID); err == sql.ErrNoRows {
-		return true, nil
+		return false, nil
 	} else if err != nil {
-		return false, err
+		return true, err
 	}
-	return false, nil
+	return true, nil
 }
 
 // requirePersonName checks person name has been entered.

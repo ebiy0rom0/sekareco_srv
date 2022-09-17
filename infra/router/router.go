@@ -8,6 +8,7 @@ import (
 	"sekareco_srv/interface/handler"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/interactor"
+	"sekareco_srv/usecase/validator"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
@@ -37,7 +38,7 @@ func InitRouter(
 
 	pr := database.NewPersonRepository(sh)
 	pi := interactor.NewPersonInteractor(pr, lr, tx)
-	pv := interactor.NewPersonValidator(lr)
+	pv := validator.NewPersonValidator(lr)
 	personHandler := handler.NewPersonHandler(pi, pv)
 
 	rr := database.NewRecordRepository(sh)
