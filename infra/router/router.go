@@ -6,7 +6,7 @@ import (
 	"sekareco_srv/infra/web"
 	"sekareco_srv/interface/database"
 	"sekareco_srv/interface/handler"
-	infra_ "sekareco_srv/interface/infra"
+	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/interactor"
 
 	"github.com/gorilla/mux"
@@ -15,8 +15,8 @@ import (
 
 // InitRouter returns gorilla/mux Router pointer setup all routing.
 func InitRouter(
-	sh infra_.SqlHandler,
-	th infra_.TxHandler,
+	sh infra.SqlHandler,
+	th infra.TxHandler,
 	am *middleware.AuthMiddleware,
 	l zerolog.Logger,
 ) *mux.Router {
