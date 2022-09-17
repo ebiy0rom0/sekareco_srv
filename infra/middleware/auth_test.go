@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 	"regexp"
+	_ "sekareco_srv/infra"
 	"testing"
 	"time"
 )
