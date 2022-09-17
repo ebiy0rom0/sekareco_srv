@@ -29,16 +29,6 @@ func TestPersonInteractor_Store(t *testing.T) {
 			want:    4,
 			wantErr: false,
 		},
-		{
-			name: "duplicate store entry",
-			args: inputdata.AddPerson{
-				LoginID:    "login_id5",
-				PersonName: "no name",
-				Password:   "password",
-			},
-			want:    0,
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -127,41 +117,6 @@ func TestPersonInteractor_GetByID(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotPerson, tt.wantPerson) {
 				t.Errorf("personInteractor.GetByID() = %v, want %v", gotPerson, tt.wantPerson)
-			}
-		})
-	}
-}
-
-func TestPersonInteractor_IsDuplicateLoginID(t *testing.T) {
-	ctx := context.Background()
-	tests := []struct {
-		name    string
-		loginID string
-		want    bool
-		wantErr bool
-	}{
-		{
-			name:    "unregistered loginID",
-			loginID: "unregisteredID",
-			want:    true,
-			wantErr: false,
-		},
-		{
-			name:    "duplicate loginID",
-			loginID: "login_id1",
-			want:    false,
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := pi.IsDuplicateLoginID(ctx, tt.loginID)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("personInteractor.IsDuplicateLoginID() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("personInteractor.IsDuplicateLoginID() = %v, want %v", got, tt.want)
 			}
 		})
 	}
