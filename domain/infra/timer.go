@@ -2,7 +2,7 @@ package infra
 
 import "time"
 
-type Timer interface {
+type ITimer interface {
 	NowTime() time.Time
 	NowDatetime() string
 	NowTimestamp() int64
@@ -10,3 +10,6 @@ type Timer interface {
 	Sub(time.Time) time.Duration
 	Before(time.Time) bool
 }
+
+// Timer instance to be called from code.
+var Timer ITimer

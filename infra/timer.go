@@ -5,9 +5,6 @@ import (
 	"time"
 )
 
-//
-var Timer *timeManager
-
 type timeManager struct {
 	timer *time.Location
 }
@@ -16,7 +13,7 @@ type timeManager struct {
 // Set location(JST) and make Timer instance.
 func init() {
 	jst, _ := time.LoadLocation("Asia/Tokyo")
-	Timer = &timeManager{
+	infra.Timer = &timeManager{
 		timer: jst,
 	}
 }
@@ -51,4 +48,4 @@ func (t *timeManager) Before(u time.Time) bool {
 	return t.NowTime().Before(u)
 }
 
-var _ infra.Timer = (*timeManager)(nil)
+var _ infra.ITimer = (*timeManager)(nil)
