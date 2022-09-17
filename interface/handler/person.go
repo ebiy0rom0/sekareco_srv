@@ -64,7 +64,7 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	if err := h.valid.ValidationAdd(req); err != nil {
+	if err := h.valid.ValidationAdd(ctx, req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}
@@ -99,7 +99,7 @@ func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	if err := h.valid.ValidationUpdate(req); err != nil {
+	if err := h.valid.ValidationUpdate(ctx, req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 		return
 	}
