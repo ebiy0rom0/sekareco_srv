@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"sekareco_srv/infra"
+	"sekareco_srv/infra/logger"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
@@ -44,7 +45,7 @@ func main() {
 		log.Fatalf("Fail to loading dotenv: %+v", err)
 	}
 
-	if err := infra.InitLogger(); err != nil {
+	if err := logger.InitLogger(*stage); err != nil {
 		log.Fatalf("Fail to initialize logger: %+v", err)
 	}
 
