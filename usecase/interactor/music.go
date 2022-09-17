@@ -2,7 +2,7 @@ package interactor
 
 import (
 	"context"
-	"sekareco_srv/infra"
+	"sekareco_srv/domain/infra"
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/inputport"
 	"sekareco_srv/usecase/outputdata"

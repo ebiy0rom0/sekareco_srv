@@ -2,7 +2,7 @@ package web
 
 import (
 	"net/http"
-	"sekareco_srv/infra"
+	"sekareco_srv/domain/infra"
 	"time"
 
 	"github.com/rs/zerolog"
