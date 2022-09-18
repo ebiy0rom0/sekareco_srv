@@ -29,6 +29,15 @@ func TestPersonInteractor_Store(t *testing.T) {
 			want:    4,
 			wantErr: false,
 		},
+		{
+			name: "duplicate loginID",
+			args: inputdata.AddPerson{
+				LoginID:    "login_id1",
+				PersonName: "no name",
+				Password:   "password",
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
