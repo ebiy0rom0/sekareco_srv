@@ -2,7 +2,10 @@ name: Generate-API-Doc
 
 on:
   push:
-    branches: [ "develop" ]
+    branches:
+    - "develop"
+    paths:
+    - "interface/handler/**"
 
 permissions:
   contents: write
