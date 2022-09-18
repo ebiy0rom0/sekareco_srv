@@ -30,7 +30,8 @@ func InitRouter(
 
 	lr := database.NewLoginRepository(sh)
 	ai := interactor.NewAuthInteractor(am, lr, tx)
-	authHandler := handler.NewAuthHandler(ai)
+	av := validator.NewAuthValidator()
+	authHandler := handler.NewAuthHandler(ai, av)
 
 	mr := database.NewMusicRepository(sh)
 	mi := interactor.NewMusicInteractor(mr, tx)

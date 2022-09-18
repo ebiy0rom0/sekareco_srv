@@ -13,5 +13,7 @@ func TestMain(m *testing.M) {
 	lr := database.NewLoginRepository(test.InjectSqlHandler())
 	pv = validator.NewPersonValidator(lr)
 
+	av = validator.NewAuthValidator()
+
 	m.Run()
 }

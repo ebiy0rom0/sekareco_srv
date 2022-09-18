@@ -10,12 +10,17 @@ import (
 )
 
 type authHandler struct {
-	auth inputport.AuthInputport
+	auth  inputport.AuthInputport
+	valid inputport.AuthValidator
 }
 
-func NewAuthHandler(a inputport.AuthInputport) *authHandler {
+func NewAuthHandler(
+	a inputport.AuthInputport,
+	v inputport.AuthValidator,
+) *authHandler {
 	return &authHandler{
-		auth: a,
+		auth:  a,
+		valid: v,
 	}
 }
 
@@ -37,7 +42,7 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 		return
 	}
 
-	if err := req.Validation(); err != nil {
+	if err := h.valid.ValidationPost(req); err != nil {
 		hc.Response(http.StatusBadRequest, hc.MakeError(err))
 	}
 
