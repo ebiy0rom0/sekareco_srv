@@ -14,6 +14,17 @@ func init () {
 	}
 }
 
+func TestTestTest(t *testing.T) {
+	jst, _ := time.LoadLocation("Asia/Tokyo")
+	aest, _ := time.LoadLocation("Australia/Brisbane")
+	t.Run("super test test", func(t *testing.T) {
+		t.Logf("my timer now: %s", timer.NowTime())
+		t.Logf("utc now: %s", time.Now().UTC())
+		t.Logf("jst now: %s", time.Now().In(jst))
+		t.Logf("aest now: %s", time.Now().In(aest))
+	})
+}
+
 func Test_timeManager_NowTime(t *testing.T) {
 	// ??
 	jst, _ := time.LoadLocation("Asia/Tokyo")
