@@ -1,4 +1,7 @@
-package handler
+//go:build integration
+// +build integration
+
+package handler_test
 
 import (
 	"context"
