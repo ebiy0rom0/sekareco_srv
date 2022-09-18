@@ -63,9 +63,7 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Tags		account
 // @Accept		json
 // @Produce		json
-// @param		data	body	inputdata.DeleteAuth	true	"personID whose token is to be deleted"
 // @Success		200
-// @Failure		400	{object}	infra.HttpError
 // @Security	Bearer Authentication
 // @Router		/signout	[delete]
 func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
