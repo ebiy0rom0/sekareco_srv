@@ -374,26 +374,9 @@ const docTemplate = `{
                     "account"
                 ],
                 "summary": "delete token | delete a stored token",
-                "parameters": [
-                    {
-                        "description": "personID whose token is to be deleted",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/inputdata.DeleteAuth"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/infra.HttpError"
-                        }
                     }
                 }
             }
@@ -504,14 +487,6 @@ const docTemplate = `{
                 },
                 "scoreNormal": {
                     "type": "integer"
-                }
-            }
-        },
-        "inputdata.DeleteAuth": {
-            "type": "object",
-            "properties": {
-                "personID": {
-                    "type": "string"
                 }
             }
         },
