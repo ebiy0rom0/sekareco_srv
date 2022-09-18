@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+// Since they can't be executed at same time,
+// the difference is evaluated as passing if it is within 100 miliseconds.
+var TOLERANCE_RANGE = 100 * time.Millisecond
+
 var timer *timeManager
 
 func init () {
@@ -14,22 +18,11 @@ func init () {
 	}
 }
 
-func TestTestTest(t *testing.T) {
-	jst, _ := time.LoadLocation("Asia/Tokyo")
-	aest, _ := time.LoadLocation("Australia/Brisbane")
-	t.Run("super test test", func(t *testing.T) {
-		t.Logf("my timer now: %s", timer.NowTime())
-		t.Logf("utc now: %s", time.Now().UTC())
-		t.Logf("jst now: %s", time.Now().In(jst))
-		t.Logf("aest now: %s", time.Now().In(aest))
-	})
-}
-
 func Test_timeManager_NowTime(t *testing.T) {
 	// ??
-	jst, _ := time.LoadLocation("Asia/Tokyo")
 	t.Run("now time check", func(t *testing.T) {
-		if !timer.NowTime().Equal(time.Now().In(jst)) {
+		d := time.Since(timer.NowTime())
+		if d > TOLERANCE_RANGE {
 			t.Error("timeManager.NowTime()")
 		}
 	})
@@ -39,6 +32,7 @@ func Test_timeManager_NowDatetime(t *testing.T) {
 	// ??
 	t.Run("datetime check", func(t *testing.T) {
 		if timer.NowDatetime() != time.Now().Format("2006-01-02 15:04:05") {
+			t.Logf("my timer: %s, time: %s", timer.NowDatetime(), time.Now().Format("2006-01-02 15:04:05"))
 			t.Error("timeManager.NowDatetime()")
 		}
 	})
@@ -81,7 +75,7 @@ func Test_timeManager_Sub(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if d := timer.Sub(time.Now().Add(tt.duration)); d != (-tt.duration) {
+			if d := timer.Sub(time.Now().Add(tt.duration)); d > -(tt.duration + TOLERANCE_RANGE) {
 				t.Error("timeManager.Sub()")
 			}
 		})
