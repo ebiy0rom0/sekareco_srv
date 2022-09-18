@@ -12,7 +12,8 @@ type timeManager struct {
 // timer initialize.
 // Set location(JST) and make Timer instance.
 func init() {
-	jst, _ := time.LoadLocation("Asia/Tokyo")
+	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
+	jst, _ := time.LoadLocation("Local")
 	infra.Timer = &timeManager{
 		timer: jst,
 	}

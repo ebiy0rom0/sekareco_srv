@@ -12,7 +12,8 @@ var TOLERANCE_RANGE = 100 * time.Millisecond
 var timer *timeManager
 
 func init () {
-	jst, _ := time.LoadLocation("Asia/Tokyo")
+	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
+	jst, _ := time.LoadLocation("Local")
 	timer = &timeManager{
 		timer: jst,
 	}
@@ -30,8 +31,9 @@ func Test_timeManager_NowTime(t *testing.T) {
 
 func Test_timeManager_NowDatetime(t *testing.T) {
 	// ??
+	jst, _ := time.LoadLocation("Local")
 	t.Run("datetime check", func(t *testing.T) {
-		if timer.NowDatetime() != time.Now().Format("2006-01-02 15:04:05") {
+		if timer.NowDatetime() != time.Now().In(jst).Format("2006-01-02 15:04:05") {
 			t.Logf("my timer: %s, time: %s", timer.NowDatetime(), time.Now().Format("2006-01-02 15:04:05"))
 			t.Error("timeManager.NowDatetime()")
 		}
@@ -76,6 +78,7 @@ func Test_timeManager_Sub(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if d := timer.Sub(time.Now().Add(tt.duration)); d > -(tt.duration + TOLERANCE_RANGE) {
+				t.Logf("failed duration: %d", timer.Sub(time.Now().Add(tt.duration)))
 				t.Error("timeManager.Sub()")
 			}
 		})
