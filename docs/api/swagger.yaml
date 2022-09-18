@@ -40,11 +40,6 @@ definitions:
       scoreNormal:
         type: integer
     type: object
-  inputdata.DeleteAuth:
-    properties:
-      personID:
-        type: string
-    type: object
   inputdata.PostAuth:
     properties:
       login_id:
@@ -384,22 +379,11 @@ paths:
       consumes:
       - application/json
       description: delete a stored token
-      parameters:
-      - description: personID whose token is to be deleted
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/inputdata.DeleteAuth'
       produces:
       - application/json
       responses:
         "200":
           description: OK
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/infra.HttpError'
       security:
       - Bearer Authentication: []
       summary: delete token | delete a stored token
