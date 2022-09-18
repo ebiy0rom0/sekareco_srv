@@ -14,5 +14,7 @@ func TestMain(m *testing.M) {
 	personRepo = database.NewPersonRepository(test.InjectSqlHandler())
 	recordRepo = database.NewRecordRepository(test.InjectSqlHandler())
 
+	tr = database.NewTransaction(test.InjectTxHandler())
+
 	m.Run()
 }
