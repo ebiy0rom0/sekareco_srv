@@ -77,7 +77,7 @@ func Test_timeManager_Sub(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if d := timer.Sub(time.Now().Add(tt.duration)); d > -(tt.duration + TOLERANCE_RANGE) {
+			if d := timer.Sub(time.Now().Add(tt.duration)); d > -(tt.duration - TOLERANCE_RANGE) {
 				t.Logf("failed duration: %d", timer.Sub(time.Now().Add(tt.duration)))
 				t.Error("timeManager.Sub()")
 			}
