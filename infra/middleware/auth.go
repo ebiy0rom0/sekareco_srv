@@ -30,10 +30,10 @@ var EXPIRED_IN = 1 * time.Hour
 
 var MAX_TOKENS = 30
 
-// Automatically token delete span: Every 1 minutes
-// = max token life is 1hour and 1 minute,
+// Automatically token delete span: Every 1 second
+// = max token life is 1hour and 1 second,
 // but it doesn't no have to be strictly 1 hour.
-var EXPIRED_TOKEN_DELETE_SPAN = 1 * time.Minute
+var EXPIRED_TOKEN_DELETE_SPAN = 1 * time.Second
 
 // A tokenStatus is stored token expiration at single person.
 type tokenStatus struct {

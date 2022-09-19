@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"net/http"
 	"regexp"
 	_ "sekareco_srv/infra"
@@ -67,17 +68,18 @@ func TestAuthMiddleware_getHeaderToken(t *testing.T) {
 			"Authorization": {},
 		},
 	}
-	for i := 0; i < 3; i++ {
-		t.Run("header token parse check", func(t *testing.T) {
-			// set to bearer token
-			token := authMid.GenerateNewToken()
-			r.Header["Authorization"] = []string{"Bearer " + string(token)}
+	t.Run("header token parse check", func(t *testing.T) {
+		// set to bearer token
+		token := authMid.GenerateNewToken()
+		r.Header["Authorization"] = []string{"Bearer " + string(token)}
 
-			if headerToken := authMid.getHeaderToken(r); headerToken != token {
-				t.Errorf("failed to header in bearer token. want: %s, got: %s", token, headerToken)
-			}
-		})
-		// next generate token ensure changes
-		time.Sleep(1 * time.Millisecond)
-	}
+		if headerToken := authMid.getHeaderToken(r); headerToken != token {
+			t.Errorf("failed to header in bearer token. want: %s, got: %s", token, headerToken)
+		}
+	})
+}
+
+func TestAuthMiddleware_DeleteExpiredToken(t *testing.T) {
+	ctx := context.Background()
+	go authMid.DeleteExpiredToken(ctx)
 }
