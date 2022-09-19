@@ -50,11 +50,13 @@ func Test_WithLogger(t *testing.T) {
 		var log accessLog
 		json.Unmarshal(buf.Bytes(), &log)
 
+		// Latency is a variable value that cannot be matched.
+		// Exclude from comparison.
 		want := accessLog{
 			Level:       zerolog.LevelInfoValue,
 			HttpRequest: httpRequest{
 				CacheHit:      false,
-				Latency:       "0s",
+				Latency:       log.HttpRequest.Latency,
 				Protocol:      "HTTP/1.1",
 				RequestMethod: "GET",
 				RemoteIp:      "127.0.0.1",
@@ -88,7 +90,7 @@ func Test_WithLogger(t *testing.T) {
 			HttpRequest: httpRequest{
 				Body:          body,
 				CacheHit:      false,
-				Latency:       "0s",
+				Latency:       log.HttpRequest.Latency,
 				Protocol:      "HTTP/1.1",
 				RequestMethod: "POST",
 				RequestSize:   int64(len(body)),
