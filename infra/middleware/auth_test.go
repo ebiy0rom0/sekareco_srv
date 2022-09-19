@@ -3,7 +3,9 @@ package middleware
 import (
 	"context"
 	"net/http"
+	"net/http/httptest"
 	"regexp"
+	"sekareco_srv/domain/infra"
 	_ "sekareco_srv/infra"
 	"testing"
 	"time"
@@ -82,4 +84,88 @@ func TestAuthMiddleware_getHeaderToken(t *testing.T) {
 func TestAuthMiddleware_DeleteExpiredToken(t *testing.T) {
 	ctx := context.Background()
 	go authMid.DeleteExpiredToken(ctx)
+}
+
+func TestAuthMiddleware_WithCheckAuth(t *testing.T) {
+	t.Run("no authorization header ", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest("GET", "http://tests", nil)
+
+		authMid.WithCheckAuth()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// nothing todo
+		})).ServeHTTP(w, r)
+
+		code := w.Result().StatusCode
+		header := w.Header().Get(RESPONSE_HEADER)
+		if code != http.StatusUnauthorized {
+			t.Errorf("invalid status code: want=%d but got=%d", http.StatusUnauthorized, code)
+		}
+		if header != HEADER_UNAUTHORIZED {
+			t.Errorf("invalid header message: want=%s, but got=%s", HEADER_UNAUTHORIZED, header)
+		}
+	})
+
+	t.Run("header token invalid", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest("GET", "http://tests", nil)
+		r.Header.Set(REQUEST_HEADER, "invalid")
+
+		authMid.WithCheckAuth()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// nothing todo
+		})).ServeHTTP(w, r)
+
+		code := w.Result().StatusCode
+		header := w.Header().Get(RESPONSE_HEADER)
+		if code != http.StatusUnauthorized {
+			t.Errorf("invalid status code: want=%d but got=%d", http.StatusUnauthorized, code)
+		}
+		if header != HEADER_INVALID_TOKEN {
+			t.Errorf("invalid header message: want=%s, but got=%s", HEADER_INVALID_TOKEN, header)
+		}
+	})
+
+	// add token in check middleware
+	token := authMid.GenerateNewToken()
+	authMid.AddToken(1, token)
+
+	t.Run("authentication successfully", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest("GET", "http://tests", nil)
+		r.Header.Set(REQUEST_HEADER, string(token))
+
+		authMid.WithCheckAuth()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			got := infra.GetToken(ctx)
+
+			if got != token {
+				t.Errorf("invalid get token: want=%s but got=%s", token, got)
+			}
+		})).ServeHTTP(w, r)
+
+		header := w.Header().Get(RESPONSE_HEADER)
+		if header != HEADER_DONE {
+			t.Errorf("invalid header message: want=%s, but got=%s", HEADER_DONE, header)
+		}
+	})
+
+	t.Run("token expired", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest("GET", "http://tests", nil)
+		r.Header.Set(REQUEST_HEADER, "invalid")
+
+		authMid.WithCheckAuth()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// nothing todo
+		})).ServeHTTP(w, r)
+
+		// TODO: Change time zone to exceed token expired in.
+
+		code := w.Result().StatusCode
+		header := w.Header().Get(RESPONSE_HEADER)
+		if code != http.StatusUnauthorized {
+			t.Errorf("invalid status code: want=%d but got=%d", http.StatusUnauthorized, code)
+		}
+		if header != HEADER_INVALID_TOKEN {
+			t.Errorf("invalid header message: want=%s, but got=%s", HEADER_INVALID_TOKEN, header)
+		}
+	})
 }
