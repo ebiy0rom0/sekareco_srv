@@ -1,11 +1,11 @@
 package middleware
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestMain(m *testing.M) {
-	// coverage earn
-	NewCorsConfig()
-
 	authMid = NewAuthMiddleware()
+
 	m.Run()
 }
