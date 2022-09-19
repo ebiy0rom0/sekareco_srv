@@ -18,6 +18,8 @@ func WithLogger(logger zerolog.Logger) func(next http.Handler) http.Handler {
 			if next == nil {
 				next = http.NotFoundHandler()
 			}
+
+			// In case not found handler, access logs are not collected.
 			next.ServeHTTP(writer, r)
 			logger.Info().Object("httpRequest", writer).Send()
 		})

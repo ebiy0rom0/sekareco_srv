@@ -1,6 +1,7 @@
 package web
 
 import (
+	"bytes"
 	"net/http"
 	"sekareco_srv/domain/infra"
 	"time"
@@ -65,13 +66,18 @@ func (r *ResponseWriterWrapper) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("referer", r.request.Referer())
 	e.Str("latency", infra.Timer.Sub(r.start).String())
 	e.Bool("cacheHit", r.status == http.StatusNotModified)
-	forwarded := r.Header().Get("X-Forwarded-For")
-	if forwarded == "" {
+
+	forwarded := r.request.Header.Get("X-Forwarded-For")
+	if forwarded != "" {
 		e.Str("remoteIp", forwarded)
 	} else {
 		e.Str("remoteIp", r.request.RemoteAddr)
 	}
 	e.Str("protocol", r.request.Proto)
+
+	buf := bytes.Buffer{}
+	buf.ReadFrom(r.request.Body)
+	e.Bytes("body", buf.Bytes())
 }
 
 var _ http.ResponseWriter = (*ResponseWriterWrapper)(nil)
