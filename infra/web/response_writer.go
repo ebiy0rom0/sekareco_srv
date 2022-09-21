@@ -31,9 +31,10 @@ func NewResponseWriterWrapper(w http.ResponseWriter, r *http.Request) *ResponseW
 
 // Flush
 func (r *ResponseWriterWrapper) Flush() {
-	flusher := r.writer.(http.Flusher)
-	flusher.Flush()
-	r.status = http.StatusOK
+	if flusher, ok := r.writer.(http.Flusher); ok {
+		flusher.Flush()
+		r.status = http.StatusOK
+	}
 }
 
 // Header returns request header map.
@@ -82,4 +83,3 @@ func (r *ResponseWriterWrapper) MarshalZerologObject(e *zerolog.Event) {
 
 var _ http.ResponseWriter = (*ResponseWriterWrapper)(nil)
 var _ zerolog.LogObjectMarshaler = (*ResponseWriterWrapper)(nil)
-
