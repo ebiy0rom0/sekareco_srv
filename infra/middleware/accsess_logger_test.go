@@ -53,7 +53,7 @@ func Test_WithLogger(t *testing.T) {
 		// Latency is a variable value that cannot be matched.
 		// Exclude from comparison.
 		want := accessLog{
-			Level:       zerolog.LevelInfoValue,
+			Level: zerolog.LevelInfoValue,
 			HttpRequest: httpRequest{
 				CacheHit:      false,
 				Latency:       log.HttpRequest.Latency,
@@ -75,7 +75,7 @@ func Test_WithLogger(t *testing.T) {
 	buf = bytes.Buffer{}
 
 	r = httptest.NewRequest("POST", "http://api/v1/paths", strings.NewReader(body))
-	r.Header.Set("X-Frowarded-For", "")
+	r.Header.Set("X-Forwarded-For", "")
 	r.RemoteAddr = "192.168.0.1"
 
 	t.Run("access to non valid paths", func(t *testing.T) {
@@ -86,7 +86,7 @@ func Test_WithLogger(t *testing.T) {
 		json.Unmarshal(buf.Bytes(), &log)
 
 		want := accessLog{
-			Level:       zerolog.LevelInfoValue,
+			Level: zerolog.LevelInfoValue,
 			HttpRequest: httpRequest{
 				Body:          body,
 				CacheHit:      false,
