@@ -15,6 +15,7 @@ VALUES  (1, 'login_id1', '$2a$12$J1t7JRNU4Dnq2MYLQHIrNOdpRzqD008mwQrnhPdfYdnM9sd
 
 -- primary key(music_id) is auto increment value
 INSERT INTO master_music(
+    music_id,
     artist_id,
     music_name,
     jacket_url,
@@ -29,9 +30,9 @@ INSERT INTO master_music(
     level_master,
     notes_master
 )
-VALUES  (1, "test_music001", "jacket/m_001.png", 1, 100, 2, 200, 3, 300, 4, 400, 5, 500),
-        (2, "test_music002", "jacket/m_002.png", 2, 200, 3, 300, 4, 400, 5, 500, 6, 600),
-        (1, "test_music003", "jacket/m_003.png", 3, 300, 4, 400, 5, 500, 6, 600, 7, 700)
+VALUES  (1, 1, "test_music001", "jacket/m_001.png", 1, 100, 2, 200, 3, 300, 4, 400, 5, 500),
+        (2, 2, "test_music002", "jacket/m_002.png", 2, 200, 3, 300, 4, 400, 5, 500, 6, 600),
+        (3, 1, "test_music003", "jacket/m_003.png", 3, 300, 4, 400, 5, 500, 6, 600, 7, 700)
 ;
 
 

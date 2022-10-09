@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS master_music;
 CREATE TABLE IF NOT EXISTS master_music (
-    music_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    music_id INTEGER NOT NULL PRIMARY KEY,
     artist_id INTEGER NOT NULL,
     music_name TEXT NOT NULL,
     jacket_url TEXT NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS master_music (
 
 DROP TABLE IF EXISTS master_artist;
 CREATE TABLE IF NOT EXISTS master_artist (
-    artist_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    artist_id INTEGER NOT NULL PRIMARY KEY,
     artist_name TEXT NOT NULL,
     logo_url TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
