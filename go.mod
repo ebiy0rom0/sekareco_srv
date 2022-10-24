@@ -10,7 +10,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.8.2
 	github.com/rs/zerolog v1.28.0
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	github.com/swaggo/swag v1.8.1
 	github.com/tanimutomo/sqlfile v1.0.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
