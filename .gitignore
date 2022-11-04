@@ -12,11 +12,9 @@
 *.db
 
 # for local
-# db/ Directory where database file(.db) are create
 # log/ Directory where log file(.log) are output
 # bin/ Build binary files output destination
 # coverage/ Test coverage files output destination
-db/
-log/
-bin/
-coverage/
+/log
+/bin
+/coverage
