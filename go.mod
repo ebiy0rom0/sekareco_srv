@@ -3,13 +3,14 @@ module sekareco_srv
 go 1.17
 
 require (
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.4.0
-	github.com/mattn/go-sqlite3 v1.14.15
+	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.8.2
 	github.com/rs/zerolog v1.28.0
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	github.com/swaggo/swag v1.8.1
 	github.com/tanimutomo/sqlfile v1.0.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
