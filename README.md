@@ -50,6 +50,13 @@ The output and creation destination for the required files.
     - bin/
     - coverage/
 
-## API documentation
-API documentation is published on GitHub Pages.  
-- [https://ebiy0rom0.github.io/sekareco_srv/page/index.html](https://ebiy0rom0.github.io/sekareco_srv/page/index.html)
+## Documentation
+Each documentation is published on GitHub Pages.
+
+API documentation
+- [https://ebiy0rom0.github.io/sekareco_srv/page/api/index.html](https://ebiy0rom0.github.io/sekareco_srv/page/api/index.html)
+
+Database tables design documentation
+- [https://ebiy0rom0.github.io/sekareco_srv/page/db/index.md](https://ebiy0rom0.github.io/sekareco_srv/page/db/index.md)
+
+⚠ Please add the markdown viewer extention to your browser to view.
