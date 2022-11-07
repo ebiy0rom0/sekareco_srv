@@ -37,7 +37,7 @@
 
 ### extra
 *1 ... Type of status  
-Defined as
+Defined as  
 | value | type mean   |
 |:------|:------------|
 | 0     | not cleared |
