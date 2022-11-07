@@ -44,3 +44,6 @@ Defined as
 | 1     | cleared     |
 | 2     | full combo  |
 | 3     | all perfect |
+
+---
+[back to index](./index.md)
