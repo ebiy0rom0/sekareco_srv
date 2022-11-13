@@ -31,9 +31,9 @@
 | 1  | person_id,music_id |       |
 
 ### index key information
-| No | definition | extra |
-|:---|:-----------|-------|
-|    |            |       |
+| No | definition | extra   |
+|:---|:-----------|---------|
+| 1  | music_id   | for kpi |
 
 ### extra
 *1 ... Type of status  
