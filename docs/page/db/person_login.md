@@ -12,6 +12,7 @@
 | person_id     | person id     | INTEGER |          | Y        |                                |                       |
 | login_id      | login id      | TEXT    |          | Y        |                                | user specified string |
 | password_hash | password hash | TEXT    |          | Y        |                                |                       |
+| last_login    | last login    | TEXT    |          | Y        |                                |                       |
 | created_at    | create date   | TEXT    |          | Y        | (DATETIME('now', 'localtime')) |                       |
 | updated_at    | update date   | TEXT    |          | Y        | (DATETIME('now', 'localtime')) |                       |
 
