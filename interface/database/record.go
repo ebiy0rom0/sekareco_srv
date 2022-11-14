@@ -17,7 +17,7 @@ func NewRecordRepository(h infra.SqlHandler) *recordRepository {
 }
 
 func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordID int, err error) {
-	query := "INSERT INTO record ("
+	query := "INSERT INTO person_record ("
 	query += "  person_id, "
 	query += "  music_id, "
 	query += "  record_easy,   score_easy,   "
@@ -60,7 +60,7 @@ func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordI
 }
 
 func (r *recordRepository) Update(ctx context.Context, personID int, musicID int, rec model.Record) (err error) {
-	query := "UPDATE record "
+	query := "UPDATE person_record "
 	query += "SET "
 	query += "  record_easy   = ?, score_easy =   ?, "
 	query += "  record_normal = ?, score_normal = ?, "
@@ -101,7 +101,7 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (rec
 	query += "  record_expert, score_expert, "
 	query += "  record_master, score_master  "
 	query += "FROM "
-	query += "  record "
+	query += "  person_record "
 	query += "WHERE "
 	query += "  person_id = ?;"
 
