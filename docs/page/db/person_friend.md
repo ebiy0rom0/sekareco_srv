@@ -1,10 +1,10 @@
 ## summary
-`friend` stores person's friend information.
+`person_friend` stores person's friend information.
 
 ### table information
-| physical | logical | primary key | auto increment |
-|:---------|:--------|:------------|:---------------|
-| friend   | friend  | friend_id   | friend_id      |
+| physical      | logical       | primary key | auto increment |
+|:--------------|:--------------|:------------|:---------------|
+| person_friend | person friend | friend_id   | friend_id      |
 
 ### column information
 | physical         | logical          | type    | unsigned | not null | default                        | extra |

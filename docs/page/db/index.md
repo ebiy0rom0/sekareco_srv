@@ -7,5 +7,5 @@
 | [master_artist](./master_artist.md) | master |       |
 | [person](./person.md)               | person |       |
 | [person_login](./person_login.md)   | person |       |
-| [record](./record.md)               | person |       |
-| [friend](./friend.md)               | person |       |
+| [person_record](./person_record.md) | person |       |
+| [person_friend](./person_friend.md) | person |       |

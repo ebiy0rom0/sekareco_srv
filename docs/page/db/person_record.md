@@ -1,10 +1,10 @@
 ## summary
-`record` stores person's score and clear status for each music.
+`person_record` stores person's score and clear status for each music.
 
 ### table information
-| physical | logical | primary key | auto increment |
-|:---------|:--------|:------------|:---------------|
-| record   | record  | record_id   | record_id      |
+| physical      | logical       | primary key | auto increment |
+|:--------------|:--------------|:------------|:---------------|
+| person_record | person record | record_id   | record_id      |
 
 ### column information
 | physical      | logical      | type    | unsigned | not null | default                        | extra |
