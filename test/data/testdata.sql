@@ -37,7 +37,7 @@ VALUES  (1, 1, "test_music001", "jacket/m_001.png", 1, 100, 2, 200, 3, 300, 4, 4
 
 
 -- person_id: 3 is not registered record person
-INSERT INTO record(
+INSERT INTO person_record(
     person_id,
     music_id,
     record_easy,

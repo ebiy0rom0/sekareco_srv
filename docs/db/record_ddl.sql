@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS record;
-CREATE TABLE IF NOT EXISTS record (
+DROP TABLE IF EXISTS person_record;
+CREATE TABLE IF NOT EXISTS person_record (
     record_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     person_id INTEGER NOT NULL,
     music_id INTEGER NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS record (
     created_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')),
     updated_at TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime'))
 );
-CREATE UNIQUE INDEX unq_record_1 ON record (
+CREATE UNIQUE INDEX unq_record_1 ON person_record (
     person_id,
     music_id
 );
