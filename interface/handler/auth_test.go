@@ -17,7 +17,7 @@ func TestNewAuthHandler(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *handler.AuthHandle
+		want handler.AuthHandle
 	}{
 		// TODO: Add test cases.
 	}
@@ -37,7 +37,7 @@ func Test_authHandler_Post(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		h    *handler.AuthHandle
+		h    handler.AuthHandle
 		args args
 	}{
 		// TODO: Add test cases.
@@ -56,7 +56,7 @@ func Test_authHandler_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		// h    *authHandler
+		h    handler.AuthHandle
 		args args
 	}{
 		// TODO: Add test cases.
