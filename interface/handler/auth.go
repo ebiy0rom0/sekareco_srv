@@ -14,6 +14,11 @@ type authHandler struct {
 	valid inputport.AuthValidator
 }
 
+type AuthHandle interface {
+	Post(context.Context, infra.HttpContext)
+	Delete(context.Context, infra.HttpContext)
+}
+
 func NewAuthHandler(
 	a inputport.AuthInputport,
 	v inputport.AuthValidator,
@@ -72,3 +77,5 @@ func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
 
 	hc.Response(http.StatusOK, nil)
 }
+
+var _ AuthHandle = (*authHandler)(nil)
