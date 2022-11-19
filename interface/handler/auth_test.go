@@ -1,10 +1,10 @@
 //go:build integration
-// +build integration
 
 package handler_test
 
 import (
 	"context"
+	"sekareco_srv/interface/handler"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputport"
 	"testing"
@@ -17,7 +17,7 @@ func TestNewAuthHandler(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *authHandler
+		want *handler.AuthHandle
 	}{
 		// TODO: Add test cases.
 	}
@@ -37,14 +37,14 @@ func Test_authHandler_Post(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		h    *authHandler
+		h    *handler.AuthHandle
 		args args
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.h.Post(tt.args.ctx, tt.args.hc)
+			// tt.h.Post(tt.args.ctx, tt.args.hc)
 		})
 	}
 }
@@ -56,14 +56,14 @@ func Test_authHandler_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		h    *authHandler
+		// h    *authHandler
 		args args
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.h.Delete(tt.args.ctx, tt.args.hc)
+			// tt.h.Delete(tt.args.ctx, tt.args.hc)
 		})
 	}
 }
