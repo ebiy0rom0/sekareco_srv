@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   testing:
     docker:
-      - image: cimg/go:1.17
+      - image: cimg/go:1.18
         auth:
           username: ebiy0rom0
           password: $DOCKERHUB_PASS
