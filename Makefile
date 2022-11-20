@@ -1,3 +1,5 @@
+.DEFAULT_GOAL:=help
+
 # Enforce powershell to unify execution commands
 GOOS:=$(shell go env GOOS)
 ifeq ($(GOOS), windows)
@@ -37,20 +39,20 @@ BUILD_OPTIONS:=-ldflags '-s -w' -tags $(BUILD_TAGS) $(BUILD_RACE) $(BUILD_STATIC
 MODE_UNIT:=unit
 MODE_INTEGRATION:=integration
 
-COVERAGE_OUTPUT:=./coverage
+COVERAGE_OUTPUT:=./coverage/
 COVERAGE_EXTENTION:=txt
 
-TEST_MODE:=$(COVERAGE_OUTPUT)/$(MODE_UNIT)
+TEST_MODE:=$(MODE_UNIT)
 TEST_LOCATE:=local
 
 ifdef INTEGRATION
-	TEST_MODE:=$(subst $(MODE_UNIT),$(MODE_INTEGRATION),$(TEST_MODE))
+	TEST_MODE:=$(MODE_INTEGRATION)
 endif
 
 # `local` task is convert the output coverage file to html
 # Skipping `local` task by makeing TEST_LOCATE = TEST_MODE
 ifdef CI
-	TEST_MODE:=$(subst $(COVERAGE_OUTPUT),.,$(TEST_MODE))
+	COVERAGE_OUTPUT:=./
 	TEST_LOCATE:=$(TEST_MODE)
 endif
 
@@ -76,14 +78,14 @@ help:
 	@echo   swag_clean                  Run `git checkout` to cleaning doc/api/ directory
 	@echo   swag_install                Install swag command at version 1.8.4
 
-build: $(BIN_PATH)
+build: clean $(BIN_PATH)
 
 $(BIN_PATH):
 	$(GOBUILD) -o $@ $(BUILD_OPTIONS) ./cmd/main.go
 
 clean:
 ifeq ($(GOOS), windows)
-	Remove-Item -Path $(BIN_DIR)/*
+	Remove-Item -Force -Path $(BIN_DIR)/*
 else
 	rm -rf $(BIN_DIR)/*
 endif
@@ -113,10 +115,10 @@ test_clean:
 	$(GORUN) ./test/clean
 
 local: $(TEST_MODE)
-	$(GOTOOL) cover -html $^.$(COVERAGE_EXTENTION) -o $^.html
+	$(GOTOOL) cover -html $(COVERAGE_OUTPUT)$^.$(COVERAGE_EXTENTION) -o $(COVERAGE_OUTPUT)$^.html
 
 $(TEST_MODE):
-	$(GOTEST) -v -p 12 -cover -tags=$@ ./... -coverprofile=$@.$(COVERAGE_EXTENTION)
+	$(GOTEST) -v -p 12 -cover -tags=$@ ./... -coverprofile=$(COVERAGE_OUTPUT)$@.$(COVERAGE_EXTENTION)
 
 lint:
 	$(GOLINT) ./...
