@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +17,7 @@ import (
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
 
+	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
 )
 
@@ -34,6 +36,12 @@ import (
 // @in                          header
 // @name                        Authorization
 func main() {
+	if err := run(); err != nil {
+		fmt.Println(err)
+	}
+}
+
+func run() error {
 	// TODO: Move flag setup to infra package.
 	stage := flag.String("stage", "dev", "")
 	dbUser := flag.String("dbUser", "", "MySQL user name")
@@ -42,18 +50,18 @@ func main() {
 	flag.Parse()
 
 	if err := infra.LoadEnv(*stage); err != nil {
-		log.Fatalf("Fail to loading dotenv: %+v", err)
+		return fmt.Errorf("fail to loading dotenv: %+v", err)
 	}
 
 	if err := logger.InitLogger(*stage); err != nil {
-		log.Fatalf("Fail to initialize logger: %+v", err)
+		return fmt.Errorf("fail to initialize logger: %+v", err)
 	}
 
 	// No MySQL setup until performance impact in production,
 	// so sqlite3 connections can be obtained for a while.
 	con, err := sql.NewConnection(*dbUser, *dbPass, *dbHost, os.Getenv("DB_NAME"))
 	if err != nil {
-		log.Fatalf("Fail connect database: %+v", err)
+		return fmt.Errorf("fail connect database: %+v", err)
 	}
 
 	// sql & tx handler setup
@@ -74,8 +82,24 @@ func main() {
 	}
 
 	// wait http request
-	go func () {
+	go func() {
 		if err := srv.ListenAndServe(); err != nil {
+			log.Println(err)
+		}
+	}()
+	go func() {
+		rr := mux.NewRouter()
+		rr.HandleFunc("/mainte", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("mainte"))
+		}).Methods("GET")
+		ns := &http.Server{
+			Handler:      cors.Handler(rr),
+			Addr:         "0.0.0.0:8001",
+			WriteTimeout: 5 * time.Second,
+			ReadTimeout:  5 * time.Second,
+		}
+		if err := ns.ListenAndServe(); err != nil {
 			log.Println(err)
 		}
 	}()
@@ -91,10 +115,8 @@ func main() {
 	<-c
 	stop()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatalf("Shutdown request error: %+v", err)
-	}
+	return srv.Shutdown(ctx)
 }
