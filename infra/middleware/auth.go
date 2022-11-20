@@ -133,7 +133,7 @@ func (m *AuthMiddleware) RevokeToken(token infra.Token) {
 
 // DeleteExpiredToken is automatically delete the expired token at over time.
 func (m *AuthMiddleware) DeleteExpiredToken(ctx context.Context) {
-	t := time.NewTicker(1 * EXPIRED_TOKEN_DELETE_SPAN)
+	t := time.NewTicker(EXPIRED_TOKEN_DELETE_SPAN)
 	defer t.Stop()
 
 	for {
@@ -144,7 +144,7 @@ func (m *AuthMiddleware) DeleteExpiredToken(ctx context.Context) {
 		// ticker wait
 		case _, ok := <-t.C:
 			if !ok {
-				return
+				continue
 			}
 			for token, status := range m.tokens {
 				if !infra.Timer.Before(status.expiredIn) {
