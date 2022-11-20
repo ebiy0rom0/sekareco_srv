@@ -17,7 +17,6 @@ import (
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
 
-	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
 )
 
@@ -71,35 +70,33 @@ func run() error {
 	// middleware setup
 	am := middleware.NewAuthMiddleware()
 	l := zerolog.New(os.Stdout)
-	r := router.InitRouter(sh, th, am, l)
+	appRoute := router.InitRouter(sh, th, am, l)
 
-	cors := middleware.NewCorsConfig()
-	srv := &http.Server{
-		Handler:      cors.Handler(r),
+	appCors := middleware.NewCorsConfig()
+	appSrv := &http.Server{
+		Handler:      appCors.Handler(appRoute),
 		Addr:         "0.0.0.0:8000",
+		WriteTimeout: 5 * time.Second,
+		ReadTimeout:  5 * time.Second,
+	}
+
+	mainteRoute := router.InitRouterForMainte()
+	mainteCors := middleware.NewCorsConfigForMainte()
+	mainteSrv := &http.Server{
+		Handler:      mainteCors.Handler(mainteRoute),
+		Addr:         "0.0.0.0:8080",
 		WriteTimeout: 5 * time.Second,
 		ReadTimeout:  5 * time.Second,
 	}
 
 	// wait http request
 	go func() {
-		if err := srv.ListenAndServe(); err != nil {
+		if err := appSrv.ListenAndServe(); err != nil {
 			log.Println(err)
 		}
 	}()
 	go func() {
-		rr := mux.NewRouter()
-		rr.HandleFunc("/mainte", func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("mainte"))
-		}).Methods("GET")
-		ns := &http.Server{
-			Handler:      cors.Handler(rr),
-			Addr:         "0.0.0.0:8001",
-			WriteTimeout: 5 * time.Second,
-			ReadTimeout:  5 * time.Second,
-		}
-		if err := ns.ListenAndServe(); err != nil {
+		if err := mainteSrv.ListenAndServe(); err != nil {
 			log.Println(err)
 		}
 	}()
@@ -118,5 +115,5 @@ func run() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	return srv.Shutdown(ctx)
+	return appSrv.Shutdown(ctx)
 }

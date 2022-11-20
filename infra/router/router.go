@@ -79,3 +79,8 @@ func InitRouter(
 
 	return router
 }
+
+func InitRouterForMainte() *mux.Router {
+	r := mux.NewRouter()
+	return r
+}
