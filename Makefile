@@ -96,6 +96,7 @@ docker_build:
 docker_run: docker_build
 	docker run --rm \
 		-p 8000:8000 \
+		-p 8080:8080 \
 		-v $(CURDIR)/log:/log \
 		-v $(CURDIR)/db:/db \
 		-v $(CURDIR)/docs/db:/docs/db \
