@@ -17,15 +17,15 @@ type fileLogger struct {
 // NewFileLogger returns new fileLogger.
 // fileLogger is implements of infra.ILogger.
 func NewFileLogger() (*fileLogger, error) {
-	ifp, err := os.OpenFile(logLocate() + "info.log", os.O_RDWR|os.O_CREATE, os.ModePerm)
+	ifp, err := open("info.log")
 	if err != nil {
 		return nil, err
 	}
-	wfp, err := os.OpenFile(logLocate() + "warn.log", os.O_RDWR|os.O_CREATE, os.ModePerm)
+	wfp, err := open("warn.log")
 	if err != nil {
 		return nil, err
 	}
-	efp, err := os.OpenFile(logLocate() + "error.log", os.O_RDWR|os.O_CREATE, os.ModePerm)
+	efp, err := open("error.log")
 	if err != nil {
 		return nil, err
 	}
@@ -50,6 +50,11 @@ func (l *fileLogger) Warn(err error) {
 // Error writes error message into error log file.
 func (l *fileLogger) Error(err error) {
 	l.e.Error().Msgf("%+v", err)
+}
+
+// open is open the file placed in log locate and create it if it's not here.
+func open(file string) (*os.File, error) {
+	return os.OpenFile(logLocate()+file, os.O_RDWR|os.O_CREATE, os.ModePerm)
 }
 
 // logLocate returns a string of the log file path.
