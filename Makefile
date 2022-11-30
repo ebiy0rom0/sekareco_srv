@@ -60,23 +60,11 @@ endif
 .PHONY: help build clean test
 
 help:
-	@echo Makefile Command Reference
-	@echo Usage:
-	@echo   make [TASK] [OPTION]...
-	@echo Task List:
-	@echo   help                        Print this view
-	@echo   build [RELEASE=1]           Build a program for ./cmd/main.go
-	@echo                               [RELEASE=1] Release build
-	@echo   clean                       Cleaning bin/ directory
-	@echo   test [INTEGRATION=1] [CI=1] Run unit test and generate coverage file
-	@echo                               The default locate `local` converts coverage file to html
-	@echo                               [INTEGRATION=1] Simultaneous run the integration test
-	@echo                               [CI=1] Change the locate and cancel conversion to html
-	@echo   lint                        Linting all code
-	@echo   swag [INSTALL=1]            Generate swagger api document
-	@echo                               [INSTALL=1] Exec `swag_install` task before generate
-	@echo   swag_clean                  Run `git checkout` to cleaning doc/api/ directory
-	@echo   swag_install                Install swag command at version 1.8.4
+ifeq ($(GOOS), windows)
+	@Get-Content ./makehelp.txt | Out-Host
+else
+	@cat ./makehelp.txt
+endif
 
 build: clean $(BIN_PATH)
 
@@ -123,6 +111,9 @@ $(TEST_MODE):
 
 lint:
 	$(GOLINT) ./...
+
+dev_init:
+	$(GORUN) ./tools/initializer/
 
 swag:
 ifdef INSTALL

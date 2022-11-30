@@ -1,0 +1,18 @@
+Makefile Command Reference
+Usage:
+  make [TASK] [OPTION]...
+Task List:
+  help                        Print this view
+  build [RELEASE=1]           Build a program for ./cmd/main.go
+                              [RELEASE=1] Release build
+  clean                       Cleaning bin/ directory
+  test [INTEGRATION=1] [CI=1] Run unit test and generate coverage file
+                              The default locate `local` converts coverage file to html
+                              [INTEGRATION=1] Simultaneous run the integration test
+                              [CI=1] Change the locate and cancel conversion to html
+  lint                        Linting all code
+  dev_init                    Initilize the development environment.
+  swag [INSTALL=1]            Generate swagger api document
+                              [INSTALL=1] Exec `swag_install` task before generate
+  swag_clean                  Run `git checkout` to cleaning doc/api/ directory
+  swag_install                Install swag command at version 1.8.4
