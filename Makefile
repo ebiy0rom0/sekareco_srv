@@ -112,8 +112,8 @@ $(TEST_MODE):
 lint:
 	$(GOLINT) ./...
 
-dev_init:
-	$(GORUN) ./tools/initializer/
+setup:
+	$(GORUN) ./tools/setup/
 
 swag:
 ifdef INSTALL

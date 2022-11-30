@@ -11,7 +11,7 @@ Task List:
                               [INTEGRATION=1] Simultaneous run the integration test
                               [CI=1] Change the locate and cancel conversion to html
   lint                        Linting all code
-  dev_init                    Initilize the development environment.
+  setup                       Initilize the development environment.
   swag [INSTALL=1]            Generate swagger api document
                               [INSTALL=1] Exec `swag_install` task before generate
   swag_clean                  Run `git checkout` to cleaning doc/api/ directory
