@@ -6,6 +6,9 @@ Task List:
   build [RELEASE=1]           Build a program for ./cmd/main.go
                               [RELEASE=1] Release build
   clean                       Cleaning bin/ directory
+  docker_build                Build a docker
+  docker_run                  Docker run
+  docker_clean                Docker clean
   test [INTEGRATION=1] [CI=1] Run unit test and generate coverage file
                               The default locate `local` converts coverage file to html
                               [INTEGRATION=1] Simultaneous run the integration test
