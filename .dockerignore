@@ -19,5 +19,6 @@ test/
 # Dockerfile not required
 Dockerfile
 
+makehelp.txt
 README.md
 LICENSE
