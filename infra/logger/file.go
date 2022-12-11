@@ -2,6 +2,7 @@ package logger
 
 import (
 	"os"
+	"path/filepath"
 	infraDomain "sekareco_srv/domain/infra"
 	"sekareco_srv/util"
 
@@ -53,13 +54,15 @@ func (l *fileLogger) Error(err error) {
 }
 
 // open is open the file placed in log locate and create it if it's not here.
+// It is a wrapper for os.OpenFile, see there for details.
 func open(file string) (*os.File, error) {
-	return os.OpenFile(logLocate()+file, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	path := filepath.Join(logLocate(), file)
+	return os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 }
 
 // logLocate returns a string of the log file path.
 func logLocate() string {
-	return util.RootDir() + os.Getenv("LOG_PATH")
+	return filepath.Join(util.RootDir(), os.Getenv("LOG_PATH"))
 }
 
 var _ infraDomain.ILogger = (*fileLogger)(nil)
