@@ -8,6 +8,8 @@ import (
 	"sekareco_srv/infra/sql"
 	"sekareco_srv/util"
 
+	"github.com/ebiy0rom0/errors"
+
 	"github.com/tanimutomo/sqlfile"
 )
 
@@ -23,11 +25,11 @@ func initialize() error {
 	}
 
 	if err := makeDirectories(); err != nil {
-		return err
+		return errors.Wrap(err, "failed to make directories")
 	}
 
 	if err := storeTestRecords(); err != nil {
-		return err
+		return errors.Wrap(err, "failed to store testdata")
 	}
 	return nil
 }
@@ -39,7 +41,7 @@ func makeDirectories() error {
 		dir = filepath.Join(util.RootDir(), dir)
 		if _, err := os.Stat(dir); os.IsNotExist(err) {
 			if err := os.Mkdir(dir, 0755); err != nil {
-				return err
+				return errors.New(err.Error())
 			}
 		}
 	}
@@ -50,7 +52,7 @@ func storeTestRecords() error {
 	name := os.Getenv("DB_NAME")
 	con, err := sql.NewConnection("", "", "", name)
 	if err != nil {
-		return err
+		return errors.New(err.Error())
 	}
 
 	s := sqlfile.New()
@@ -58,11 +60,11 @@ func storeTestRecords() error {
 	// TODO: exec sql/ directory, not single file.
 	file := filepath.Join(util.RootDir(), "tools/initializer/sql/master.sql")
 	if err := s.File(file); err != nil {
-		return err
+		return errors.New(err.Error())
 	}
 
 	if _, err := s.Exec(con); err != nil {
-		return err
+		return errors.New(err.Error())
 	}
 	return nil
 }

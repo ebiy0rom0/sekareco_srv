@@ -3,14 +3,15 @@ package validator
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
+
+	"github.com/ebiy0rom0/errors"
 )
 
 type personValidator struct {
-	login  database.LoginRepository
+	login database.LoginRepository
 }
 
 func NewPersonValidator(l database.LoginRepository) *personValidator {

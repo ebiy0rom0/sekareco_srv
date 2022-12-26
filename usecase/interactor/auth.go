@@ -2,10 +2,11 @@ package interactor
 
 import (
 	"context"
-	"errors"
 	"sekareco_srv/domain/infra"
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/inputport"
+
+	"github.com/ebiy0rom0/errors"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -27,12 +28,12 @@ func NewAuthInteractor(t infra.TokenManager, l database.LoginRepository, tx data
 func (i *authInteractor) CheckAuth(ctx context.Context, loginID string, password string) (int, error) {
 	login, err := i.login.GetByID(ctx, loginID)
 	if err != nil {
-		return 0, errors.New("unregistered loginID")
+		return 0, errors.Wrapf(err, "unregistered loginID: loginID=%s", loginID)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(login.PasswordHash), []byte(password))
 	if err != nil {
-		return 0, errors.New("password unmatch")
+		return 0, errors.Wrap(err, "password unmatch")
 	}
 
 	return login.PersonID, nil

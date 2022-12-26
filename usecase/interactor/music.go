@@ -2,12 +2,11 @@ package interactor
 
 import (
 	"context"
-	"sekareco_srv/domain/infra"
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/inputport"
 	"sekareco_srv/usecase/outputdata"
 
-	"github.com/pkg/errors"
+	"github.com/ebiy0rom0/errors"
 )
 
 type musicInteractor struct {
@@ -22,11 +21,12 @@ func NewMusicInteractor(m database.MusicRepository, tx database.SqlTransaction) 
 	}
 }
 
-func (l *musicInteractor) Fetch(ctx context.Context) (musics []outputdata.Music, err error) {
-	if musics, err = l.music.Fetch(ctx); err != nil {
-		infra.Logger.Error(errors.Wrap(err, "failed to select music"))
+func (l *musicInteractor) Fetch(ctx context.Context) ([]outputdata.Music, error) {
+	musics, err := l.music.Fetch(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to select music")
 	}
-	return
+	return musics, nil
 }
 
 var _ inputport.MusicInputport = (*musicInteractor)(nil)

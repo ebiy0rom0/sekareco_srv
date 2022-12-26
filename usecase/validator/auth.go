@@ -1,9 +1,10 @@
 package validator
 
 import (
-	"errors"
 	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
+
+	"github.com/ebiy0rom0/errors"
 )
 
 type authValidator struct{}
