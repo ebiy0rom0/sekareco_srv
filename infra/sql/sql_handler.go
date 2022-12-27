@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"sekareco_srv/interface/infra"
+
+	"github.com/ebiy0rom0/errors"
 )
 
 // A sqlHandler is database handler wrapper.
@@ -24,7 +26,11 @@ func NewConnection(user, pass, host, schema string) (*sql.DB, error) {
 		return db, nil
 	}
 
-	return initSqlite3(schema)
+	db, err = initSqlite3(schema)
+	if err != nil {
+		return nil, errors.New(err.Error())
+	}
+	return db, nil
 }
 
 // NewSqlHandler returns sqlHandler pointer.
@@ -37,13 +43,13 @@ func NewSqlHandler(con *sql.DB) *sqlHandler {
 func (h *sqlHandler) Execute(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
 	stmt, err := h.con.PrepareContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 	defer stmt.Close()
 
 	res, err := stmt.ExecContext(ctx, args...)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 	return res, nil
 }
@@ -61,7 +67,7 @@ func (h *sqlHandler) Query(ctx context.Context, query string, args ...interface{
 	// lint:ignore SA5007 too many arguments
 	rows, err := h.con.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 	return rows, nil
 }

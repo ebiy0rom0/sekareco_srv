@@ -2,6 +2,8 @@ package logger
 
 import (
 	"sekareco_srv/domain/infra"
+
+	"github.com/ebiy0rom0/errors"
 )
 
 // InitLogger initializes infra.Logger.
@@ -12,16 +14,19 @@ func InitLogger(stage string) error {
 
 	switch stage {
 	case "prod":
-		if l, err = NewAwsLogger(); err != nil {
-			return err
+		l, err = NewAwsLogger()
+		if err != nil {
+			return errors.New(err.Error())
 		}
 	case "dev":
-		if l, err = NewFileLogger(); err != nil {
-			return err
+		l, err = NewFileLogger()
+		if err != nil {
+			return errors.New(err.Error())
 		}
 	default:
-		if l, err = NewFileLogger(); err != nil {
-			return err
+		l, err = NewFileLogger()
+		if err != nil {
+			return errors.New(err.Error())
 		}
 	}
 

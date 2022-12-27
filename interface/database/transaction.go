@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/database"
+
+	"github.com/ebiy0rom0/errors"
 )
 
 var txKey = struct{}{}
@@ -27,19 +29,19 @@ func NewTransaction(h infra.TxHandler) *tx {
 func (t *tx) Do(ctx context.Context, fn database.ExecFunc) (interface{}, error) {
 	opt := &sql.TxOptions{Isolation: sql.LevelReadCommitted}
 	if err := t.Begin(ctx, opt); err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 
 	ctx = context.WithValue(ctx, &txKey, t)
 	v, err := fn(ctx)
 	if err != nil {
 		t.Rollback()
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 
 	if err := t.Commit(); err != nil {
 		t.Rollback()
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 	return v, nil
 }

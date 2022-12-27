@@ -5,6 +5,8 @@ import (
 	"sekareco_srv/domain/model"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/database"
+
+	"github.com/ebiy0rom0/errors"
 )
 
 type loginRepository struct {
@@ -15,7 +17,7 @@ func NewLoginRepository(h infra.SqlHandler) *loginRepository {
 	return &loginRepository{h}
 }
 
-func (r *loginRepository) Store(ctx context.Context, l model.Login) (err error) {
+func (r *loginRepository) Store(ctx context.Context, l model.Login) error {
 	query := "INSERT INTO person_login (login_id, person_id, password_hash)"
 	query += " VALUES (?, ?, ?);"
 
@@ -24,11 +26,13 @@ func (r *loginRepository) Store(ctx context.Context, l model.Login) (err error) 
 		dao = r
 	}
 
-	_, err = dao.Execute(ctx, query, l.LoginID, l.PersonID, l.PasswordHash)
-	return
+	if _, err := dao.Execute(ctx, query, l.LoginID, l.PersonID, l.PasswordHash); err != nil {
+		return errors.New(err.Error())
+	}
+	return nil
 }
 
-func (r *loginRepository) GetByID(ctx context.Context, loginID string) (login model.Login, err error) {
+func (r *loginRepository) GetByID(ctx context.Context, loginID string) (model.Login, error) {
 	query := "SELECT password_hash, person_id FROM person_login WHERE login_id = ?;"
 	row := r.QueryRow(ctx, query, loginID)
 
@@ -36,14 +40,15 @@ func (r *loginRepository) GetByID(ctx context.Context, loginID string) (login mo
 		personID     int
 		passwordHash string
 	)
-	err = row.Scan(&passwordHash, &personID)
-	if err != nil {
-		return
+	if err := row.Scan(&passwordHash, &personID); err != nil {
+		return model.Login{}, errors.New(err.Error())
 	}
 
-	login.PasswordHash = passwordHash
-	login.PersonID = personID
-	return
+	login := model.Login{
+		PasswordHash: passwordHash,
+		PersonID:     personID,
+	}
+	return login, nil
 }
 
 var _ database.LoginRepository = (*loginRepository)(nil)

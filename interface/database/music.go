@@ -8,7 +8,7 @@ import (
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/outputdata"
 
-	"github.com/pkg/errors"
+	"github.com/ebiy0rom0/errors"
 )
 
 type musicRepository struct {
@@ -19,7 +19,7 @@ func NewMusicRepository(h infra.SqlHandler) *musicRepository {
 	return &musicRepository{h}
 }
 
-func (r *musicRepository) Fetch(ctx context.Context) (musics []outputdata.Music, err error) {
+func (r *musicRepository) Fetch(ctx context.Context) ([]outputdata.Music, error) {
 	query := "SELECT "
 	query += "  music_id,   "
 	query += "  artist_id,  "
@@ -34,11 +34,11 @@ func (r *musicRepository) Fetch(ctx context.Context) (musics []outputdata.Music,
 	query += "  master_music;"
 	rows, err := r.Query(ctx, query)
 	if err != nil {
-		err = errors.Wrap(err, "failed")
-		return
+		return nil, errors.New(err.Error())
 	}
 	defer rows.Close()
 
+	var musics []outputdata.Music
 	for rows.Next() {
 		var music model.Music
 		err = rows.Scan(
@@ -58,8 +58,7 @@ func (r *musicRepository) Fetch(ctx context.Context) (musics []outputdata.Music,
 			&music.NotesMaster,
 		)
 		if err != nil {
-			err = errors.Wrap(err, "failed")
-			return
+			return nil, errors.New(err.Error())
 		}
 
 		//convert to response data struct
@@ -75,9 +74,9 @@ func (r *musicRepository) Fetch(ctx context.Context) (musics []outputdata.Music,
 	}
 
 	if len(musics) == 0 {
-		err = errors.Wrap(sql.ErrNoRows, "failed")
+		return nil, errors.New(sql.ErrNoRows.Error())
 	}
-	return
+	return musics, nil
 }
 
 var _ database.MusicRepository = (*musicRepository)(nil)

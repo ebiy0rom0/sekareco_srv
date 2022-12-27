@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"sekareco_srv/interface/infra"
+
+	"github.com/ebiy0rom0/errors"
 )
 
 // A txHandler is database handler wrapper supports the transaction.
@@ -13,7 +15,7 @@ type txHandler struct {
 }
 
 // NewTxHandler returns txHandler pointer.
-func NewTxHandler (con *sql.DB) *txHandler {
+func NewTxHandler(con *sql.DB) *txHandler {
 	return &txHandler{con: con}
 }
 
@@ -21,7 +23,7 @@ func NewTxHandler (con *sql.DB) *txHandler {
 func (h *txHandler) Begin(ctx context.Context, opt *sql.TxOptions) error {
 	tx, err := h.con.BeginTx(ctx, opt)
 	if err != nil {
-		return err
+		return errors.New(err.Error())
 	}
 
 	h.tx = tx
@@ -33,25 +35,31 @@ func (h *txHandler) Begin(ctx context.Context, opt *sql.TxOptions) error {
 func (h *txHandler) Execute(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
 	stmt, err := h.tx.PrepareContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 	defer stmt.Close()
 
 	res, err := stmt.ExecContext(ctx, args...)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 	return res, nil
 }
 
 // Commit commits the transaction.
 func (h *txHandler) Commit() error {
-	return h.tx.Commit()
+	if err := h.tx.Commit(); err != nil {
+		return errors.New(err.Error())
+	}
+	return nil
 }
 
 // Rollback aborts a transaction.
 func (h *txHandler) Rollback() error {
-	return h.tx.Rollback()
+	if err := h.tx.Rollback(); err != nil {
+		return errors.New(err.Error())
+	}
+	return nil
 }
 
 var _ infra.TxHandler = (*txHandler)(nil)

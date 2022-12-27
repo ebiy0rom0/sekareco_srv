@@ -6,6 +6,8 @@ import (
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/outputdata"
+
+	"github.com/ebiy0rom0/errors"
 )
 
 type recordRepository struct {
@@ -16,7 +18,7 @@ func NewRecordRepository(h infra.SqlHandler) *recordRepository {
 	return &recordRepository{h}
 }
 
-func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordID int, err error) {
+func (r *recordRepository) Store(ctx context.Context, rec model.Record) (int, error) {
 	query := "INSERT INTO person_record ("
 	query += "  person_id, "
 	query += "  music_id, "
@@ -47,19 +49,18 @@ func (r *recordRepository) Store(ctx context.Context, rec model.Record) (recordI
 		rec.ScoreMaster,
 	)
 	if err != nil {
-		return
+		return 0, errors.New(err.Error())
 	}
 
 	newID64, err := result.LastInsertId()
 	if err != nil {
-		return
+		return 0, errors.New(err.Error())
 	}
 
-	recordID = int(newID64)
-	return
+	return int(newID64), nil
 }
 
-func (r *recordRepository) Update(ctx context.Context, personID int, musicID int, rec model.Record) (err error) {
+func (r *recordRepository) Update(ctx context.Context, personID int, musicID int, rec model.Record) error {
 	query := "UPDATE person_record "
 	query += "SET "
 	query += "  record_easy   = ?, score_easy =   ?, "
@@ -75,7 +76,7 @@ func (r *recordRepository) Update(ctx context.Context, personID int, musicID int
 		dao = r
 	}
 
-	_, err = dao.Execute(ctx, query,
+	if _, err := dao.Execute(ctx, query,
 		rec.RecordEasy,
 		rec.ScoreEasy,
 		rec.RecordNormal,
@@ -88,11 +89,13 @@ func (r *recordRepository) Update(ctx context.Context, personID int, musicID int
 		rec.ScoreMaster,
 		personID,
 		musicID,
-	)
-	return
+	); err != nil {
+		return errors.New(err.Error())
+	}
+	return nil
 }
 
-func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (records []outputdata.Record, err error) {
+func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) ([]outputdata.Record, error) {
 	query := "SELECT "
 	query += "  music_id, "
 	query += "  record_easy,   score_easy,   "
@@ -107,10 +110,11 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (rec
 
 	rows, err := r.Query(ctx, query, personID)
 	if err != nil {
-		return
+		return nil, errors.New(err.Error())
 	}
 	defer rows.Close()
 
+	var records []outputdata.Record
 	for rows.Next() {
 		var record model.Record
 		err = rows.Scan(
@@ -128,7 +132,7 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (rec
 		)
 
 		if err != nil {
-			return
+			return nil, errors.New(err.Error())
 		}
 
 		//convert to response data struct
@@ -140,7 +144,7 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) (rec
 		ret.Scores = append([]int{}, record.ScoreEasy, record.ScoreNormal, record.ScoreHard, record.ScoreExpert, record.ScoreMaster)
 		records = append(records, ret)
 	}
-	return
+	return records, nil
 }
 
 var _ database.RecordRepository = (*recordRepository)(nil)

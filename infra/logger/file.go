@@ -6,6 +6,8 @@ import (
 	infraDomain "sekareco_srv/domain/infra"
 	"sekareco_srv/util"
 
+	"github.com/ebiy0rom0/errors"
+
 	"github.com/rs/zerolog"
 )
 
@@ -20,15 +22,15 @@ type fileLogger struct {
 func NewFileLogger() (*fileLogger, error) {
 	ifp, err := open("info.log")
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 	wfp, err := open("warn.log")
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 	efp, err := open("error.log")
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 
 	return &fileLogger{

@@ -5,6 +5,8 @@ import (
 	"net"
 	"time"
 
+	"github.com/ebiy0rom0/errors"
+
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -18,7 +20,7 @@ func openMysql(user, pass, host, schema string) (*sql.DB, error) {
 	// )
 
 	// tcp connection test
-	if _, err := net.DialTimeout("tcp", host, 1 * time.Second); err != nil {
+	if _, err := net.DialTimeout("tcp", host, 1*time.Second); err != nil {
 		return nil, err
 	}
 
@@ -29,5 +31,9 @@ func openMysql(user, pass, host, schema string) (*sql.DB, error) {
 		DBName: schema,
 	}
 
-	return sql.Open("mysql", c.FormatDSN())
+	db, err := sql.Open("mysql", c.FormatDSN())
+	if err != nil {
+		return nil, errors.New(err.Error())
+	}
+	return db, nil
 }
