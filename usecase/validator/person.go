@@ -10,6 +10,14 @@ import (
 	"github.com/ebiy0rom0/errors"
 )
 
+// minimum number of characters
+const (
+	// for loginID
+	minLoginIDLen = 4
+	// for password
+	minPasswordLen = 8
+)
+
 type personValidator struct {
 	login database.LoginRepository
 }
@@ -48,7 +56,7 @@ func (v *personValidator) ValidationUpdate(ctx context.Context, p inputdata.Upda
 // tooShortLoginID checks to length of loginID.
 // Returns true if less than 4 characters.
 func (v *personValidator) tooShortLoginID(loginID string) bool {
-	return len(loginID) < 4
+	return len(loginID) < minLoginIDLen
 }
 
 // tooShortLoginID checks to duplicate loginID.
@@ -71,7 +79,7 @@ func (v *personValidator) requirePersonName(name string) bool {
 // tooShortPassword checks to length of password.
 // Returns true if less than 8 characters.
 func (v *personValidator) tooShortPassword(password string) bool {
-	return len(password) < 8
+	return len(password) < minPasswordLen
 }
 
 var _ inputport.PersonValidator = (*personValidator)(nil)
