@@ -49,12 +49,12 @@ func (r *recordRepository) Store(ctx context.Context, rec model.Record) (int, er
 		rec.ScoreMaster,
 	)
 	if err != nil {
-		return 0, errors.New(err.Error())
+		return 0, errors.WithStack(err)
 	}
 
 	newID64, err := result.LastInsertId()
 	if err != nil {
-		return 0, errors.New(err.Error())
+		return 0, errors.WithStack(err)
 	}
 
 	return int(newID64), nil
@@ -90,7 +90,7 @@ func (r *recordRepository) Update(ctx context.Context, personID int, musicID int
 		personID,
 		musicID,
 	); err != nil {
-		return errors.New(err.Error())
+		return errors.WithStack(err)
 	}
 	return nil
 }
@@ -110,7 +110,7 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) ([]o
 
 	rows, err := r.Query(ctx, query, personID)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	defer rows.Close()
 
@@ -132,7 +132,7 @@ func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) ([]o
 		)
 
 		if err != nil {
-			return nil, errors.New(err.Error())
+			return nil, errors.WithStack(err)
 		}
 
 		//convert to response data struct

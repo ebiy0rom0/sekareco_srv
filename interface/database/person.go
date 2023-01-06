@@ -28,12 +28,12 @@ func (r *personRepository) Store(ctx context.Context, p model.Person) (int, erro
 
 	result, err := dao.Execute(ctx, query, p.PersonName, p.FriendCode, p.IsCompare)
 	if err != nil {
-		return 0, errors.New(err.Error())
+		return 0, errors.WithStack(err)
 	}
 
 	newID64, err := result.LastInsertId()
 	if err != nil {
-		return 0, errors.New(err.Error())
+		return 0, errors.WithStack(err)
 	}
 
 	return int(newID64), nil
@@ -48,7 +48,7 @@ func (r *personRepository) GetByID(ctx context.Context, personID int) (model.Per
 		friendCode int
 	)
 	if err := row.Scan(&personID, &personName, &friendCode); err != nil {
-		return model.Person{}, errors.New(err.Error())
+		return model.Person{}, errors.WithStack(err)
 	}
 
 	user := model.Person{
