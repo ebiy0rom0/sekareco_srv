@@ -33,7 +33,7 @@ func openMysql(user, pass, host, schema string) (*sql.DB, error) {
 
 	db, err := sql.Open("mysql", c.FormatDSN())
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	return db, nil
 }

@@ -28,7 +28,7 @@ func NewConnection(user, pass, host, schema string) (*sql.DB, error) {
 
 	db, err = initSqlite3(schema)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	return db, nil
 }
@@ -43,13 +43,13 @@ func NewSqlHandler(con *sql.DB) *sqlHandler {
 func (h *sqlHandler) Execute(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
 	stmt, err := h.con.PrepareContext(ctx, query)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	defer stmt.Close()
 
 	res, err := stmt.ExecContext(ctx, args...)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	return res, nil
 }
@@ -67,7 +67,7 @@ func (h *sqlHandler) Query(ctx context.Context, query string, args ...interface{
 	// lint:ignore SA5007 too many arguments
 	rows, err := h.con.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	return rows, nil
 }

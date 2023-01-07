@@ -12,7 +12,7 @@ import (
 // Switching the .env file to be loaded by changing the argument stage.
 func LoadEnv(stage string) error {
 	if err := godotenv.Load(fmt.Sprintf("%s/env/%s.env", util.RootDir(), stage)); err != nil {
-		return errors.New(err.Error())
+		return errors.WithStack(err)
 	}
 	return nil
 }

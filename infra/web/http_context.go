@@ -2,11 +2,11 @@ package web
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"sekareco_srv/domain/infra"
 	infraIf "sekareco_srv/interface/infra"
 
+	"github.com/ebiy0rom0/errors"
 	"github.com/gorilla/mux"
 )
 
@@ -42,7 +42,7 @@ func (c *HttpContext) Decode(ii ...interface{}) error {
 	for _, i := range ii {
 		err := decoder.Decode(&i)
 		if err != nil {
-			return fmt.Errorf("bad request: %s", err)
+			return errors.WithStack(err)
 		}
 	}
 	return nil
@@ -60,7 +60,7 @@ func (c *HttpContext) Response(code int, v interface{}) error {
 	if v != nil {
 		output, err := json.Marshal(v)
 		if err != nil {
-			return fmt.Errorf("marshal failed: %s", err)
+			return errors.WithStack(err)
 		}
 		c.Writer.Write(output)
 	}

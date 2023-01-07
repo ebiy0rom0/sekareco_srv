@@ -16,17 +16,17 @@ func InitLogger(stage string) error {
 	case "prod":
 		l, err = NewAwsLogger()
 		if err != nil {
-			return errors.New(err.Error())
+			return errors.WithStack(err)
 		}
 	case "dev":
 		l, err = NewFileLogger()
 		if err != nil {
-			return errors.New(err.Error())
+			return errors.WithStack(err)
 		}
 	default:
 		l, err = NewFileLogger()
 		if err != nil {
-			return errors.New(err.Error())
+			return errors.WithStack(err)
 		}
 	}
 
