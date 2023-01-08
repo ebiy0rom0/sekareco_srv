@@ -62,10 +62,10 @@ func (v *personValidator) tooShortLoginID(loginID string) bool {
 // tooShortLoginID checks to duplicate loginID.
 // Returns true if a duplicate loginID exists.
 func (v *personValidator) duplicateLoginID(ctx context.Context, loginID string) (bool, error) {
-	if _, err := v.login.GetByID(ctx, loginID); err == sql.ErrNoRows {
+	if _, err := v.login.GetByID(ctx, loginID); errors.Is(err, sql.ErrNoRows) {
 		return false, nil
 	} else if err != nil {
-		return true, err
+		return true, errors.WithStack(err)
 	}
 	return true, nil
 }
