@@ -29,19 +29,19 @@ func NewTransaction(h infra.TxHandler) *tx {
 func (t *tx) Do(ctx context.Context, fn database.ExecFunc) (interface{}, error) {
 	opt := &sql.TxOptions{Isolation: sql.LevelReadCommitted}
 	if err := t.Begin(ctx, opt); err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 
 	ctx = context.WithValue(ctx, &txKey, t)
 	v, err := fn(ctx)
 	if err != nil {
 		t.Rollback()
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 
 	if err := t.Commit(); err != nil {
 		t.Rollback()
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	return v, nil
 }

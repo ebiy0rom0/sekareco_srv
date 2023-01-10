@@ -23,20 +23,20 @@ func initSqlite3(schema string) (*sql.DB, error) {
 	if _, err := os.Stat(source); err == nil {
 		db, err := openSqlite3(source)
 		if err != nil {
-			return nil, errors.New(err.Error())
+			return nil, errors.WithStack(err)
 		}
 		return db, nil
 	}
 
 	if err := createDB(source); err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	con, err := openSqlite3(source)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	if err := createTable(con); err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 
 	return con, nil
@@ -47,7 +47,7 @@ func initSqlite3(schema string) (*sql.DB, error) {
 func openSqlite3(source string) (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", source)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	return db, nil
 }
@@ -57,7 +57,7 @@ func openSqlite3(source string) (*sql.DB, error) {
 func createDB(source string) error {
 	file, err := os.Create(source)
 	if err != nil {
-		return errors.New(err.Error())
+		return errors.WithStack(err)
 	}
 	defer file.Close()
 
@@ -72,11 +72,11 @@ func createTable(db *sql.DB) error {
 
 	dir := fmt.Sprintf("%s/%s", util.RootDir(), "docs/db")
 	if err := s.Directory(dir); err != nil {
-		return errors.New(err.Error())
+		return errors.WithStack(err)
 	}
 
 	if _, err := s.Exec(db); err != nil {
-		return errors.New(err.Error())
+		return errors.WithStack(err)
 	}
 
 	return nil

@@ -23,7 +23,7 @@ func NewTxHandler(con *sql.DB) *txHandler {
 func (h *txHandler) Begin(ctx context.Context, opt *sql.TxOptions) error {
 	tx, err := h.con.BeginTx(ctx, opt)
 	if err != nil {
-		return errors.New(err.Error())
+		return errors.WithStack(err)
 	}
 
 	h.tx = tx
@@ -35,13 +35,13 @@ func (h *txHandler) Begin(ctx context.Context, opt *sql.TxOptions) error {
 func (h *txHandler) Execute(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
 	stmt, err := h.tx.PrepareContext(ctx, query)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	defer stmt.Close()
 
 	res, err := stmt.ExecContext(ctx, args...)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	return res, nil
 }
@@ -49,7 +49,7 @@ func (h *txHandler) Execute(ctx context.Context, query string, args ...interface
 // Commit commits the transaction.
 func (h *txHandler) Commit() error {
 	if err := h.tx.Commit(); err != nil {
-		return errors.New(err.Error())
+		return errors.WithStack(err)
 	}
 	return nil
 }
@@ -57,7 +57,7 @@ func (h *txHandler) Commit() error {
 // Rollback aborts a transaction.
 func (h *txHandler) Rollback() error {
 	if err := h.tx.Rollback(); err != nil {
-		return errors.New(err.Error())
+		return errors.WithStack(err)
 	}
 	return nil
 }

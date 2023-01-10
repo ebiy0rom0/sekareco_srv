@@ -34,7 +34,7 @@ func (r *musicRepository) Fetch(ctx context.Context) ([]outputdata.Music, error)
 	query += "  master_music;"
 	rows, err := r.Query(ctx, query)
 	if err != nil {
-		return nil, errors.New(err.Error())
+		return nil, errors.WithStack(err)
 	}
 	defer rows.Close()
 
@@ -58,7 +58,7 @@ func (r *musicRepository) Fetch(ctx context.Context) ([]outputdata.Music, error)
 			&music.NotesMaster,
 		)
 		if err != nil {
-			return nil, errors.New(err.Error())
+			return nil, errors.WithStack(err)
 		}
 
 		//convert to response data struct
@@ -74,7 +74,7 @@ func (r *musicRepository) Fetch(ctx context.Context) ([]outputdata.Music, error)
 	}
 
 	if len(musics) == 0 {
-		return nil, errors.New(sql.ErrNoRows.Error())
+		return nil, errors.WithStack(sql.ErrNoRows)
 	}
 	return musics, nil
 }

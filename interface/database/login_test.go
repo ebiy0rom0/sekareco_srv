@@ -7,6 +7,8 @@ import (
 	"sekareco_srv/domain/model"
 	"sekareco_srv/usecase/database"
 	"testing"
+
+	"github.com/ebiy0rom0/errors"
 )
 
 var loginRepo database.LoginRepository
@@ -73,7 +75,7 @@ func TestLoginRepository_GetByID(t *testing.T) {
 				t.Errorf("loginRepository.GetByID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if tt.wantErr && err == sql.ErrNoRows {
+			if tt.wantErr && errors.Is(err, sql.ErrNoRows) {
 				return
 			}
 			if !reflect.DeepEqual(gotLogin.PersonID, 1) {

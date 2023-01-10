@@ -27,7 +27,7 @@ func (r *loginRepository) Store(ctx context.Context, l model.Login) error {
 	}
 
 	if _, err := dao.Execute(ctx, query, l.LoginID, l.PersonID, l.PasswordHash); err != nil {
-		return errors.New(err.Error())
+		return errors.WithStack(err)
 	}
 	return nil
 }
@@ -41,7 +41,7 @@ func (r *loginRepository) GetByID(ctx context.Context, loginID string) (model.Lo
 		passwordHash string
 	)
 	if err := row.Scan(&passwordHash, &personID); err != nil {
-		return model.Login{}, errors.New(err.Error())
+		return model.Login{}, errors.WithStack(err)
 	}
 
 	login := model.Login{
