@@ -80,23 +80,9 @@ func run() error {
 		ReadTimeout:  5 * time.Second,
 	}
 
-	mainteRoute := router.InitRouterForMainte()
-	mainteCors := middleware.NewCorsConfigForMainte()
-	mainteSrv := &http.Server{
-		Handler:      mainteCors.Handler(mainteRoute),
-		Addr:         "0.0.0.0:8080",
-		WriteTimeout: 5 * time.Second,
-		ReadTimeout:  5 * time.Second,
-	}
-
 	// wait http request
 	go func() {
 		if err := appSrv.ListenAndServe(); err != nil {
-			log.Println(err)
-		}
-	}()
-	go func() {
-		if err := mainteSrv.ListenAndServe(); err != nil {
 			log.Println(err)
 		}
 	}()
