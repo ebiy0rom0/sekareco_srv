@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"sekareco_srv/env"
-	"sekareco_srv/infra"
 	"sekareco_srv/infra/sql"
 	"sekareco_srv/util"
 
@@ -21,10 +20,6 @@ func main() {
 }
 
 func initialize() error {
-	if err := infra.LoadEnv("dev"); err != nil {
-		return nil
-	}
-
 	if err := makeDirectories(); err != nil {
 		return errors.Wrap(err, "failed to make directories")
 	}
