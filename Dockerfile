@@ -1,4 +1,5 @@
 FROM golang:1.18 as builder
+ARG tags=0
 
 WORKDIR /
 
@@ -7,14 +8,15 @@ RUN go mod download
 
 COPY . ./
 
-RUN go build -ldflags '-s -w' -tags ${TAGS} -a -o serverd ./cmd/main.go
+RUN apt-get install -y make
+
+RUN make build RELEASE=${tags}
 
 # multi stage build
 FROM debian:buster-slim
 
-ARG ENV=dev
-ENV STAGE $ENV
+COPY --from=builder /bin/serverd /app/serverd
+COPY docs/db/ ./docs/db
 
-COPY --from=builder /serverd /app/serverd
-
+EXPOSE 8000
 CMD ./app/serverd

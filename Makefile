@@ -19,10 +19,10 @@ GOINSTALL:=$(GOCMD) install
 #####
 # build
 BIN_DIR:=./bin
-BIN_NAME:=server
+BIN_NAME:=serverd
 BIN_PATH:=$(BIN_DIR)/$(BIN_NAME)
 
-BUILD_TAGS:=debug
+BUILD_TAGS:=develop
 BUILD_RACE:=-race
 BUILD_STATIC:=
 
@@ -31,7 +31,6 @@ ifdef RELEASE
 	BUILD_RACE:=
 	BUILD_STATIC:=-a
 endif
-
 BUILD_OPTIONS:=-ldflags '-s -w' -tags $(BUILD_TAGS) $(BUILD_RACE) $(BUILD_STATIC)
 
 #####
@@ -79,12 +78,11 @@ else
 endif
 
 docker_build:
-	docker build --tag sekareco_srv:latest --build-arg TAGS=$(BUILD_TAGS) .
+	docker build --tag sekareco_srv:latest --build-arg tags=${RELEASE} .
 
 docker_run: docker_build
 	docker run --rm \
 		-p 8000:8000 \
-		-p 8080:8080 \
 		-v $(CURDIR)/log:/log \
 		-v $(CURDIR)/db:/db \
 		-v $(CURDIR)/docs/db:/docs/db \
