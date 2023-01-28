@@ -2,9 +2,8 @@ package test
 
 import (
 	"log"
-	infraDoamin "sekareco_srv/domain/infra"
+	"sekareco_srv/domain/infra"
 	"sekareco_srv/env"
-	"sekareco_srv/infra"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/sql"
 	infraIf "sekareco_srv/interface/infra"
@@ -16,10 +15,6 @@ var txHandler infraIf.TxHandler
 var authMiddleware *middleware.AuthMiddleware
 
 func Setup() {
-	if err := infra.LoadEnv("test"); err != nil {
-		log.Fatalf("env load error: %s\n", err.Error())
-	}
-
 	con, err := sql.NewConnection("", "", "", env.DbFile)
 	if err != nil {
 		log.Fatalf("Failed connect db: %+v\n", err)
@@ -44,6 +39,6 @@ func InjectAuthMiddleware() *middleware.AuthMiddleware {
 	return authMiddleware
 }
 
-func InjectTokenManager() infraDoamin.TokenManager {
+func InjectTokenManager() infra.TokenManager {
 	return authMiddleware
 }

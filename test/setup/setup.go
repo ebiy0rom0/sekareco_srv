@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"sekareco_srv/env"
-	"sekareco_srv/infra"
 	"sekareco_srv/util"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -16,10 +15,6 @@ import (
 // testing before setup package
 func main() {
 	fmt.Println("---------- start testing setup. ----------")
-
-	if err := infra.LoadEnv("test"); err != nil {
-		log.Fatalf("env load error: %s\n", err.Error())
-	}
 
 	source := fmt.Sprintf("%s/%s/%s", util.RootDir(), env.DbDir, env.DbFile)
 

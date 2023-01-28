@@ -96,7 +96,7 @@ docker_clean:
 test: test_setup $(TEST_LOCATE) test_clean
 
 test_setup:
-	$(GORUN) ./test/setup
+	$(GORUN) -tags=test ./test/setup
 
 test_clean:
 	$(GORUN) ./test/clean
