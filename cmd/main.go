@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"sekareco_srv/env"
-	"sekareco_srv/infra"
 	"sekareco_srv/infra/logger"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/router"
@@ -48,10 +47,6 @@ func run() error {
 	dbPass := flag.String("dbPass", "", "MySQL password")
 	dbHost := flag.String("dbHost", "", "MySQL host address")
 	flag.Parse()
-
-	if err := infra.LoadEnv(*stage); err != nil {
-		return fmt.Errorf("fail to loading dotenv: %+v", err)
-	}
 
 	if err := logger.InitLogger(*stage); err != nil {
 		return fmt.Errorf("fail to initialize logger: %+v", err)
