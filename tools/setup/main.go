@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sekareco_srv/env"
 	"sekareco_srv/infra"
 	"sekareco_srv/infra/sql"
 	"sekareco_srv/util"
@@ -49,8 +50,7 @@ func makeDirectories() error {
 }
 
 func storeTestRecords() error {
-	name := os.Getenv("DB_NAME")
-	con, err := sql.NewConnection("", "", "", name)
+	con, err := sql.NewConnection("", "", "", env.DbFile)
 	if err != nil {
 		return errors.New(err.Error())
 	}

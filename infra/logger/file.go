@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	infraDomain "sekareco_srv/domain/infra"
+	"sekareco_srv/env"
 	"sekareco_srv/util"
 
 	"github.com/ebiy0rom0/errors"
@@ -64,7 +65,7 @@ func open(file string) (*os.File, error) {
 
 // logLocate returns a string of the log file path.
 func logLocate() string {
-	return filepath.Join(util.RootDir(), os.Getenv("LOG_PATH"))
+	return filepath.Join(util.RootDir(), env.LogDir)
 }
 
 var _ infraDomain.ILogger = (*fileLogger)(nil)

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"sekareco_srv/env"
 	"sekareco_srv/util"
 
 	"github.com/ebiy0rom0/errors"
@@ -18,7 +19,7 @@ func initSqlite3(schema string) (*sql.DB, error) {
 	var con *sql.DB
 
 	// You need to making db/ in the root directory.
-	source := fmt.Sprintf("%s/%s/%s", util.RootDir(), os.Getenv("DB_PATH"), schema)
+	source := fmt.Sprintf("%s/%s/%s", util.RootDir(), env.DbDir, schema)
 
 	if _, err := os.Stat(source); err == nil {
 		db, err := openSqlite3(source)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sekareco_srv/env"
 	"sekareco_srv/infra"
 	"sekareco_srv/util"
 
@@ -20,7 +21,7 @@ func main() {
 		log.Fatalf("env load error: %s\n", err.Error())
 	}
 
-	source := fmt.Sprintf("%s/%s/%s", util.RootDir(), os.Getenv("DB_PATH"), os.Getenv("DB_NAME"))
+	source := fmt.Sprintf("%s/%s/%s", util.RootDir(), env.DbDir, env.DbFile)
 
 	// Cleaning DB file if left before testing DB
 	if _, err := os.Stat(source); err == nil {

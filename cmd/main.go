@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"sekareco_srv/env"
 	"sekareco_srv/infra"
 	"sekareco_srv/infra/logger"
 	"sekareco_srv/infra/middleware"
@@ -58,7 +59,7 @@ func run() error {
 
 	// No MySQL setup until performance impact in production,
 	// so sqlite3 connections can be obtained for a while.
-	con, err := sql.NewConnection(*dbUser, *dbPass, *dbHost, os.Getenv("DB_NAME"))
+	con, err := sql.NewConnection(*dbUser, *dbPass, *dbHost, env.DbFile)
 	if err != nil {
 		return fmt.Errorf("fail connect database: %+v", err)
 	}

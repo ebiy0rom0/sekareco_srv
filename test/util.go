@@ -2,8 +2,8 @@ package test
 
 import (
 	"log"
-	"os"
 	infraDoamin "sekareco_srv/domain/infra"
+	"sekareco_srv/env"
 	"sekareco_srv/infra"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/sql"
@@ -20,7 +20,7 @@ func Setup() {
 		log.Fatalf("env load error: %s\n", err.Error())
 	}
 
-	con, err := sql.NewConnection("", "", "", os.Getenv("DB_NAME"))
+	con, err := sql.NewConnection("", "", "", env.DbFile)
 	if err != nil {
 		log.Fatalf("Failed connect db: %+v\n", err)
 	}
