@@ -1,6 +1,7 @@
 package interactor_test
 
 import (
+	_ "sekareco_srv/infra"
 	"sekareco_srv/interface/database"
 	"sekareco_srv/test"
 	"sekareco_srv/usecase/interactor"
