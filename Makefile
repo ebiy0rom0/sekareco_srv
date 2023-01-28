@@ -27,7 +27,7 @@ BUILD_RACE:=-race
 BUILD_STATIC:=
 
 ifdef RELEASE
-	BUILD_TAGS:=release
+	BUILD_TAGS:=production
 	BUILD_RACE:=
 	BUILD_STATIC:=-a
 endif
@@ -79,7 +79,7 @@ else
 endif
 
 docker_build:
-	docker build --tag sekareco_srv:latest --build-arg ENV="prod" .
+	docker build --tag sekareco_srv:latest --build-arg TAGS=$(BUILD_TAGS) .
 
 docker_run: docker_build
 	docker run --rm \
@@ -107,7 +107,7 @@ local: $(TEST_MODE)
 	$(GOTOOL) cover -html $(COVERAGE_OUTPUT)$^.$(COVERAGE_EXTENTION) -o $(COVERAGE_OUTPUT)$^.html
 
 $(TEST_MODE):
-	$(GOTEST) -v -p 12 -cover -tags=$@ ./... -coverprofile=$(COVERAGE_OUTPUT)$@.$(COVERAGE_EXTENTION)
+	$(GOTEST) -v -p 12 -cover -tags=$@,test ./... -coverprofile=$(COVERAGE_OUTPUT)$@.$(COVERAGE_EXTENTION)
 
 lint:
 	$(GOLINT) ./...

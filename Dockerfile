@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . ./
 
-RUN go build -ldflags '-s -w' -tags release -a -o server ./cmd/main.go
+RUN go build -ldflags '-s -w' -tags ${TAGS} -a -o serverd ./cmd/main.go
 
 # multi stage build
 FROM debian:buster-slim
@@ -15,7 +15,6 @@ FROM debian:buster-slim
 ARG ENV=dev
 ENV STAGE $ENV
 
-COPY --from=builder /server /app/server
-COPY --from=builder /env/${ENV}.env /env/${ENV}.env
+COPY --from=builder /serverd /app/serverd
 
-CMD ./app/server -stage=${STAGE}
+CMD ./app/serverd
