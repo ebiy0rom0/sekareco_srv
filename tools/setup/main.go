@@ -53,7 +53,7 @@ func storeTestRecords() error {
 	s := sqlfile.New()
 
 	// TODO: exec sql/ directory, not single file.
-	file := filepath.Join(util.RootDir(), "tools/initializer/sql/master.sql")
+	file := filepath.Join(util.RootDir(), "tools/setup/sql/master.sql")
 	if err := s.File(file); err != nil {
 		return errors.New(err.Error())
 	}
