@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"sekareco_srv/env"
 	"sekareco_srv/util"
 
@@ -16,7 +17,7 @@ import (
 func main() {
 	fmt.Println("---------- start testing setup. ----------")
 
-	source := fmt.Sprintf("%s/%s/%s", util.RootDir(), env.DbDir, env.DbFile)
+	source := filepath.Join(util.RootDir(), env.DbDir, env.DbFile)
 
 	// Cleaning DB file if left before testing DB
 	if _, err := os.Stat(source); err == nil {

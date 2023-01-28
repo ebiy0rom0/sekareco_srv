@@ -2,8 +2,8 @@ package sql
 
 import (
 	"database/sql"
-	"fmt"
 	"os"
+	"path/filepath"
 	"sekareco_srv/env"
 	"sekareco_srv/util"
 
@@ -19,7 +19,7 @@ func initSqlite3(schema string) (*sql.DB, error) {
 	var con *sql.DB
 
 	// You need to making db/ in the root directory.
-	source := fmt.Sprintf("%s/%s/%s", util.RootDir(), env.DbDir, schema)
+	source := filepath.Join(util.RootDir(), env.DbDir, schema)
 
 	if _, err := os.Stat(source); err == nil {
 		db, err := openSqlite3(source)
@@ -71,7 +71,7 @@ func createDB(source string) error {
 func createTable(db *sql.DB) error {
 	s := sqlfile.New()
 
-	dir := fmt.Sprintf("%s/%s", util.RootDir(), "docs/db")
+	dir := filepath.Join(util.RootDir(), "docs/db")
 	if err := s.Directory(dir); err != nil {
 		return errors.WithStack(err)
 	}
