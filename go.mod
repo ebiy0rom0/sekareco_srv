@@ -1,6 +1,6 @@
 module sekareco_srv
 
-go 1.17
+go 1.18
 
 require (
 	github.com/ebiy0rom0/errors v0.3.0
