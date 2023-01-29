@@ -17,5 +17,9 @@ func SetToken(ctx context.Context, token Token) context.Context {
 }
 
 func GetToken(ctx context.Context) Token {
-	return ctx.Value(&tokenKey).(Token)
+	v := ctx.Value(&tokenKey)
+	if v == nil {
+		return ""
+	}
+	return v.(Token)
 }
