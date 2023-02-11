@@ -16,7 +16,7 @@ func Test_musicInteractor_Fetch(t *testing.T) {
 	want := []outputdata.Music{
 		{
 			MusicID:   1,
-			ArtistID:  1,
+			GroupID:   1,
 			MusicName: "test_music001",
 			JacketURL: "jacket/m_001.png",
 			Level:     []int{1, 2, 3, 4, 5},
@@ -24,7 +24,7 @@ func Test_musicInteractor_Fetch(t *testing.T) {
 		},
 		{
 			MusicID:   2,
-			ArtistID:  2,
+			GroupID:   2,
 			MusicName: "test_music002",
 			JacketURL: "jacket/m_002.png",
 			Level:     []int{2, 3, 4, 5, 6},
@@ -32,7 +32,7 @@ func Test_musicInteractor_Fetch(t *testing.T) {
 		},
 		{
 			MusicID:   3,
-			ArtistID:  1,
+			GroupID:   1,
 			MusicName: "test_music003",
 			JacketURL: "jacket/m_003.png",
 			Level:     []int{3, 4, 5, 6, 7},

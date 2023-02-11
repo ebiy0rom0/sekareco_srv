@@ -22,7 +22,7 @@ func NewMusicRepository(h infra.SqlHandler) *musicRepository {
 func (r *musicRepository) Fetch(ctx context.Context) ([]outputdata.Music, error) {
 	query := "SELECT "
 	query += "  music_id,   "
-	query += "  artist_id,  "
+	query += "  group_id,  "
 	query += "  music_name, "
 	query += "  jacket_url, "
 	query += "  level_easy,   notes_easy,   "
@@ -43,7 +43,7 @@ func (r *musicRepository) Fetch(ctx context.Context) ([]outputdata.Music, error)
 		var music model.Music
 		err = rows.Scan(
 			&music.MusicID,
-			&music.ArtistID,
+			&music.GroupID,
 			&music.MusicName,
 			&music.JacketURL,
 			&music.LevelEasy,
@@ -64,7 +64,7 @@ func (r *musicRepository) Fetch(ctx context.Context) ([]outputdata.Music, error)
 		//convert to response data struct
 		ret := outputdata.Music{
 			MusicID:   music.MusicID,
-			ArtistID:  music.ArtistID,
+			GroupID:   music.GroupID,
 			MusicName: music.MusicName,
 			JacketURL: music.JacketURL,
 		}

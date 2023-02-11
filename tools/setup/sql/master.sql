@@ -1,6 +1,6 @@
 INSERT INTO master_music(
     music_id,
-    artist_id,
+    group_id,
     music_name,
     jacket_url,
     level_easy,

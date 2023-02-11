@@ -16,7 +16,7 @@ VALUES  (1, 'login_id1', '$2a$12$J1t7JRNU4Dnq2MYLQHIrNOdpRzqD008mwQrnhPdfYdnM9sd
 -- primary key(music_id) is auto increment value
 INSERT INTO master_music(
     music_id,
-    artist_id,
+    group_id,
     music_name,
     jacket_url,
     level_easy,

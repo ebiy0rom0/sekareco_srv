@@ -112,7 +112,7 @@ func TestHttpContext_Response(t *testing.T) {
 		out := []outputdata.Music{
 			{
 				MusicID:   221,
-				ArtistID:  3,
+				GroupID:   3,
 				MusicName: "虚ろを扇ぐ",
 				JacketURL: "jacket_0221.png",
 				Level:     []int{5, 11, 17, 23, 27},

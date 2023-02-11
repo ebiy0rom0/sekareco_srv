@@ -2,7 +2,7 @@ package model
 
 type Music struct {
 	MusicID     int    `json:"music_id"`
-	ArtistID    int    `json:"artist_id"`
+	GroupID     int    `json:"group_id"`
 	MusicName   string `json:"music_name"`
 	JacketURL   string `json:"jacket_url"`
 	LevelEasy   int    `json:"level_easy"`
@@ -17,8 +17,8 @@ type Music struct {
 	NotesMaster int    `json:"notes_master"`
 }
 
-type Artist struct {
-	ArtistID   int    `json:"artist_id"`
-	ArtistName string `json:"artist_name"`
-	LogoURL    string `json:"logo_url"`
+type Group struct {
+	GroupID   int    `json:"group_id"`
+	GroupName string `json:"group_name"`
+	LogoURL   string `json:"logo_url"`
 }
