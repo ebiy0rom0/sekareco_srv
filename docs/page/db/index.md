@@ -4,7 +4,7 @@
 | physical                            | group  | extra |
 |:------------------------------------|:-------|:------|
 | [master_music](./master_music.md)   | master |       |
-| [master_artist](./master_artist.md) | master |       |
+| [master_group](./master_group.md)   | master |       |
 | [person](./person.md)               | person |       |
 | [person_login](./person_login.md)   | person |       |
 | [person_record](./person_record.md) | person |       |

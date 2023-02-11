@@ -10,7 +10,7 @@
 | physical     | logical      | type    | unsigned | not null | default                        | extra                           |
 |:-------------|:-------------|:--------|:---------|:---------|:-------------------------------|:--------------------------------|
 | music_id     | music id     | INTEGER |          | Y        |                                |                                 |
-| artist_id    | artist id    | INTEGER |          | Y        |                                |                                 |
+| group_id     | group id     | INTEGER |          | Y        |                                |                                 |
 | music_name   | music name   | TEXT    |          | Y        |                                |                                 |
 | jacket_url   | jacket url   | TEXT    |          | Y        |                                | description from root directory |
 | level_easy   | easy level   | INTEGER |          | Y        |                                |                                 |
