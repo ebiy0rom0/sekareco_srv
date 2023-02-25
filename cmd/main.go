@@ -13,7 +13,6 @@ import (
 
 	"sekareco_srv/env"
 	_ "sekareco_srv/infra"
-	_ "sekareco_srv/infra/logger"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/router"
 	"sekareco_srv/infra/sql"
