@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -13,8 +14,20 @@ import (
 	"github.com/tanimutomo/sqlfile"
 )
 
-// testing before setup package
 func main() {
+	var setup bool
+	flag.BoolVar(&setup, "setup", true, "exec setup or cleanup")
+	flag.Parse()
+
+	if setup {
+		Setup()
+	} else {
+		Cleanup()
+	}
+}
+
+// testing before setup package
+func Setup() {
 	fmt.Println("---------- start testing setup. ----------")
 
 	source := filepath.Join(util.RootDir(), env.DbDir, env.DbFile)
@@ -54,4 +67,11 @@ func main() {
 	}
 
 	fmt.Println("---------- complete testing setup. ----------")
+}
+
+// testing after cleaning package
+func Cleanup() {
+	fmt.Println("---------- start testing cleanup. ----------")
+	// something todo...
+	fmt.Println("---------- complete testing cleanup. ----------")
 }

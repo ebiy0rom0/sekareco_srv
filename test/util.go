@@ -14,7 +14,7 @@ var txHandler infraIf.TxHandler
 
 var authMiddleware *middleware.AuthMiddleware
 
-func Setup() {
+func Initialize() {
 	con, err := sql.NewConnection("", "", "", env.DbFile)
 	if err != nil {
 		log.Fatalf("Failed connect db: %+v\n", err)

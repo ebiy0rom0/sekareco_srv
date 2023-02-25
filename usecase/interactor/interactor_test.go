@@ -9,7 +9,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	test.Setup()
+	test.Initialize()
 
 	tx := database.NewTransaction(test.InjectTxHandler())
 

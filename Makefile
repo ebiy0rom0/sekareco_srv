@@ -96,10 +96,10 @@ docker_clean:
 test: test_setup $(TEST_LOCATE) test_clean
 
 test_setup:
-	$(GORUN) -tags=test ./test/setup
+	$(GORUN) -tags=test ./test/setup --setup=true
 
 test_clean:
-	$(GORUN) ./test/clean
+	$(GORUN) ./test/setup --setup=false
 
 local: $(TEST_MODE)
 	$(GOTOOL) cover -html $(COVERAGE_OUTPUT)$^.$(COVERAGE_EXTENTION) -o $(COVERAGE_OUTPUT)$^.html
@@ -111,7 +111,7 @@ lint:
 	$(GOLINT) ./...
 
 setup:
-	$(GORUN) ./tools/setup/
+	$(GORUN) ./tools/setup
 
 swag:
 ifdef INSTALL

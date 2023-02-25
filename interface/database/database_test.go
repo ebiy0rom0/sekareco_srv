@@ -7,7 +7,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	test.Setup()
+	test.Initialize()
 
 	loginRepo = database.NewLoginRepository(test.InjectSqlHandler())
 	musicRepo = database.NewMusicRepository(test.InjectSqlHandler())

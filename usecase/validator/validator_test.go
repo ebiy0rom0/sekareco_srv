@@ -8,7 +8,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	test.Setup()
+	test.Initialize()
 
 	lr := database.NewLoginRepository(test.InjectSqlHandler())
 	pv = validator.NewPersonValidator(lr)
