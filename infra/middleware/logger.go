@@ -2,6 +2,8 @@ package middleware
 
 import (
 	"net/http"
+	domainInfra "sekareco_srv/domain/infra"
+	"sekareco_srv/infra"
 	"sekareco_srv/infra/web"
 
 	"github.com/rs/zerolog"
@@ -12,6 +14,8 @@ import (
 func WithLogger(logger zerolog.Logger) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := infra.NewLogDetail(r.Context())
+			r = r.WithContext(ctx)
 			writer := web.NewResponseWriterWrapper(w, r)
 
 			// access to unauthorized path
@@ -21,7 +25,10 @@ func WithLogger(logger zerolog.Logger) func(next http.Handler) http.Handler {
 
 			// In case not found handler, access logs are not collected.
 			next.ServeHTTP(writer, r)
-			logger.Info().Object("httpRequest", writer).Send()
+
+			// output log
+			logger.Info().Object("accessLog", writer).Send()
+			domainInfra.Logger.Send(ctx)
 		})
 	}
 }
