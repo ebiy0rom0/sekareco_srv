@@ -68,31 +68,29 @@ func NewAuthMiddleware() *AuthMiddleware {
 // WithCheckAuth checks if the user with access is an already authenticated user.
 // Register with router middleware for endpoints requiring authentication
 // to block access by unauthenticated users.
-func (m *AuthMiddleware) WithCheckAuth() func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			token := m.getHeaderToken(r)
-			if len(token) == 0 {
-				w.Header().Set(RESPONSE_HEADER, HEADER_UNAUTHORIZED)
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
+func (m *AuthMiddleware) WithCheckAuth(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := m.getHeaderToken(r)
+		if len(token) == 0 {
+			w.Header().Set(RESPONSE_HEADER, HEADER_UNAUTHORIZED)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
-			if !m.isEffectiveToken(token) {
-				w.Header().Set(RESPONSE_HEADER, HEADER_INVALID_TOKEN)
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
+		if !m.isEffectiveToken(token) {
+			w.Header().Set(RESPONSE_HEADER, HEADER_INVALID_TOKEN)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
-			// make available for each usecase
-			ctx := r.Context()
-			ctx = infra.SetToken(ctx, token)
-			r = r.WithContext(ctx)
+		// make available for each usecase
+		ctx := r.Context()
+		ctx = infra.SetToken(ctx, token)
+		r = r.WithContext(ctx)
 
-			w.Header().Set(RESPONSE_HEADER, HEADER_DONE)
-			next.ServeHTTP(w, r)
-		})
-	}
+		w.Header().Set(RESPONSE_HEADER, HEADER_DONE)
+		next.ServeHTTP(w, r)
+	})
 }
 
 // GenerateNewToken returns new access token.

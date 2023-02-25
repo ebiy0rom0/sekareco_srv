@@ -91,7 +91,7 @@ func TestAuthMiddleware_WithCheckAuth(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest("GET", "http://tests", nil)
 
-		authMid.WithCheckAuth()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authMid.WithCheckAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// nothing todo
 		})).ServeHTTP(w, r)
 
@@ -110,7 +110,7 @@ func TestAuthMiddleware_WithCheckAuth(t *testing.T) {
 		r := httptest.NewRequest("GET", "http://tests", nil)
 		r.Header.Set(REQUEST_HEADER, "invalid")
 
-		authMid.WithCheckAuth()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authMid.WithCheckAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// nothing todo
 		})).ServeHTTP(w, r)
 
@@ -133,7 +133,7 @@ func TestAuthMiddleware_WithCheckAuth(t *testing.T) {
 		r := httptest.NewRequest("GET", "http://tests", nil)
 		r.Header.Set(REQUEST_HEADER, string(token))
 
-		authMid.WithCheckAuth()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authMid.WithCheckAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
 			got := infra.GetToken(ctx)
 
@@ -153,7 +153,7 @@ func TestAuthMiddleware_WithCheckAuth(t *testing.T) {
 		r := httptest.NewRequest("GET", "http://tests", nil)
 		r.Header.Set(REQUEST_HEADER, "invalid")
 
-		authMid.WithCheckAuth()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authMid.WithCheckAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// nothing todo
 		})).ServeHTTP(w, r)
 
