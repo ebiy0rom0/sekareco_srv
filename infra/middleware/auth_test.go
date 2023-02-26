@@ -135,7 +135,11 @@ func TestAuthMiddleware_WithCheckAuth(t *testing.T) {
 
 		authMid.WithCheckAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
-			got := infra.GetToken(ctx)
+			got, err := infra.GetToken(ctx)
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
 			if got != token {
 				t.Errorf("invalid get token: want=%s but got=%s", token, got)

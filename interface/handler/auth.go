@@ -72,7 +72,7 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Security	Bearer Authentication
 // @Router		/signout	[delete]
 func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
-	token := infraDomain.GetToken(ctx)
+	token, _ := infraDomain.GetToken(ctx)
 	h.auth.RevokeToken(token)
 
 	hc.Response(http.StatusOK, nil)

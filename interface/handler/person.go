@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"net/http"
+	infraDomain "sekareco_srv/domain/infra"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
@@ -35,8 +36,11 @@ func NewPersonHandler(
 // @Security	Bearer Authentication
 // @Router		/persons/{person_id}	[get]
 func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
-	vars := hc.Vars()
-	personID, _ := strconv.Atoi(vars["personID"])
+	personID, err := infraDomain.GetPersonID(ctx)
+	if err != nil {
+		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
+		return
+	}
 
 	person, err := h.person.GetByID(ctx, personID)
 	if err != nil {

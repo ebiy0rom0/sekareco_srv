@@ -35,8 +35,8 @@ var MAX_TOKENS = 30
 // but it doesn't no have to be strictly 1 hour.
 var EXPIRED_TOKEN_DELETE_SPAN = 1 * time.Second
 
-// A tokenStatus is stored token expiration at single person.
-type tokenStatus struct {
+// A sessionInfo is stored token expiration at single person.
+type sessionInfo struct {
 	personID  int
 	expiredIn time.Time
 }
@@ -45,7 +45,7 @@ type tokenStatus struct {
 type AuthMiddleware struct {
 	// access token mapping
 	// key: token, value: status
-	tokens map[infra.Token]tokenStatus
+	session map[infra.Token]sessionInfo
 	// 1 personID has only 1 token
 	personToToken map[int]infra.Token
 }
@@ -60,7 +60,7 @@ type AuthMiddleware struct {
 // while making the number of tokens holding valiable.
 func NewAuthMiddleware() *AuthMiddleware {
 	return &AuthMiddleware{
-		tokens:        make(map[infra.Token]tokenStatus, MAX_TOKENS),
+		session:       make(map[infra.Token]sessionInfo, MAX_TOKENS),
 		personToToken: make(map[int]infra.Token, MAX_TOKENS),
 	}
 }
@@ -84,8 +84,14 @@ func (m *AuthMiddleware) WithCheckAuth(next http.Handler) http.Handler {
 		}
 
 		// make available for each usecase
+		personID, ok := m.getPersonID(token)
+		if !ok {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
 		ctx := r.Context()
-		ctx = infra.SetToken(ctx, token)
+		ctx = infra.SetToken(ctx, infra.NewSessionInfo(personID, token))
 		r = r.WithContext(ctx)
 
 		w.Header().Set(RESPONSE_HEADER, HEADER_DONE)
@@ -115,7 +121,7 @@ func (m *AuthMiddleware) AddToken(pid int, new infra.Token) {
 		m.RevokeToken(old)
 	}
 
-	m.tokens[new] = tokenStatus{
+	m.session[new] = sessionInfo{
 		personID:  pid,
 		expiredIn: infra.Timer.Add(EXPIRED_IN),
 	}
@@ -124,9 +130,9 @@ func (m *AuthMiddleware) AddToken(pid int, new infra.Token) {
 
 // RevokeToken is delete the specified token from middleware.
 func (m *AuthMiddleware) RevokeToken(token infra.Token) {
-	pid := m.tokens[token].personID
+	pid := m.session[token].personID
 	delete(m.personToToken, pid)
-	delete(m.tokens, token)
+	delete(m.session, token)
 }
 
 // DeleteExpiredToken is automatically delete the expired token at over time.
@@ -144,8 +150,8 @@ func (m *AuthMiddleware) DeleteExpiredToken(ctx context.Context) {
 			if !ok {
 				continue
 			}
-			for token, status := range m.tokens {
-				if !infra.Timer.Before(status.expiredIn) {
+			for token, info := range m.session {
+				if !infra.Timer.Before(info.expiredIn) {
 					m.RevokeToken(token)
 				}
 			}
@@ -161,7 +167,15 @@ func (m *AuthMiddleware) getHeaderToken(r *http.Request) infra.Token {
 
 // isEffectiveToken reports weather request token is effective.
 func (m *AuthMiddleware) isEffectiveToken(token infra.Token) bool {
-	access, ok := m.tokens[token]
+	session, ok := m.session[token]
 	// not exist token or token expired
-	return ok && infra.Timer.Before(access.expiredIn)
+	return ok && infra.Timer.Before(session.expiredIn)
+}
+
+func (m *AuthMiddleware) getPersonID(token infra.Token) (int, bool) {
+	session, ok := m.session[token]
+	if !ok {
+		return 0, ok
+	}
+	return session.personID, ok
 }
