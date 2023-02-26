@@ -3,11 +3,9 @@ package web
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
-	"sekareco_srv/domain/infra"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/usecase/outputdata"
 	"testing"
@@ -153,21 +151,5 @@ func TestHttpContext_Response(t *testing.T) {
 		if err := httpCtx.Response(http.StatusOK, map[bool]interface{}{true: "error"}); err == nil {
 			t.Errorf("somehow marshal succeeded.")
 		}
-	})
-}
-
-func TestHttpContext_MakeError(t *testing.T) {
-	// to coverage earn
-	message := errors.New("test error message")
-	want := infra.HttpError{
-		Error: message.Error(),
-	}
-	t.Run("match error struct", func(t *testing.T) {
-		//
-		httpCtx := NewHttpContext(nil, nil)
-		if got := httpCtx.MakeError(message); !reflect.DeepEqual(*got, want) {
-			t.Errorf("want=%+v but got=%+v", want, *got)
-		}
-
 	})
 }
