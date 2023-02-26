@@ -2,8 +2,9 @@ basePath: /api/v1
 definitions:
   infra.HttpError:
     properties:
-      error:
-        example: set a server error message
+      code:
+        type: integer
+      msg:
         type: string
     type: object
   inputdata.AddPerson:
@@ -81,7 +82,7 @@ definitions:
     type: object
   model.Music:
     properties:
-      artist_id:
+      group_id:
         type: integer
       jacket_url:
         type: string
