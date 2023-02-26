@@ -8,4 +8,5 @@ import (
 type PersonRepository interface {
 	Store(context.Context, model.Person) (int, error)
 	GetByID(context.Context, int) (model.Person, error)
+	GetByFriendCode(context.Context, int) (model.Person, error)
 }

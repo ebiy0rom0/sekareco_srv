@@ -40,23 +40,25 @@ func (r *personRepository) Store(ctx context.Context, p model.Person) (int, erro
 }
 
 func (r *personRepository) GetByID(ctx context.Context, personID int) (model.Person, error) {
-	query := "SELECT person_id, person_name, friend_code FROM person WHERE person_id = ?;"
+	query := "SELECT * FROM person WHERE person_id = ?;"
 	row := r.QueryRow(ctx, query, personID)
 
-	var (
-		personName string
-		friendCode int
-	)
-	if err := row.Scan(&personID, &personName, &friendCode); err != nil {
+	var person model.Person
+	if err := row.Scan(&person.PersonID, &person.PersonName, &person.FriendCode, &person.IsCompare); err != nil {
 		return model.Person{}, errors.WithStack(err)
 	}
+	return person, nil
+}
 
-	user := model.Person{
-		PersonID:   personID,
-		PersonName: personName,
-		FriendCode: friendCode,
+func (r *personRepository) GetByFriendCode(ctx context.Context, code int) (model.Person, error) {
+	query := "SELECT * FROM person WHERE friend_code = ?;"
+	row := r.QueryRow(ctx, query, code)
+
+	var person model.Person
+	if err := row.Scan(&person.PersonID, &person.PersonName, &person.FriendCode, &person.IsCompare); err != nil {
+		return model.Person{}, errors.WithStack(err)
 	}
-	return user, nil
+	return person, nil
 }
 
 var _ database.PersonRepository = (*personRepository)(nil)
