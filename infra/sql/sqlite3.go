@@ -8,6 +8,7 @@ import (
 	"sekareco_srv/util"
 
 	"github.com/ebiy0rom0/errors"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/tanimutomo/sqlfile"
 )
@@ -15,8 +16,8 @@ import (
 // initSqlite3 returns a pointer to the connection.
 // If first time and not exist data source that
 // create database file and create the need tables.
-func initSqlite3(schema string) (*sql.DB, error) {
-	var con *sql.DB
+func initSqlite3(schema string) (*sqlx.DB, error) {
+	var con *sqlx.DB
 
 	// You need to making db/ in the root directory.
 	source := filepath.Join(util.RootDir(), env.DbDir, schema)
@@ -36,7 +37,7 @@ func initSqlite3(schema string) (*sql.DB, error) {
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	if err := createTable(con); err != nil {
+	if err := createTable(con.DB); err != nil {
 		return nil, errors.WithStack(err)
 	}
 
@@ -45,8 +46,8 @@ func initSqlite3(schema string) (*sql.DB, error) {
 
 // openSqlite3 establishes a connection with db for sqlite3
 // and returns a pointer to the connection.
-func openSqlite3(source string) (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", source)
+func openSqlite3(source string) (*sqlx.DB, error) {
+	db, err := sqlx.Connect("sqlite3", source)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

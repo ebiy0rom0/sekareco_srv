@@ -6,22 +6,23 @@ import (
 	"sekareco_srv/interface/infra"
 
 	"github.com/ebiy0rom0/errors"
+	"github.com/jmoiron/sqlx"
 )
 
 // A txHandler is database handler wrapper supports the transaction.
 type txHandler struct {
-	con *sql.DB
-	tx  *sql.Tx
+	con *sqlx.DB
+	tx  *sqlx.Tx
 }
 
 // NewTxHandler returns txHandler pointer.
-func NewTxHandler(con *sql.DB) *txHandler {
+func NewTxHandler(con *sqlx.DB) *txHandler {
 	return &txHandler{con: con}
 }
 
 // Begin starts a transaction.
 func (h *txHandler) Begin(ctx context.Context, opt *sql.TxOptions) error {
-	tx, err := h.con.BeginTx(ctx, opt)
+	tx, err := h.con.BeginTxx(ctx, opt)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -33,7 +34,7 @@ func (h *txHandler) Begin(ctx context.Context, opt *sql.TxOptions) error {
 // Execute returns result at execute argument query.
 // Prepared statement are supported, so any argument inject to args.
 func (h *txHandler) Execute(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
-	stmt, err := h.tx.PrepareContext(ctx, query)
+	stmt, err := h.tx.PreparexContext(ctx, query)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

@@ -1,18 +1,18 @@
 package sql
 
 import (
-	"database/sql"
 	"net"
 	"time"
 
 	"github.com/ebiy0rom0/errors"
+	"github.com/jmoiron/sqlx"
 
 	"github.com/go-sql-driver/mysql"
 )
 
 // openMysql establishes a connection with db for MySQL
 // and returns a pointer to the connection.
-func openMysql(user, pass, host, schema string) (*sql.DB, error) {
+func openMysql(user, pass, host, schema string) (*sqlx.DB, error) {
 	//user:password@tcp(host:port)/dbname
 	// source := fmt.Sprintf(
 	// 	"%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=true",
@@ -31,7 +31,7 @@ func openMysql(user, pass, host, schema string) (*sql.DB, error) {
 		DBName: schema,
 	}
 
-	db, err := sql.Open("mysql", c.FormatDSN())
+	db, err := sqlx.Connect("mysql", c.FormatDSN())
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

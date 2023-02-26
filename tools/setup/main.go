@@ -58,7 +58,7 @@ func storeTestRecords() error {
 		return errors.New(err.Error())
 	}
 
-	if _, err := s.Exec(con); err != nil {
+	if _, err := s.Exec(con.DB); err != nil {
 		return errors.New(err.Error())
 	}
 	return nil

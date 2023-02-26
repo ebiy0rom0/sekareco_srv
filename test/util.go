@@ -7,6 +7,8 @@ import (
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/sql"
 	infraIf "sekareco_srv/interface/infra"
+
+	"github.com/jmoiron/sqlx"
 )
 
 var sqlHandler infraIf.SqlHandler
@@ -15,7 +17,7 @@ var txHandler infraIf.TxHandler
 var authMiddleware *middleware.AuthMiddleware
 
 func Initialize() {
-	con, err := sql.NewConnection("", "", "", env.DbFile)
+	con, err := sqlx.Connect("sqlite3", env.DbFile)
 	if err != nil {
 		log.Fatalf("Failed connect db: %+v\n", err)
 	}
