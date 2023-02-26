@@ -30,18 +30,18 @@ func NewRecordHandler(r inputport.RecordInputport) *recordHandler {
 // @Failure		503	{object}	infra.HttpError
 // @Security	Bearer Authentication
 // @Router		/records/{person_id}	[get]
-func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
+func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	vars := hc.Vars()
 	fmt.Printf("%+v\n", vars)
 	personID, _ := strconv.Atoi(vars["person_id"])
 
 	records, err := h.record.GetByPersonID(ctx, personID)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusServiceUnavailable}
 	}
 
 	hc.Response(http.StatusOK, records)
+	return nil
 }
 
 // @Summary		new record | create new record
@@ -56,12 +56,11 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) {
 // @Failure		503	{object}	infra.HttpError
 // @Security	Bearer Authentication
 // @Router		/records/{person_id}	[post]
-func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
+func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	vars := hc.Vars()
 	var addRecord inputdata.AddRecord
 	if err := hc.Decode(&addRecord); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusBadRequest}
 	}
 
 	// TODO: validation
@@ -71,11 +70,11 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 
 	newRecord, err := h.record.Store(ctx, personID, addRecord)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusServiceUnavailable}
 	}
 
 	hc.Response(http.StatusCreated, newRecord)
+	return nil
 }
 
 // @Summary		update status | update record clear status
@@ -91,12 +90,11 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Failure		503	{object}	infra.HttpError
 // @Security	Bearer Authentication
 // @Router		/records/{person_id}/{music_id}	[put]
-func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) {
+func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	vars := hc.Vars()
 	var record inputdata.UpdateRecord
 	if err := hc.Decode(&record); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusBadRequest}
 	}
 
 	// TODO: convert value object
@@ -104,9 +102,9 @@ func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) {
 	musicID, _ := strconv.Atoi(vars["musicID"])
 
 	if err := h.record.Update(ctx, personID, musicID, record); err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusServiceUnavailable}
 	}
 
 	hc.Response(http.StatusOK, nil)
+	return nil
 }

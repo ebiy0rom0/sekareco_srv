@@ -35,20 +35,19 @@ func NewPersonHandler(
 // @Failure		503	{object}	infra.HttpError
 // @Security	Bearer Authentication
 // @Router		/persons/{person_id}	[get]
-func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
+func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	personID, err := infraDomain.GetPersonID(ctx)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusServiceUnavailable}
 	}
 
 	person, err := h.person.GetByID(ctx, personID)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusServiceUnavailable}
 	}
 
 	hc.Response(http.StatusOK, person)
+	return nil
 }
 
 // @Summary		new account | create new person
@@ -61,25 +60,23 @@ func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) {
 // @Failure		400	{object}	infra.HttpError
 // @Failure		503	{object}	infra.HttpError
 // @Router		/signup	[post]
-func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
+func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	var req inputdata.AddPerson
 	if err := hc.Decode(&req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusBadRequest}
 	}
 
 	if err := h.valid.ValidationAdd(ctx, req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusBadRequest}
 	}
 
 	person, err := h.person.Store(ctx, req)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusServiceUnavailable}
 	}
 
 	hc.Response(http.StatusCreated, person)
+	return nil
 }
 
 // @Summary		update status | update person register status
@@ -93,25 +90,23 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Failure		503	{object}	infra.HttpError
 // @Security	Bearer Authentication
 // @Router		/persons/{person_id}	[put]
-func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) {
+func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])
 
 	var req inputdata.UpdatePerson
 	if err := hc.Decode(&req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusBadRequest}
 	}
 
 	if err := h.valid.ValidationUpdate(ctx, req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusBadRequest}
 	}
 
 	if err := h.person.Update(ctx, personID, req); err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusServiceUnavailable}
 	}
 
 	hc.Response(http.StatusOK, nil)
+	return nil
 }

@@ -3,8 +3,7 @@ package web
 import (
 	"encoding/json"
 	"net/http"
-	"sekareco_srv/domain/infra"
-	infraIf "sekareco_srv/interface/infra"
+	"sekareco_srv/interface/infra"
 
 	"github.com/ebiy0rom0/errors"
 	"github.com/gorilla/mux"
@@ -68,14 +67,4 @@ func (c *HttpContext) Response(code int, v interface{}) error {
 	return nil
 }
 
-// MakeError returns the HttpError converted into a format
-// that can be passed to the Response argument v.
-// Output to the error log is made at the same time.
-func (c *HttpContext) MakeError(err error) *infra.HttpError {
-	// TODO: output to the error log
-	return &infra.HttpError{
-		Error: err.Error(),
-	}
-}
-
-var _ infraIf.HttpContext = (*HttpContext)(nil)
+var _ infra.HttpContext = (*HttpContext)(nil)

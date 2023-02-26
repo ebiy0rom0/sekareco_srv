@@ -13,6 +13,7 @@ func NewHealthHandler() *healthHandler {
 	return &healthHandler{}
 }
 
-func (h *healthHandler) Get(ctx context.Context, hc infra.HttpContext) {
+func (h *healthHandler) Get(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	hc.Response(http.StatusOK, nil)
+	return nil
 }

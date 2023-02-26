@@ -15,8 +15,8 @@ type authHandler struct {
 }
 
 type AuthHandle interface {
-	Post(context.Context, infra.HttpContext)
-	Delete(context.Context, infra.HttpContext)
+	Post(context.Context, infra.HttpContext) *infra.HttpError
+	Delete(context.Context, infra.HttpContext) *infra.HttpError
 }
 
 func NewAuthHandler(
@@ -40,26 +40,25 @@ func NewAuthHandler(
 // @Failure		400	{object}	infra.HttpError
 // @Failure		401	{object}	infra.HttpError
 // @Router		/signin	[post]
-func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
+func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	var req inputdata.PostAuth
 	if err := hc.Decode(&req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusBadRequest}
 	}
 
 	if err := h.valid.ValidationPost(req); err != nil {
-		hc.Response(http.StatusBadRequest, hc.MakeError(err))
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusBadRequest}
 	}
 
 	personID, err := h.auth.CheckAuth(ctx, req.LoginID, req.Password)
 	if err != nil {
-		hc.Response(http.StatusUnauthorized, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusUnauthorized}
 	}
 
 	token := h.auth.AddToken(personID)
 
 	hc.Response(http.StatusOK, token)
+	return nil
 }
 
 // synonymous with 'sign out'
@@ -71,11 +70,16 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) {
 // @Success		200
 // @Security	Bearer Authentication
 // @Router		/signout	[delete]
-func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) {
-	token, _ := infraDomain.GetToken(ctx)
+func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
+	token, err := infraDomain.GetToken(ctx)
+	if err != nil {
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusInternalServerError}
+	}
+
 	h.auth.RevokeToken(token)
 
 	hc.Response(http.StatusOK, nil)
+	return nil
 }
 
 var _ AuthHandle = (*authHandler)(nil)

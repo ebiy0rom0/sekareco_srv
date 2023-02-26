@@ -26,12 +26,12 @@ func NewMusicHandler(m inputport.MusicInputport) *musicHandler {
 // @Failure		503	{object}	infra.HttpError
 // @Security	Bearer Authentication
 // @Router		/musics	[get]
-func (h *musicHandler) Get(ctx context.Context, hc infra.HttpContext) {
+func (h *musicHandler) Get(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	musics, err := h.music.Fetch(ctx)
 	if err != nil {
-		hc.Response(http.StatusServiceUnavailable, hc.MakeError(err))
-		return
+		return &infra.HttpError{Msg: err.Error(), Code: http.StatusServiceUnavailable}
 	}
 
 	hc.Response(http.StatusOK, musics)
+	return nil
 }
