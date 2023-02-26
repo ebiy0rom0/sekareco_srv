@@ -8,7 +8,9 @@ import (
 )
 
 type SqlHandler interface {
-	Execute(context.Context, string, ...interface{}) (sql.Result, error)
-	QueryRow(context.Context, string, ...interface{}) *sqlx.Row
-	Query(context.Context, string, ...interface{}) (*sqlx.Rows, error)
+	ExecNamedContext(context.Context, string, interface{}) (sql.Result, error)
+	GetContext(context.Context, interface{}, string, ...interface{}) error
+	QueryRowxContext(context.Context, string, ...interface{}) *sqlx.Row
+	SelectContext(context.Context, interface{}, string, ...interface{}) error
+	QueryxContext(context.Context, string, ...interface{}) (*sqlx.Rows, error)
 }

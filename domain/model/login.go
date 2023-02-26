@@ -1,7 +1,7 @@
 package model
 
 type Login struct {
-	LoginID      string `json:"login_id"`
-	PasswordHash string `json:"password_hash"`
-	PersonID     int    `json:"person_id"`
+	LoginID      string `db:"login_id" json:"login_id"`
+	PasswordHash string `db:"password_hash" json:"password_hash"`
+	PersonID     int    `db:"person_id" json:"person_id"`
 }

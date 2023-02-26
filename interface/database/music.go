@@ -20,47 +20,20 @@ func NewMusicRepository(h infra.SqlHandler) *musicRepository {
 }
 
 func (r *musicRepository) Fetch(ctx context.Context) ([]outputdata.Music, error) {
-	query := "SELECT "
-	query += "  music_id,   "
-	query += "  group_id,  "
-	query += "  music_name, "
-	query += "  jacket_url, "
-	query += "  level_easy,   notes_easy,   "
-	query += "  level_normal, notes_normal, "
-	query += "  level_hard,   notes_hard,   "
-	query += "  level_expert, notes_expert, "
-	query += "  level_master, notes_master  "
-	query += "FROM "
-	query += "  master_music;"
-	rows, err := r.Query(ctx, query)
+	query := `SELECT * FROM master_music;`
+
+	rows, err := r.QueryxContext(ctx, query)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 	defer rows.Close()
 
+	var music model.Music
 	var musics []outputdata.Music
 	for rows.Next() {
-		var music model.Music
-		err = rows.Scan(
-			&music.MusicID,
-			&music.GroupID,
-			&music.MusicName,
-			&music.JacketURL,
-			&music.LevelEasy,
-			&music.NotesEasy,
-			&music.LevelNormal,
-			&music.NotesNormal,
-			&music.LevelHard,
-			&music.NotesHard,
-			&music.LevelExpert,
-			&music.NotesExpert,
-			&music.LevelMaster,
-			&music.NotesMaster,
-		)
-		if err != nil {
+		if err := rows.StructScan(&music); err != nil {
 			return nil, errors.WithStack(err)
 		}
-
 		//convert to response data struct
 		ret := outputdata.Music{
 			MusicID:   music.MusicID,

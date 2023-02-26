@@ -20,8 +20,8 @@ func NewTxHandler(con *sqlx.DB) *txHandler {
 	return &txHandler{con: con}
 }
 
-// Begin starts a transaction.
-func (h *txHandler) Begin(ctx context.Context, opt *sql.TxOptions) error {
+// BeginTxx start a transaction.
+func (h *txHandler) BeginTxx(ctx context.Context, opt *sql.TxOptions) error {
 	tx, err := h.con.BeginTxx(ctx, opt)
 	if err != nil {
 		return errors.WithStack(err)
@@ -31,16 +31,16 @@ func (h *txHandler) Begin(ctx context.Context, opt *sql.TxOptions) error {
 	return nil
 }
 
-// Execute returns result at execute argument query.
-// Prepared statement are supported, so any argument inject to args.
-func (h *txHandler) Execute(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
-	stmt, err := h.tx.PreparexContext(ctx, query)
+// ExecNamedContext returns result at execute argument query.
+// Any named placeholder parameters are replaced with fields from arg.
+func (h *txHandler) ExecNamedContext(ctx context.Context, query string, arg interface{}) (sql.Result, error) {
+	stmt, err := h.tx.PrepareNamedContext(ctx, query)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 	defer stmt.Close()
 
-	res, err := stmt.ExecContext(ctx, args...)
+	res, err := stmt.ExecContext(ctx, arg)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

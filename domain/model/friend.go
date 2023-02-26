@@ -1,7 +1,7 @@
 package model
 
 type Friend struct {
-	FriendID   int    `json:"friend_id"`
-	PersonID   int    `json:"person_id"`
-	PersonName string `json:"person_name"`
+	FriendID   int    `db:"friend_id" json:"friend_id"`
+	PersonID   int    `db:"person_id" json:"person_id"`
+	PersonName string `db:"person_name" json:"person_name"`
 }

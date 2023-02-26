@@ -16,7 +16,7 @@ type tx struct {
 }
 
 type Dao interface {
-	Execute(context.Context, string, ...interface{}) (sql.Result, error)
+	ExecNamedContext(context.Context, string, interface{}) (sql.Result, error)
 }
 
 func NewTransaction(h infra.TxHandler) *tx {
@@ -28,7 +28,7 @@ func NewTransaction(h infra.TxHandler) *tx {
 // wrapped functions in a closure and pass to ExecFunc.
 func (t *tx) Do(ctx context.Context, fn database.ExecFunc) (interface{}, error) {
 	opt := &sql.TxOptions{Isolation: sql.LevelReadCommitted}
-	if err := t.Begin(ctx, opt); err != nil {
+	if err := t.BeginTxx(ctx, opt); err != nil {
 		return nil, errors.WithStack(err)
 	}
 

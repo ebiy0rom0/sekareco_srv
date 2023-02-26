@@ -19,35 +19,29 @@ func NewRecordRepository(h infra.SqlHandler) *recordRepository {
 }
 
 func (r *recordRepository) Store(ctx context.Context, rec model.Record) (int, error) {
-	query := "INSERT INTO person_record ("
-	query += "  person_id, "
-	query += "  music_id, "
-	query += "  record_easy,   score_easy,   "
-	query += "  record_normal, score_normal, "
-	query += "  record_hard,   score_hard,   "
-	query += "  record_expert, score_expert, "
-	query += "  record_master, score_master  "
-	query += ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+	query := `
+	INSERT INTO person_record (
+		person_id,     music_id,
+		record_easy,   score_easy,
+		record_normal, score_normal,
+		record_hard,   score_hard,
+		record_expert, score_expert,
+		record_master, score_master
+	) VALUES (
+		:person_id,     :music_id,
+		:record_easy,   :score_easy,
+		:record_normal, :score_normal,
+		:record_hard,   :score_hard,
+		:record_expert, :score_expert,
+		:record_master, :score_master
+	);`
 
 	dao, ok := getTx(ctx)
 	if !ok {
 		dao = r
 	}
 
-	result, err := dao.Execute(ctx, query,
-		rec.PersonID,
-		rec.MusicID,
-		rec.RecordEasy,
-		rec.ScoreEasy,
-		rec.RecordNormal,
-		rec.ScoreNormal,
-		rec.RecordHard,
-		rec.ScoreHard,
-		rec.RecordExpert,
-		rec.ScoreExpert,
-		rec.RecordMaster,
-		rec.ScoreMaster,
-	)
+	result, err := dao.ExecNamedContext(ctx, query, rec)
 	if err != nil {
 		return 0, errors.WithStack(err)
 	}
@@ -61,80 +55,44 @@ func (r *recordRepository) Store(ctx context.Context, rec model.Record) (int, er
 }
 
 func (r *recordRepository) Update(ctx context.Context, personID int, musicID int, rec model.Record) error {
-	query := "UPDATE person_record "
-	query += "SET "
-	query += "  record_easy   = ?, score_easy =   ?, "
-	query += "  record_normal = ?, score_normal = ?, "
-	query += "  record_hard   = ?, score_hard   = ?, "
-	query += "  record_expert = ?, score_expert = ?, "
-	query += "  record_master = ?, score_master = ?  "
-	query += "WHERE "
-	query += "  person_id = ? AND music_id = ?;"
+	query := `
+	UPDATE person_record
+	SET
+	  record_easy   = :record_easy,   score_easy =   :score_easy,
+	  record_normal = :record_normal, score_normal = :score_normal,
+	  record_hard   = :record_hard,   score_hard   = :score_hard,
+	  record_expert = :record_expert, score_expert = :score_expert,
+	  record_master = :record_master, score_master = :score_master
+	WHERE
+	  person_id = :person_id AND
+	  music_id = :music_id;`
 
 	dao, ok := getTx(ctx)
 	if !ok {
 		dao = r
 	}
 
-	if _, err := dao.Execute(ctx, query,
-		rec.RecordEasy,
-		rec.ScoreEasy,
-		rec.RecordNormal,
-		rec.ScoreNormal,
-		rec.RecordHard,
-		rec.ScoreHard,
-		rec.RecordExpert,
-		rec.ScoreExpert,
-		rec.RecordMaster,
-		rec.ScoreMaster,
-		personID,
-		musicID,
-	); err != nil {
+	if _, err := dao.ExecNamedContext(ctx, query, rec); err != nil {
 		return errors.WithStack(err)
 	}
 	return nil
 }
 
 func (r *recordRepository) GetByPersonID(ctx context.Context, personID int) ([]outputdata.Record, error) {
-	query := "SELECT "
-	query += "  music_id, "
-	query += "  record_easy,   score_easy,   "
-	query += "  record_normal, score_normal, "
-	query += "  record_hard,   score_hard,   "
-	query += "  record_expert, score_expert, "
-	query += "  record_master, score_master  "
-	query += "FROM "
-	query += "  person_record "
-	query += "WHERE "
-	query += "  person_id = ?;"
+	query := `SELECT * FROM person_record WHERE person_id = $1;`
 
-	rows, err := r.Query(ctx, query, personID)
+	rows, err := r.QueryxContext(ctx, query, personID)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 	defer rows.Close()
 
+	var record model.Record
 	var records []outputdata.Record
 	for rows.Next() {
-		var record model.Record
-		err = rows.Scan(
-			&record.MusicID,
-			&record.RecordEasy,
-			&record.ScoreEasy,
-			&record.RecordNormal,
-			&record.ScoreNormal,
-			&record.RecordHard,
-			&record.ScoreHard,
-			&record.RecordExpert,
-			&record.ScoreExpert,
-			&record.RecordMaster,
-			&record.ScoreMaster,
-		)
-
-		if err != nil {
+		if err := rows.StructScan(&record); err != nil {
 			return nil, errors.WithStack(err)
 		}
-
 		//convert to response data struct
 		ret := outputdata.Record{
 			MusicID: record.MusicID,

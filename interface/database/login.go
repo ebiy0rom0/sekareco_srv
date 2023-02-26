@@ -18,35 +18,30 @@ func NewLoginRepository(h infra.SqlHandler) *loginRepository {
 }
 
 func (r *loginRepository) Store(ctx context.Context, l model.Login) error {
-	query := "INSERT INTO person_login (login_id, person_id, password_hash)"
-	query += " VALUES (?, ?, ?);"
+	query := `
+	INSERT INTO person_login (
+		login_id, person_id, password_hash
+	) VALUES (
+		:login_id, :person_id, :password_hash
+	);`
 
 	dao, ok := getTx(ctx)
 	if !ok {
 		dao = r
 	}
 
-	if _, err := dao.Execute(ctx, query, l.LoginID, l.PersonID, l.PasswordHash); err != nil {
+	if _, err := dao.ExecNamedContext(ctx, query, l); err != nil {
 		return errors.WithStack(err)
 	}
 	return nil
 }
 
 func (r *loginRepository) GetByID(ctx context.Context, loginID string) (model.Login, error) {
-	query := "SELECT password_hash, person_id FROM person_login WHERE login_id = ?;"
-	row := r.QueryRow(ctx, query, loginID)
+	query := `SELECT * FROM person_login WHERE login_id = $1;`
 
-	var (
-		personID     int
-		passwordHash string
-	)
-	if err := row.Scan(&passwordHash, &personID); err != nil {
+	var login model.Login
+	if err := r.GetContext(ctx, &login, query, loginID); err != nil {
 		return model.Login{}, errors.WithStack(err)
-	}
-
-	login := model.Login{
-		PasswordHash: passwordHash,
-		PersonID:     personID,
 	}
 	return login, nil
 }

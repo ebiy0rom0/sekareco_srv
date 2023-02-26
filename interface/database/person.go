@@ -18,15 +18,19 @@ func NewPersonRepository(h infra.SqlHandler) *personRepository {
 }
 
 func (r *personRepository) Store(ctx context.Context, p model.Person) (int, error) {
-	query := "INSERT INTO person (person_name, friend_code, is_compare)"
-	query += " VALUES (?, ?, ?);"
+	query := `
+	INSERT INTO person (
+		person_name, friend_code, is_compare
+	) VALUES (
+		:person_name, :friend_code, :is_compare
+	);`
 
 	dao, ok := getTx(ctx)
 	if !ok {
 		dao = r
 	}
 
-	result, err := dao.Execute(ctx, query, p.PersonName, p.FriendCode, p.IsCompare)
+	result, err := dao.ExecNamedContext(ctx, query, p)
 	if err != nil {
 		return 0, errors.WithStack(err)
 	}
@@ -40,22 +44,20 @@ func (r *personRepository) Store(ctx context.Context, p model.Person) (int, erro
 }
 
 func (r *personRepository) GetByID(ctx context.Context, personID int) (model.Person, error) {
-	query := "SELECT * FROM person WHERE person_id = ?;"
-	row := r.QueryRow(ctx, query, personID)
+	query := `SELECT * FROM person WHERE person_id = $1;`
 
 	var person model.Person
-	if err := row.Scan(&person.PersonID, &person.PersonName, &person.FriendCode, &person.IsCompare); err != nil {
+	if err := r.GetContext(ctx, &person, query, personID); err != nil {
 		return model.Person{}, errors.WithStack(err)
 	}
 	return person, nil
 }
 
 func (r *personRepository) GetByFriendCode(ctx context.Context, code int) (model.Person, error) {
-	query := "SELECT * FROM person WHERE friend_code = ?;"
-	row := r.QueryRow(ctx, query, code)
+	query := `SELECT * FROM person WHERE friend_code = $1;`
 
 	var person model.Person
-	if err := row.Scan(&person.PersonID, &person.PersonName, &person.FriendCode, &person.IsCompare); err != nil {
+	if err := r.GetContext(ctx, &person, query, code); err != nil {
 		return model.Person{}, errors.WithStack(err)
 	}
 	return person, nil

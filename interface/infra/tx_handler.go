@@ -6,8 +6,8 @@ import (
 )
 
 type TxHandler interface {
-	Begin(context.Context, *sql.TxOptions) error
-	Execute(context.Context, string, ...interface{}) (sql.Result, error)
+	BeginTxx(context.Context, *sql.TxOptions) error
+	ExecNamedContext(context.Context, string, interface{}) (sql.Result, error)
 	Commit() error
 	Rollback() error
 }

@@ -40,32 +40,46 @@ func NewSqlHandler(con *sqlx.DB) *sqlHandler {
 }
 
 // Execute returns result at execute argument query.
-// Prepared statement are supported, so any argument inject to args.
-func (h *sqlHandler) Execute(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
-	stmt, err := h.con.PreparexContext(ctx, query)
+// Any named placeholder parameters are replaced with fields from arg.
+func (h *sqlHandler) ExecNamedContext(ctx context.Context, query string, arg interface{}) (sql.Result, error) {
+	stmt, err := h.con.PrepareNamedContext(ctx, query)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 	defer stmt.Close()
 
-	res, err := stmt.ExecContext(ctx, args...)
+	res, err := stmt.ExecContext(ctx, arg)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 	return res, nil
 }
 
-// QueryRow returns 1 record only that result for execute argument query.
-// If the query selects no rows, the *sql.Row scan will return ErrNoRows.
-func (h *sqlHandler) QueryRow(ctx context.Context, query string, args ...interface{}) *sqlx.Row {
-	// lint:ignore SA5007 too many arguments
-	row := h.con.QueryRowxContext(ctx, query, args...)
-	return row
+// GetContext does a QueryRow and scans the result row to dest.
+// If the query selects no row, scan will return ErrNoRows.
+func (h *sqlHandler) GetContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error {
+	if err := h.con.GetContext(ctx, dest, query, args...); err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
 }
 
-// Query returns rows that result for execute argument query.
-func (h *sqlHandler) Query(ctx context.Context, query string, args ...interface{}) (*sqlx.Rows, error) {
-	// lint:ignore SA5007 too many arguments
+// QueryRowxContext does a QueryRow and returns *sqlx.Row.
+// If the query selects no row, scan will return ErrNoRows.
+func (h *sqlHandler) QueryRowxContext(ctx context.Context, query string, args ...interface{}) *sqlx.Row {
+	return h.con.QueryRowxContext(ctx, query, args...)
+}
+
+// SelectContext does a Query and scans each row into dest.
+func (h *sqlHandler) SelectContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error {
+	if err := h.con.SelectContext(ctx, dest, query, args...); err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+// SelectContext does a Query and returns *sqlx.Rows.
+func (h *sqlHandler) QueryxContext(ctx context.Context, query string, args ...interface{}) (*sqlx.Rows, error) {
 	rows, err := h.con.QueryxContext(ctx, query, args...)
 	if err != nil {
 		return nil, errors.WithStack(err)
