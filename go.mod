@@ -9,7 +9,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/rs/cors v1.8.3
 	github.com/rs/zerolog v1.29.0
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.2
 	github.com/swaggo/swag v1.8.9
 	github.com/tanimutomo/sqlfile v1.0.0
 	golang.org/x/crypto v0.6.0
