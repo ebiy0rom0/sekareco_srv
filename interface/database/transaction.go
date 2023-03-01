@@ -17,6 +17,7 @@ type tx struct {
 
 type Dao interface {
 	ExecNamedContext(context.Context, string, interface{}) (sql.Result, error)
+	UpdateNamedContext(context.Context, string, interface{}, ...interface{}) (sql.Result, error)
 }
 
 func NewTransaction(h infra.TxHandler) *tx {

@@ -39,8 +39,9 @@ func NewSqlHandler(con *sqlx.DB) *sqlHandler {
 	return &sqlHandler{con: con}
 }
 
-// Execute returns result at execute argument query.
+// ExecNamedContext returns result at execute argument query.
 // Any named placeholder parameters are replaced with fields from arg.
+// To exec update query, use 'UpdateNamedContext()'.
 func (h *sqlHandler) ExecNamedContext(ctx context.Context, query string, arg interface{}) (sql.Result, error) {
 	stmt, err := h.con.PrepareNamedContext(ctx, query)
 	if err != nil {
@@ -49,6 +50,30 @@ func (h *sqlHandler) ExecNamedContext(ctx context.Context, query string, arg int
 	defer stmt.Close()
 
 	res, err := stmt.ExecContext(ctx, arg)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	return res, nil
+}
+
+// UpdateNamedContext returns result at execute argument query.
+// Named placeholder in update field parameters are replaced with fields from param.
+// Use placeholders other than named parameters in the where clause.
+// To exec Insert and Delete query, use 'ExecNamedContext()'.
+func (h *sqlHandler) UpdateNamedContext(ctx context.Context, query string, cont interface{}, args ...interface{}) (sql.Result, error) {
+	query, argss, err := sqlx.Named(query, cont)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	argss = append(argss, args...)
+
+	stmt, err := h.con.PreparexContext(ctx, query)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer stmt.Close()
+
+	res, err := stmt.ExecContext(ctx, argss...)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
