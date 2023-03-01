@@ -64,15 +64,15 @@ func (r *recordRepository) Update(ctx context.Context, personID int, musicID int
 	  record_expert = :record_expert, score_expert = :score_expert,
 	  record_master = :record_master, score_master = :score_master
 	WHERE
-	  person_id = :person_id AND
-	  music_id = :music_id;`
+	  person_id = $1 AND
+	  music_id = $2;`
 
 	dao, ok := getTx(ctx)
 	if !ok {
 		dao = r
 	}
 
-	if _, err := dao.ExecNamedContext(ctx, query, rec); err != nil {
+	if _, err := dao.UpdateNamedContext(ctx, query, rec, personID, musicID); err != nil {
 		return errors.WithStack(err)
 	}
 	return nil
