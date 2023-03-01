@@ -15,10 +15,14 @@ type Music struct {
 	NotesExpert int    `db:"notes_expert" json:"notes_expert"`
 	LevelMaster int    `db:"level_master" json:"level_master"`
 	NotesMaster int    `db:"notes_master" json:"notes_master"`
+	CreatedAt   string `db:"created_at"`
+	UpdatedAt   string `db:"updated_at"`
 }
 
 type Group struct {
 	GroupID   int    `db:"group_id" json:"group_id"`
 	GroupName string `db:"group_name" json:"group_name"`
 	LogoURL   string `db:"logo_url" json:"logo_url"`
+	CreatedAt string `db:"created_at"`
+	UpdatedAt string `db:"updated_at"`
 }

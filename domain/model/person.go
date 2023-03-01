@@ -5,4 +5,6 @@ type Person struct {
 	PersonName string `db:"person_name" json:"person_name"`
 	FriendCode int    `db:"friend_code" json:"friend_code"`
 	IsCompare  bool   `db:"is_compare" json:"is_compare"`
+	CreatedAt  string `db:"created_at"`
+	UpdatedAt  string `db:"updated_at"`
 }
