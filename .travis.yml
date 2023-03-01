@@ -1,7 +1,0 @@
-language: go
-
-go:
-- 1.18.x
-
-script:
-  - make test INTEGRATION=1 CI=1
