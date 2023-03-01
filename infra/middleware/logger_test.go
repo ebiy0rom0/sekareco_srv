@@ -28,7 +28,7 @@ type httpRequest struct {
 
 type accessLog struct {
 	Level       string      `json:"level"`
-	HttpRequest httpRequest `json:"httpRequest"`
+	HttpRequest httpRequest `json:"accessLog"`
 }
 
 func Test_WithLogger(t *testing.T) {
