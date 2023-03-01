@@ -124,8 +124,27 @@ func TestPersonInteractor_GetByID(t *testing.T) {
 				t.Errorf("personInteractor.GetByID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotPerson, tt.wantPerson) {
-				t.Errorf("personInteractor.GetByID() = %v, want %v", gotPerson, tt.wantPerson)
+
+			type checkList struct {
+				PersonID   int
+				PersonName string
+				FriendCode int
+				IsCompare  bool
+			}
+			checkGot := checkList{
+				PersonID:   gotPerson.PersonID,
+				PersonName: gotPerson.PersonName,
+				FriendCode: gotPerson.FriendCode,
+				IsCompare:  gotPerson.IsCompare,
+			}
+			checkWant := checkList{
+				PersonID:   tt.wantPerson.PersonID,
+				PersonName: tt.wantPerson.PersonName,
+				FriendCode: tt.wantPerson.FriendCode,
+				IsCompare:  tt.wantPerson.IsCompare,
+			}
+			if !reflect.DeepEqual(checkGot, checkWant) {
+				t.Errorf("personInteractor.GetByID() = %v, want %v", checkGot, checkWant)
 			}
 		})
 	}

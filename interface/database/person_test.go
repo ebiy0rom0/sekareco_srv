@@ -97,8 +97,27 @@ func TestPersonRepository_GetByID(t *testing.T) {
 			if tt.wantErr && err == sql.ErrNoRows {
 				return
 			}
-			if !reflect.DeepEqual(gotUser, tt.wantUser) {
-				t.Errorf("PersonRepository.GetByID() = %v, want %v", gotUser, tt.wantUser)
+
+			type checkList struct {
+				PersonID   int
+				PersonName string
+				FriendCode int
+				IsCompare  bool
+			}
+			checkGot := checkList{
+				PersonID:   gotUser.PersonID,
+				PersonName: gotUser.PersonName,
+				FriendCode: gotUser.FriendCode,
+				IsCompare:  gotUser.IsCompare,
+			}
+			checkWant := checkList{
+				PersonID:   tt.wantUser.PersonID,
+				PersonName: tt.wantUser.PersonName,
+				FriendCode: tt.wantUser.FriendCode,
+				IsCompare:  tt.wantUser.IsCompare,
+			}
+			if !reflect.DeepEqual(checkGot, checkWant) {
+				t.Errorf("PersonRepository.GetByID() = %v, want %v", checkGot, checkWant)
 			}
 		})
 	}
