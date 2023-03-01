@@ -432,9 +432,11 @@ const docTemplate = `{
         "infra.HttpError": {
             "type": "object",
             "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "set a server error message"
+                "code": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -553,7 +555,7 @@ const docTemplate = `{
         "model.Music": {
             "type": "object",
             "properties": {
-                "artist_id": {
+                "group_id": {
                     "type": "integer"
                 },
                 "jacket_url": {
