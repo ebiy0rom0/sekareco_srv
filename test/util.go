@@ -2,11 +2,13 @@ package test
 
 import (
 	"log"
+	"path/filepath"
 	"sekareco_srv/domain/infra"
 	"sekareco_srv/env"
 	"sekareco_srv/infra/middleware"
 	"sekareco_srv/infra/sql"
 	infraIf "sekareco_srv/interface/infra"
+	"sekareco_srv/util"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -17,7 +19,9 @@ var txHandler infraIf.TxHandler
 var authMiddleware *middleware.AuthMiddleware
 
 func Initialize() {
-	con, err := sqlx.Connect("sqlite3", env.DbFile)
+	source := filepath.Join(util.RootDir(), env.DbDir, env.DbFile)
+
+	con, err := sqlx.Connect("sqlite3", source)
 	if err != nil {
 		log.Fatalf("Failed connect db: %+v\n", err)
 	}
