@@ -15,11 +15,6 @@ type tx struct {
 	infra.TxHandler
 }
 
-type Dao interface {
-	ExecNamedContext(context.Context, string, interface{}) (sql.Result, error)
-	UpdateNamedContext(context.Context, string, interface{}, ...interface{}) (sql.Result, error)
-}
-
 func NewTransaction(h infra.TxHandler) *tx {
 	return &tx{h}
 }
@@ -49,7 +44,7 @@ func (t *tx) Do(ctx context.Context, fn database.ExecFunc) (interface{}, error) 
 
 // getTx returns transaction handler object.
 // It can only be retrieved in the function passed by ExecFunc.
-func getTx(ctx context.Context) (Dao, bool) {
+func getTx(ctx context.Context) (infra.Executor, bool) {
 	dao, ok := ctx.Value(&txKey).(infra.TxHandler)
 	return dao, ok
 }
