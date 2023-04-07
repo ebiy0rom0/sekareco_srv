@@ -28,10 +28,9 @@ func NewPersonInteractor(p database.PersonRepository, l database.LoginRepository
 }
 
 func (i *personInteractor) Store(ctx context.Context, p inputdata.AddPerson) (model.Person, error) {
-	code, _ := i.generateFriendCode(p.LoginID)
 	person := model.Person{
 		PersonName: p.PersonName,
-		FriendCode: code,
+		IsCompare:  false,
 	}
 
 	if _, err := i.transaction.Do(ctx, func(ctx context.Context) (interface{}, error) {
@@ -40,6 +39,11 @@ func (i *personInteractor) Store(ctx context.Context, p inputdata.AddPerson) (mo
 			return nil, errors.New(err.Error())
 		}
 		person.PersonID = personID
+		person.FriendCode = i.generateFriendCode(personID)
+
+		if err := i.person.AddFriendCode(ctx, person); err != nil {
+			return nil, errors.New(err.Error())
+		}
 
 		hash, err := i.toHashPassword(p.Password)
 		if err != nil {
