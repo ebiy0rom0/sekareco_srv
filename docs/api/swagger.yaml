@@ -1,4 +1,3 @@
-basePath: /api/v1
 definitions:
   infra.HttpError:
     properties:
@@ -82,6 +81,8 @@ definitions:
     type: object
   model.Music:
     properties:
+      createdAt:
+        type: string
       group_id:
         type: integer
       jacket_url:
@@ -110,9 +111,13 @@ definitions:
         type: integer
       notes_normal:
         type: integer
+      updatedAt:
+        type: string
     type: object
   model.Person:
     properties:
+      createdAt:
+        type: string
       friend_code:
         type: integer
       is_compare:
@@ -121,9 +126,13 @@ definitions:
         type: integer
       person_name:
         type: string
+      updatedAt:
+        type: string
     type: object
   model.Record:
     properties:
+      createdAt:
+        type: string
       music_id:
         type: integer
       person_id:
@@ -150,16 +159,11 @@ definitions:
         type: integer
       score_normal:
         type: integer
+      updatedAt:
+        type: string
     type: object
-host: localhost:8000
 info:
   contact: {}
-  description: sekareco REST API server.
-  license:
-    name: MIT License
-    url: https://github.com/ebiy0rom0/sekareco_srv/blob/develop/LICENSE
-  title: sekareco_srv
-  version: 1.0.0-beta
 paths:
   /musics:
     get:
@@ -420,12 +424,4 @@ paths:
       summary: new account | create new person
       tags:
       - account
-schemes:
-- http
-- https
-securityDefinitions:
-  Bearer Authentication:
-    in: header
-    name: Authorization
-    type: apiKey
 swagger: "2.0"

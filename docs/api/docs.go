@@ -11,10 +11,6 @@ const docTemplate = `{
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
         "contact": {},
-        "license": {
-            "name": "MIT License",
-            "url": "https://github.com/ebiy0rom0/sekareco_srv/blob/develop/LICENSE"
-        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -555,6 +551,9 @@ const docTemplate = `{
         "model.Music": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "group_id": {
                     "type": "integer"
                 },
@@ -596,12 +595,18 @@ const docTemplate = `{
                 },
                 "notes_normal": {
                     "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },
         "model.Person": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "friend_code": {
                     "type": "integer"
                 },
@@ -613,12 +618,18 @@ const docTemplate = `{
                 },
                 "person_name": {
                     "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },
         "model.Record": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "music_id": {
                     "type": "integer"
                 },
@@ -657,27 +668,23 @@ const docTemplate = `{
                 },
                 "score_normal": {
                     "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "Bearer Authentication": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
         }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0.0-beta",
-	Host:             "localhost:8000",
-	BasePath:         "/api/v1",
-	Schemes:          []string{"http", "https"},
-	Title:            "sekareco_srv",
-	Description:      "sekareco REST API server.",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
+	Schemes:          []string{},
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

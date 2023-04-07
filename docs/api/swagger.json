@@ -1,21 +1,8 @@
 {
-    "schemes": [
-        "http",
-        "https"
-    ],
     "swagger": "2.0",
     "info": {
-        "description": "sekareco REST API server.",
-        "title": "sekareco_srv",
-        "contact": {},
-        "license": {
-            "name": "MIT License",
-            "url": "https://github.com/ebiy0rom0/sekareco_srv/blob/develop/LICENSE"
-        },
-        "version": "1.0.0-beta"
+        "contact": {}
     },
-    "host": "localhost:8000",
-    "basePath": "/api/v1",
     "paths": {
         "/musics": {
             "get": {
@@ -552,6 +539,9 @@
         "model.Music": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "group_id": {
                     "type": "integer"
                 },
@@ -593,12 +583,18 @@
                 },
                 "notes_normal": {
                     "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },
         "model.Person": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "friend_code": {
                     "type": "integer"
                 },
@@ -610,12 +606,18 @@
                 },
                 "person_name": {
                     "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },
         "model.Record": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "music_id": {
                     "type": "integer"
                 },
@@ -654,15 +656,11 @@
                 },
                 "score_normal": {
                     "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "Bearer Authentication": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
         }
     }
 }
