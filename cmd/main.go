@@ -20,20 +20,20 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// @title        sekareco_srv
-// @version      1.0.0-beta
-// @description  sekareco REST API server.
+//	@title			sekareco_srv
+//	@version		1.0.0-beta
+//	@description	sekareco REST API server.
 
-// @license.name  MIT License
-// @license.url   https://github.com/ebiy0rom0/sekareco_srv/blob/develop/LICENSE
+//	@license.name	MIT License
+//	@license.url	https://github.com/ebiy0rom0/sekareco_srv/blob/develop/LICENSE
 
-// @host      localhost:8000
-// @BasePath  /api/v1
-// @schemes   http https
+//	@host		localhost:8000
+//	@BasePath	/api/v1
+//	@schemes	http https
 
-// @securityDefinitions.apikey  Bearer Authentication
-// @in                          header
-// @name                        Authorization
+//	@securityDefinitions.apikey	Bearer Authentication
+//	@in							header
+//	@name						Authorization
 func main() {
 	if err := run(); err != nil {
 		fmt.Println(err)

@@ -30,16 +30,16 @@ func NewAuthHandler(
 }
 
 // synonymous with 'sign in'
-// @Summary		add token | generate and stored token
-// @Description	generate and stored token
-// @Tags		account
-// @Accept		json
-// @Produce		json
-// @param		data	body	inputdata.PostAuth	true	"password"
-// @Success		200	{string}	string	"generate new token"
-// @Failure		400	{object}	infra.HttpError
-// @Failure		401	{object}	infra.HttpError
-// @Router		/signin	[post]
+//	@Summary		add token | generate and stored token
+//	@Description	generate and stored token
+//	@Tags			account
+//	@Accept			json
+//	@Produce		json
+//	@param			data	body		inputdata.PostAuth	true	"password"
+//	@Success		200		{string}	string				"generate new token"
+//	@Failure		400		{object}	infra.HttpError
+//	@Failure		401		{object}	infra.HttpError
+//	@Router			/signin	[post]
 func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	var req inputdata.PostAuth
 	if err := hc.Decode(&req); err != nil {
@@ -62,14 +62,14 @@ func (h *authHandler) Post(ctx context.Context, hc infra.HttpContext) *infra.Htt
 }
 
 // synonymous with 'sign out'
-// @Summary		delete token | delete a stored token
-// @Description	delete a stored token
-// @Tags		account
-// @Accept		json
-// @Produce		json
-// @Success		200
-// @Security	Bearer Authentication
-// @Router		/signout	[delete]
+//	@Summary		delete token | delete a stored token
+//	@Description	delete a stored token
+//	@Tags			account
+//	@Accept			json
+//	@Produce		json
+//	@Success		200
+//	@Security		Bearer Authentication
+//	@Router			/signout	[delete]
 func (h *authHandler) Delete(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	token, err := infraDomain.GetToken(ctx)
 	if err != nil {

@@ -25,16 +25,16 @@ func NewPersonHandler(
 	}
 }
 
-// @Summary		get one | get one person by ID
-// @Description	get one person by ID
-// @Tags		person
-// @Accept		json
-// @Produce		json
-// @param		person_id	path	int		true	"Want to get person ID"
-// @Success		200 {object}	model.Person
-// @Failure		503	{object}	infra.HttpError
-// @Security	Bearer Authentication
-// @Router		/persons/{person_id}	[get]
+//	@Summary		get one | get one person by ID
+//	@Description	get one person by ID
+//	@Tags			person
+//	@Accept			json
+//	@Produce		json
+//	@param			person_id	path		int	true	"Want to get person ID"
+//	@Success		200			{object}	model.Person
+//	@Failure		503			{object}	infra.HttpError
+//	@Security		Bearer Authentication
+//	@Router			/persons/{person_id}	[get]
 func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	personID, err := infraDomain.GetPersonID(ctx)
 	if err != nil {
@@ -50,16 +50,16 @@ func (h *personHandler) Get(ctx context.Context, hc infra.HttpContext) *infra.Ht
 	return nil
 }
 
-// @Summary		new account | create new person
-// @Description	create new person
-// @Tags		account
-// @Accept		json
-// @Produce		json
-// @param		data	body	inputdata.AddPerson	true	"add person status"
-// @Success		200	{object}	model.Person
-// @Failure		400	{object}	infra.HttpError
-// @Failure		503	{object}	infra.HttpError
-// @Router		/signup	[post]
+//	@Summary		new account | create new person
+//	@Description	create new person
+//	@Tags			account
+//	@Accept			json
+//	@Produce		json
+//	@param			data	body		inputdata.AddPerson	true	"add person status"
+//	@Success		200		{object}	model.Person
+//	@Failure		400		{object}	infra.HttpError
+//	@Failure		503		{object}	infra.HttpError
+//	@Router			/signup	[post]
 func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	var req inputdata.AddPerson
 	if err := hc.Decode(&req); err != nil {
@@ -79,17 +79,17 @@ func (h *personHandler) Post(ctx context.Context, hc infra.HttpContext) *infra.H
 	return nil
 }
 
-// @Summary		update status | update person register status
-// @Description	update person register status
-// @Tags		person
-// @Accept		json
-// @Produce		json
-// @param		data	body	inputdata.UpdatePerson	true	"update person status"
-// @Success		200
-// @Failure		400	{object}	infra.HttpError
-// @Failure		503	{object}	infra.HttpError
-// @Security	Bearer Authentication
-// @Router		/persons/{person_id}	[put]
+//	@Summary		update status | update person register status
+//	@Description	update person register status
+//	@Tags			person
+//	@Accept			json
+//	@Produce		json
+//	@param			data	body	inputdata.UpdatePerson	true	"update person status"
+//	@Success		200
+//	@Failure		400	{object}	infra.HttpError
+//	@Failure		503	{object}	infra.HttpError
+//	@Security		Bearer Authentication
+//	@Router			/persons/{person_id}	[put]
 func (h *personHandler) Put(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	vars := hc.Vars()
 	personID, _ := strconv.Atoi(vars["personID"])

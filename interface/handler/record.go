@@ -20,16 +20,16 @@ func NewRecordHandler(r inputport.RecordInputport) *recordHandler {
 	}
 }
 
-// @Summary		get list | get all records data by person
-// @Description	get all records data by person
-// @Tags		record
-// @Accept		json
-// @Produce		json
-// @param		person_id	path	int		true	"Want to get personID"
-// @Success		200	{object}	[]model.Record
-// @Failure		503	{object}	infra.HttpError
-// @Security	Bearer Authentication
-// @Router		/records/{person_id}	[get]
+//	@Summary		get list | get all records data by person
+//	@Description	get all records data by person
+//	@Tags			record
+//	@Accept			json
+//	@Produce		json
+//	@param			person_id	path		int	true	"Want to get personID"
+//	@Success		200			{object}	[]model.Record
+//	@Failure		503			{object}	infra.HttpError
+//	@Security		Bearer Authentication
+//	@Router			/records/{person_id}	[get]
 func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	vars := hc.Vars()
 	fmt.Printf("%+v\n", vars)
@@ -44,18 +44,18 @@ func (h *recordHandler) Get(ctx context.Context, hc infra.HttpContext) *infra.Ht
 	return nil
 }
 
-// @Summary		new record | create new record
-// @Description	create new record
-// @Tags		record
-// @Accept		json
-// @Produce		json
-// @param		person_id	path	int						true	"Want to add personID"
-// @param		data		body	inputdata.AddRecord		true	"store Record"
-// @Success		201	{object}	model.Record
-// @Failure		400	{object}	infra.HttpError
-// @Failure		503	{object}	infra.HttpError
-// @Security	Bearer Authentication
-// @Router		/records/{person_id}	[post]
+//	@Summary		new record | create new record
+//	@Description	create new record
+//	@Tags			record
+//	@Accept			json
+//	@Produce		json
+//	@param			person_id	path		int					true	"Want to add personID"
+//	@param			data		body		inputdata.AddRecord	true	"store Record"
+//	@Success		201			{object}	model.Record
+//	@Failure		400			{object}	infra.HttpError
+//	@Failure		503			{object}	infra.HttpError
+//	@Security		Bearer Authentication
+//	@Router			/records/{person_id}	[post]
 func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	vars := hc.Vars()
 	var addRecord inputdata.AddRecord
@@ -77,19 +77,19 @@ func (h *recordHandler) Post(ctx context.Context, hc infra.HttpContext) *infra.H
 	return nil
 }
 
-// @Summary		update status | update record clear status
-// @Description	update record clear status
-// @Tags		record
-// @Accept		json
-// @Produce		json
-// @param		person_id	path	int						true	"Want to update personID"
-// @param		music_id	path	int						true	"Want to update musicID"
-// @param		data		body	inputdata.UpdateRecord	true	"update Record"
-// @Success		200
-// @Failure		400	{object}	infra.HttpError
-// @Failure		503	{object}	infra.HttpError
-// @Security	Bearer Authentication
-// @Router		/records/{person_id}/{music_id}	[put]
+//	@Summary		update status | update record clear status
+//	@Description	update record clear status
+//	@Tags			record
+//	@Accept			json
+//	@Produce		json
+//	@param			person_id	path	int						true	"Want to update personID"
+//	@param			music_id	path	int						true	"Want to update musicID"
+//	@param			data		body	inputdata.UpdateRecord	true	"update Record"
+//	@Success		200
+//	@Failure		400	{object}	infra.HttpError
+//	@Failure		503	{object}	infra.HttpError
+//	@Security		Bearer Authentication
+//	@Router			/records/{person_id}/{music_id}	[put]
 func (h *recordHandler) Put(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	vars := hc.Vars()
 	var record inputdata.UpdateRecord

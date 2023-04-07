@@ -17,15 +17,15 @@ func NewMusicHandler(m inputport.MusicInputport) *musicHandler {
 	}
 }
 
-// @Summary		get list | get all music master records
-// @Description	get all music master records
-// @Tags		music
-// @Accept		json
-// @Produce		json
-// @Success		200	{object}	[]model.Music
-// @Failure		503	{object}	infra.HttpError
-// @Security	Bearer Authentication
-// @Router		/musics	[get]
+//	@Summary		get list | get all music master records
+//	@Description	get all music master records
+//	@Tags			music
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	[]model.Music
+//	@Failure		503	{object}	infra.HttpError
+//	@Security		Bearer Authentication
+//	@Router			/musics	[get]
 func (h *musicHandler) Get(ctx context.Context, hc infra.HttpContext) *infra.HttpError {
 	musics, err := h.music.Fetch(ctx)
 	if err != nil {
