@@ -2,11 +2,12 @@ package interactor
 
 import (
 	"context"
-	"hash/fnv"
+	"fmt"
 	"sekareco_srv/domain/model"
 	"sekareco_srv/usecase/database"
 	"sekareco_srv/usecase/inputdata"
 	"sekareco_srv/usecase/inputport"
+	"strconv"
 
 	"github.com/ebiy0rom0/errors"
 	"golang.org/x/crypto/bcrypt"
@@ -74,15 +75,25 @@ func (i *personInteractor) GetByID(ctx context.Context, personID int) (model.Per
 	return person, nil
 }
 
-func (i *personInteractor) generateFriendCode(loginID string) (int, error) {
-	// Failed generate is not problem now.
-	// This parameter usage in future content.
-	h := fnv.New32()
-	if _, err := h.Write([]byte(loginID)); err != nil {
-		return 0, errors.New(err.Error())
+func (i *personInteractor) generateFriendCode(personID int) int {
+	var codeConvertMap = [][]uint8{
+		{5, 1, 3, 6, 8, 9, 2, 4, 7, 0},
+		{0, 3, 6, 9, 1, 7, 4, 5, 8, 2},
+		{2, 7, 8, 9, 0, 4, 1, 6, 5, 3},
+		{8, 6, 9, 0, 1, 5, 7, 2, 3, 4},
+		{6, 4, 3, 9, 7, 8, 5, 1, 2, 0},
+		{4, 0, 7, 1, 3, 8, 6, 9, 5, 2},
+		{0, 1, 2, 3, 8, 6, 4, 5, 9, 7},
+		{0, 4, 1, 3, 8, 6, 9, 7, 5, 2},
 	}
 
-	return int(h.Sum32()), nil
+	sID := fmt.Sprintf("%8d", personID)
+	var friendCode int
+	for n, r := range sID {
+		digit, _ := strconv.Atoi(string(r))
+		friendCode += friendCode*10 + int(codeConvertMap[n][digit])
+	}
+	return friendCode
 }
 
 func (i *personInteractor) toHashPassword(password string) (string, error) {
