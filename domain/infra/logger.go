@@ -1,7 +1,5 @@
 package infra
 
-import "context"
-
 type LogLevel int
 
 const (
@@ -12,15 +10,17 @@ const (
 	LogLevelDebug
 )
 
-type ILogger interface {
-	Log(context.Context, string, LogLevel) error
-	Info(context.Context, string) error
-	Warn(context.Context, string) error
-	Err(context.Context, string) error
-	Fatal(context.Context, string) error
-	Debug(context.Context, string) error
-	Send(context.Context) error
+type Logger interface {
+	Log(level LogLevel, message string)
+	Logf(level LogLevel, format string, args ...any)
+	Info(message string)
+	Infof(format string, args ...any)
+	Warn(message string)
+	Warnf(format string, args ...any)
+	Error(message string)
+	Errorf(format string, args ...any)
+	Fatal(message string)
+	Fatalf(format string, args ...any)
+	Debug(message string)
+	Debugf(format string, args ...any)
 }
-
-// Logger instance to be called from code.
-var Logger ILogger
