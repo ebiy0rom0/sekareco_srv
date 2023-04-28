@@ -17,7 +17,7 @@ type authInteractor struct {
 	transaction database.SqlTransaction
 }
 
-func NewAuthInteractor(t infra.TokenManager, l database.LoginRepository, tx database.SqlTransaction) *authInteractor {
+func NewAuthInteractor(t infra.TokenManager, l database.LoginRepository, tx database.SqlTransaction) inputport.AuthInputport {
 	return &authInteractor{
 		token:       t,
 		login:       l,

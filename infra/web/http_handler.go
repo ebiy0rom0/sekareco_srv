@@ -13,9 +13,7 @@ type HttpHandler func(context.Context, infra.HttpContext) *infra.HttpError
 // Exec is a function that registers with the mux/router.
 // Wrap the created handler with HttpHandler and register it.
 func (fn HttpHandler) Exec(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	context := NewHttpContext(w, r)
-	if err := fn(ctx, context); err != nil {
+	if err := fn(r.Context(), NewHttpContext(w, r)); err != nil {
 		context.Response(err.Code, struct{ Error string }{Error: err.Msg})
 	}
 }

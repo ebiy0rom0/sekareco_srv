@@ -13,7 +13,7 @@ type personRepository struct {
 	infra.SqlHandler
 }
 
-func NewPersonRepository(h infra.SqlHandler) *personRepository {
+func NewPersonRepository(h infra.SqlHandler) database.PersonRepository {
 	return &personRepository{h}
 }
 
