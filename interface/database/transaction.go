@@ -15,7 +15,7 @@ type tx struct {
 	infra.TxHandler
 }
 
-func NewTransaction(h infra.TxHandler) *tx {
+func NewTransaction(h infra.TxHandler) database.SqlTransaction {
 	return &tx{h}
 }
 

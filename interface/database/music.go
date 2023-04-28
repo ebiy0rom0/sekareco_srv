@@ -15,7 +15,7 @@ type musicRepository struct {
 	infra.SqlHandler
 }
 
-func NewMusicRepository(h infra.SqlHandler) *musicRepository {
+func NewMusicRepository(h infra.SqlHandler) database.MusicRepository {
 	return &musicRepository{h}
 }
 

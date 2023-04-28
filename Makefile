@@ -56,7 +56,7 @@ ifdef CI
 endif
 
 
-.PHONY: help build clean test
+.PHONY: help build clean test wire
 
 help:
 ifeq ($(GOOS), windows)
@@ -130,3 +130,6 @@ swag_install:
 # Install version at 1.8.4
 #   because it doesn't work properly with >= 1.8.5
 	$(GOINSTALL) github.com/swaggo/swag/cmd/swag@v1.8.4
+
+wire:
+	wire ./registry/

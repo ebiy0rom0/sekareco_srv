@@ -13,7 +13,7 @@ type loginRepository struct {
 	infra.SqlHandler
 }
 
-func NewLoginRepository(h infra.SqlHandler) *loginRepository {
+func NewLoginRepository(h infra.SqlHandler) database.LoginRepository {
 	return &loginRepository{h}
 }
 
