@@ -4,6 +4,8 @@ import (
 	"context"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputport"
+
+	"github.com/google/wire"
 )
 
 type handler struct {
@@ -23,3 +25,10 @@ func NewPersonHandler(personInputport inputport.PersonInputport, personValidator
 		personValidator: personValidator,
 	}
 }
+
+var PersonHandlerProviderSet = wire.NewSet(
+	NewPersonHandler,
+	wire.Bind(new(Handler), new(*handler)),
+)
+
+var _ Handler = (*handler)(nil)
