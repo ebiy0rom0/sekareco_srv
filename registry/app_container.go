@@ -4,25 +4,22 @@
 package registory
 
 import (
+	domain "sekareco_srv/domain/infra"
+	"sekareco_srv/interface/database"
 	"sekareco_srv/interface/handler"
-	"sekareco_srv/interface/handler/auth"
-	"sekareco_srv/interface/handler/health"
-	"sekareco_srv/interface/handler/music"
-	"sekareco_srv/interface/handler/person"
-	"sekareco_srv/interface/handler/record"
 	"sekareco_srv/interface/infra"
+	"sekareco_srv/usecase/interactor"
+	"sekareco_srv/usecase/validator"
 
 	"github.com/google/wire"
 )
 
-func InitializeDIContainer(sqlHandler infra.SqlHandler) *handler.AppContainer {
+func InitializeDIContainer(sqlHandler infra.SqlHandler, txHandler infra.TxHandler, manager domain.TokenManager) *handler.AppContainer {
 	wire.Build(
-		handler.NewAppContainer,
-		auth.NewAuthHandler,
-		health.NewHealthHandler,
-		music.NewMusicHandler,
-		person.NewPersonHandler,
-		record.NewRecordHandler,
+		handler.AppContainerProviderSet,
+		validator.ValidatorProviderSet,
+		interactor.InteractorProviderSet,
+		database.DatabasePrividerSet,
 	)
 	return &handler.AppContainer{}
 }
