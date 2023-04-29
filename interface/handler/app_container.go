@@ -6,6 +6,8 @@ import (
 	"sekareco_srv/interface/handler/music"
 	"sekareco_srv/interface/handler/person"
 	"sekareco_srv/interface/handler/record"
+
+	"github.com/google/wire"
 )
 
 type AppContainer struct {
@@ -31,3 +33,12 @@ func NewAppContainer(
 		Record: recordHandler,
 	}
 }
+
+var AppContainerProviderSet = wire.NewSet(
+	NewAppContainer,
+	auth.AuthHandlerProviderSet,
+	health.HealthHandlerProviderSet,
+	music.MusicHandlerProviderSet,
+	person.PersonHandlerProviderSet,
+	record.RecordHandlerProviderSet,
+)
