@@ -4,6 +4,8 @@ import (
 	"context"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputport"
+
+	"github.com/google/wire"
 )
 
 type handler struct {
@@ -19,3 +21,10 @@ func NewMusicHandler(musicInputport inputport.MusicInputport) *handler {
 		musicInputport: musicInputport,
 	}
 }
+
+var MusicHandlerProviderSet = wire.NewSet(
+	NewMusicHandler,
+	wire.Bind(new(Handler), new(*handler)),
+)
+
+var _ Handler = (*handler)(nil)

@@ -4,6 +4,8 @@ import (
 	"context"
 	"sekareco_srv/interface/infra"
 	"sekareco_srv/usecase/inputport"
+
+	"github.com/google/wire"
 )
 
 type handler struct {
@@ -21,3 +23,10 @@ func NewRecordHandler(recordInputport inputport.RecordInputport) *handler {
 		recordInputport: recordInputport,
 	}
 }
+
+var RecordHandlerProviderSet = wire.NewSet(
+	NewRecordHandler,
+	wire.Bind(new(Handler), new(*handler)),
+)
+
+var _ Handler = (*handler)(nil)
