@@ -16,7 +16,7 @@ type recordInteractor struct {
 	transaction database.SqlTransaction
 }
 
-func NewRecordInteractor(r database.RecordRepository, tx database.SqlTransaction) inputport.RecordInputport {
+func NewRecordInteractor(r database.RecordRepository, tx database.SqlTransaction) *recordInteractor {
 	return &recordInteractor{
 		record:      r,
 		transaction: tx,

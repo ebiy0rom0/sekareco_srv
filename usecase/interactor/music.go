@@ -14,7 +14,7 @@ type musicInteractor struct {
 	transaction database.SqlTransaction
 }
 
-func NewMusicInteractor(m database.MusicRepository, tx database.SqlTransaction) inputport.MusicInputport {
+func NewMusicInteractor(m database.MusicRepository, tx database.SqlTransaction) *musicInteractor {
 	return &musicInteractor{
 		music:       m,
 		transaction: tx,

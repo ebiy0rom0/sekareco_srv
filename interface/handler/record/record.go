@@ -16,7 +16,7 @@ type Handler interface {
 	Put(ctx context.Context, hc infra.HttpContext) *infra.HttpError
 }
 
-func NewRecordHandler(recordInputport inputport.RecordInputport) Handler {
+func NewRecordHandler(recordInputport inputport.RecordInputport) *handler {
 	return &handler{
 		recordInputport: recordInputport,
 	}

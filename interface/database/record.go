@@ -14,7 +14,7 @@ type recordRepository struct {
 	infra.SqlHandler
 }
 
-func NewRecordRepository(h infra.SqlHandler) database.RecordRepository {
+func NewRecordRepository(h infra.SqlHandler) *recordRepository {
 	return &recordRepository{h}
 }
 
