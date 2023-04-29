@@ -16,7 +16,7 @@ type Handler interface {
 	Delete(context.Context, infra.HttpContext) *infra.HttpError
 }
 
-func NewAuthHandler(authInputPort inputport.AuthInputport, authValidator inputport.AuthValidator) Handler {
+func NewAuthHandler(authInputPort inputport.AuthInputport, authValidator inputport.AuthValidator) *handler {
 	return &handler{
 		authInputport: authInputPort,
 		authValidator: authValidator,

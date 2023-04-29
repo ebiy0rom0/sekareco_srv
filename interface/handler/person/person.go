@@ -17,7 +17,7 @@ type Handler interface {
 	Put(ctx context.Context, hc infra.HttpContext) *infra.HttpError
 }
 
-func NewPersonHandler(personInputport inputport.PersonInputport, personValidator inputport.PersonValidator) Handler {
+func NewPersonHandler(personInputport inputport.PersonInputport, personValidator inputport.PersonValidator) *handler {
 	return &handler{
 		personInputport: personInputport,
 		personValidator: personValidator,

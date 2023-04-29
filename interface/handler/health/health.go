@@ -12,6 +12,6 @@ type Handler interface {
 	Get(ctx context.Context, hc infra.HttpContext) *infra.HttpError
 }
 
-func NewHealthHandler() Handler {
+func NewHealthHandler() *handler {
 	return &handler{}
 }

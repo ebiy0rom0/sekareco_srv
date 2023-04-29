@@ -14,7 +14,7 @@ type Handler interface {
 	Get(ctx context.Context, hc infra.HttpContext) *infra.HttpError
 }
 
-func NewMusicHandler(musicInputport inputport.MusicInputport) Handler {
+func NewMusicHandler(musicInputport inputport.MusicInputport) *handler {
 	return &handler{
 		musicInputport: musicInputport,
 	}

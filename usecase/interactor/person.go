@@ -19,7 +19,7 @@ type personInteractor struct {
 	transaction database.SqlTransaction
 }
 
-func NewPersonInteractor(p database.PersonRepository, l database.LoginRepository, tx database.SqlTransaction) inputport.PersonInputport {
+func NewPersonInteractor(p database.PersonRepository, l database.LoginRepository, tx database.SqlTransaction) *personInteractor {
 	return &personInteractor{
 		person:      p,
 		login:       l,
